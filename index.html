@@ -341,6 +341,40 @@
                 return tableHtml;
             }
 
+            function renderScalingInfo(product) {
+                if (!product.scalingRules) return '';
+                let scalingHtml = `
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <h4 class="text-lg font-semibold mb-4 text-gray-700">Storage Scalability</h4>
+                        <div class="space-y-1 mb-4">
+                            ${createDetailItem('Max Storage Units (ESU)', product.maxESUs)}
+                            ${createDetailItem('Compatible ESUs', product.compatibleESUs)}
+                        </div>
+                        <h5 class="text-md font-semibold mb-3 text-gray-600">Performance Tiers</h5>
+                        <div class="space-y-3">`;
+
+                product.scalingRules.forEach(rule => {
+                    scalingHtml += `
+                        <div class="grid grid-cols-3 items-center gap-2 bg-gray-100 rounded-lg p-3 text-center">
+                            <div>
+                                <p class="font-bold text-[#261f63]">${rule.esuCount} x ${rule.esuType}</p>
+                                <p class="text-xs text-gray-500">ESU Configuration</p>
+                            </div>
+                            <div class="border-l border-r border-gray-300">
+                                <p class="font-bold text-lg text-[#00aaef]">${rule.throughputGbps} Gbps</p>
+                                <p class="text-xs text-gray-500">Throughput</p>
+                            </div>
+                            <div>
+                                <p class="font-bold text-lg text-[#00aaef]">${(rule.packetsPerSecond / 1000000).toFixed(1)} Mpps</p>
+                                <p class="text-xs text-gray-500">Packet Rate</p>
+                            </div>
+                        </div>`;
+                });
+
+                scalingHtml += '</div></div>';
+                return scalingHtml;
+            }
+
             function showModal(productName) {
                 const product = products.find(p => p.name === productName);
                 if (!product) return;
@@ -352,12 +386,24 @@
                 let detailsHtml = '<dl class="divide-y divide-gray-200">';
                 detailsHtml += createDetailItem('Category', formatString(product.category));
                 detailsHtml += createDetailItem('Sale Status', formatString(product.saleStatus));
+                if (product.isPhysical) {
+                    detailsHtml += createDetailItem('Rack Units', product.rackUnits);
+                    detailsHtml += createDetailItem('Power (Watts)', product.powerWatts);
+                }
+                if (product.category === 'recordstore' && product.ingestRecordsPerSec) {
+                    detailsHtml += createDetailItem('Ingest Rate', `${product.ingestRecordsPerSec.toLocaleString()} records/sec`);
+                }
                 detailsHtml += createDetailItem('Base Throughput', `${product.baseGbps ?? 0} Gbps`);
                 detailsHtml += createDetailItem('IDS Throughput', `${product.idsGbps ?? 0} Gbps`);
                 detailsHtml += createDetailItem('Supported Modules', product.supportedModules);
                 if (product.virtualSupport) detailsHtml += createDetailItem('Virtual Support', product.virtualSupport);
                 if (product.cloudSupport) detailsHtml += createDetailItem('Cloud Support', product.cloudSupport);
                 detailsHtml += '</dl>';
+
+                let scalingHtml = '';
+                if (product.category === 'packetstore') {
+                    scalingHtml = renderScalingInfo(product);
+                }
 
                 let chartsHtml = '';
                 const hasPerfChart = (product.baseGbps || product.idsGbps);
@@ -375,7 +421,7 @@
                     interfacesHtml += renderInterfacesTable(product.interfaces.capture, 'Capture Interfaces');
                 }
 
-                modalBody.innerHTML = detailsHtml + chartsHtml + interfacesHtml;
+                modalBody.innerHTML = detailsHtml + scalingHtml + chartsHtml + interfacesHtml;
 
                 if (hasPerfChart) createPerfChart(product);
                 if (hasAnalysisChart) createAnalysisChart(product);
