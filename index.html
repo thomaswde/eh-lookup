@@ -253,7 +253,13 @@
                     dataSourceStatus.classList.add('text-green-400');
                 } catch (error) {
                     console.error(`Could not load product data from ${filename}:`, error);
-                    resultsContainer.innerHTML = `<p class="text-red-400">Failed to load: "${filename}".<br>Ensure the file is in the same directory as this HTML file and the name is correct.</p>`;
+                    let errorMessage = `Failed to load: "${filename}".`;
+                    if (error instanceof SyntaxError) {
+                         errorMessage += `<br>This is likely due to an invalid JSON format in the file. Please validate the JSON.`;
+                    } else {
+                         errorMessage += `<br>Ensure the file exists and the repository is public.`;
+                    }
+                    resultsContainer.innerHTML = `<p class="text-red-400">${errorMessage}</p>`;
                     productCountElement.textContent = 'Error';
                     
                     dataSourceStatus.textContent = `Error loading ${filename}.`;
@@ -358,6 +364,10 @@
 
                     const statusColor = product.saleStatus === 'active' ? 'bg-green-500' : 'bg-red-500';
 
+                    const supportedModulesText = (product.supportedModules && product.supportedModules.length > 0)
+                        ? `Supported Modules: ${product.supportedModules.join(', ')}`
+                        : 'Supported Modules: N/A';
+
                     card.innerHTML = `
                         <div class="flex-grow">
                              <div class="flex justify-between items-start">
@@ -374,7 +384,7 @@
                             </div>
                         </div>
                         <div class="border-t border-gray-700 pt-3 text-xs text-gray-500">
-                           Supported Modules: ${product.supportedModules.join(', ')}
+                           ${supportedModulesText}
                         </div>
                     `;
                     resultsContainer.appendChild(card);
