@@ -1,0 +1,1541 @@
+{
+  "metadata": {
+    "extractedDate": "2025-01-13",
+    "source": "Product Matrix .xlsx analysis - Enhanced",
+    "version": "2.0",
+    "description": "Complete ExtraHop product catalog with precise specifications"
+  },
+  "namingConvention": {
+    "schema": "[Prefix][Throughput][Generation][Type][Subtype][Virtual?]",
+    "example": "EDA10300 = [EDA][10][3][0][0]",
+    "prefixMapping": {
+      "EDA": "Packet Sensors",
+      "EFC": "Flow Sensors",
+      "ETA": "Packetstore",
+      "ESU": "Extended Storage",
+      "ECA": "Command Appliance",
+      "EXA": "Explore/Recordstore",
+      "IDS": "Intrusion Detection System"
+    },
+    "throughputMapping": {
+      "10": 100,
+      "9": 50,
+      "8": 25,
+      "6": 10,
+      "4": 5,
+      "1": 1
+    },
+    "generationMapping": {
+      "3": "current",
+      "2": "end_of_sale",
+      "1": "end_of_life"
+    },
+    "typeMapping": {
+      "0": "packet_sensor",
+      "2": "multifunction_sensor",
+      "5": "packetstore",
+      "7": "all_in_one",
+      "8": "ids_standalone",
+      "9": "flow_collector"
+    }
+  },
+  "products": [
+    {
+      "name": "EDA10300",
+      "category": "packet_sensor",
+      "prefix": "EDA",
+      "throughputClass": 10,
+      "generation": 3,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 100,
+      "idsGbps": 50,
+      "idsReductionPercent": 50,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA10300",
+        "rx360": "REVX-360-EDA10300"
+      }
+    },
+    {
+      "name": "EDA9300",
+      "category": "packet_sensor",
+      "prefix": "EDA",
+      "throughputClass": 9,
+      "generation": 3,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 50,
+      "idsGbps": 25,
+      "idsReductionPercent": 50,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA9300",
+        "rx360": "REVX-360-EDA9300"
+      }
+    },
+    {
+      "name": "EDA8320",
+      "category": "multifunction_sensor",
+      "prefix": "EDA",
+      "throughputClass": 8,
+      "generation": 3,
+      "productType": 2,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 25,
+      "idsGbps": 25,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 1,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA8320",
+        "rx360": "REVX-360-EDA8320"
+      }
+    },
+    {
+      "name": "EDA6370",
+      "category": "all_in_one",
+      "prefix": "EDA",
+      "throughputClass": 6,
+      "generation": 3,
+      "productType": 7,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 10,
+      "idsGbps": 10,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS",
+        "Packet Forensics"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 1,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "supportsPacketForensics": true,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA6370",
+        "rx360": "REVX-360-EDA6370"
+      }
+    },
+    {
+      "name": "EDA10200",
+      "category": "packet_sensor",
+      "prefix": "EDA",
+      "throughputClass": 10,
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 100,
+      "idsGbps": 40,
+      "idsReductionPercent": 60,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "end_of_sale",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA10200",
+        "rx360": "REVX-360-EDA10200"
+      }
+    },
+    {
+      "name": "EDA9200",
+      "category": "packet_sensor",
+      "prefix": "EDA",
+      "throughputClass": 9,
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 50,
+      "idsGbps": 20,
+      "idsReductionPercent": 60,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "end_of_sale",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA9200",
+        "rx360": "REVX-360-EDA9200"
+      }
+    },
+    {
+      "name": "EDA8200",
+      "category": "packet_sensor",
+      "prefix": "EDA",
+      "throughputClass": 8,
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 25,
+      "idsGbps": 10,
+      "idsReductionPercent": 60,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "end_of_sale",
+      "rackUnits": 1,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA8200",
+        "rx360": "REVX-360-EDA8200"
+      }
+    },
+    {
+      "name": "EDA6200",
+      "category": "packet_sensor",
+      "prefix": "EDA",
+      "throughputClass": 6,
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 10,
+      "idsGbps": 4,
+      "idsReductionPercent": 60,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "end_of_sale",
+      "rackUnits": 1,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA6200",
+        "rx360": "REVX-360-EDA6200"
+      }
+    },
+    {
+      "name": "EDA4200",
+      "category": "packet_sensor",
+      "prefix": "EDA",
+      "throughputClass": 4,
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 5,
+      "idsGbps": 0,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM"
+      ],
+      "supportsIDS": false,
+      "saleStatus": "end_of_sale",
+      "rackUnits": 1,
+      "powerWatts": 800,
+      "rx360Only": true,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": null,
+        "rx360": "REVX-360-EDA4200"
+      }
+    },
+    {
+      "name": "EDA1200",
+      "category": "packet_sensor",
+      "prefix": "EDA",
+      "throughputClass": 1,
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 1,
+      "idsGbps": 0,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM"
+      ],
+      "supportsIDS": false,
+      "saleStatus": "active",
+      "rackUnits": 1,
+      "powerWatts": 800,
+      "rx360Only": true,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": null,
+        "rx360": "REVX-360-EDA1200"
+      }
+    },
+    {
+      "name": "EDA1000v",
+      "category": "packet_sensor",
+      "prefix": "EDA",
+      "throughputClass": 1,
+      "generation": 0,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 1,
+      "idsGbps": 0,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM"
+      ],
+      "supportsIDS": false,
+      "saleStatus": "end_of_sale",
+      "performanceOnly": true,
+      "maxDevices": 750,
+      "criticalAssets": 250,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "aws",
+        "azure"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA1000V",
+        "rx360": null
+      },
+      "virtualSupport": [
+        "hyper-v",
+        "kvm",
+        "vmware"
+      ]
+    },
+    {
+      "name": "EDA1100v",
+      "category": "packet_sensor",
+      "prefix": "EDA",
+      "throughputClass": 1,
+      "generation": 1,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 1,
+      "idsGbps": 0,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM"
+      ],
+      "supportsIDS": false,
+      "saleStatus": "active",
+      "maxDevices": 750,
+      "criticalAssets": 250,
+      "rx360Only": true,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "aws",
+        "azure",
+        "gcp"
+      ],
+      "skus": {
+        "enterprise": null,
+        "rx360": "REVX-360-EDA1100V"
+      },
+      "virtualSupport": [
+        "hyper-v",
+        "kvm",
+        "vmware"
+      ]
+    },
+    {
+      "name": "EDA2000v",
+      "category": "packet_sensor",
+      "prefix": "EDA",
+      "throughputClass": 2,
+      "generation": 0,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 3,
+      "idsGbps": 0,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM"
+      ],
+      "supportsIDS": false,
+      "saleStatus": "end_of_sale",
+      "performanceOnly": true,
+      "maxDevices": 1500,
+      "criticalAssets": 1000,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "aws",
+        "azure"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA2000V",
+        "rx360": null
+      },
+      "virtualSupport": [
+        "hyper-v",
+        "kvm",
+        "vmware"
+      ]
+    },
+    {
+      "name": "EDA6100v",
+      "category": "packet_sensor",
+      "prefix": "EDA",
+      "throughputClass": 6,
+      "generation": 1,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 10,
+      "idsGbps": 5,
+      "idsReductionPercent": 50,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "supportsIDS": true,
+      "saleStatus": "active",
+      "maxDevices": 18000,
+      "criticalAssets": 3000,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "aws",
+        "azure"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA6100V",
+        "rx360": "REVX-360-EDA6100V"
+      },
+      "virtualSupport": [
+        "hyper-v",
+        "kvm",
+        "vmware"
+      ]
+    },
+    {
+      "name": "EDA8200v",
+      "category": "packet_sensor",
+      "prefix": "EDA",
+      "throughputClass": 8,
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 25,
+      "idsGbps": 12,
+      "idsReductionPercent": 50,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "supportsIDS": true,
+      "saleStatus": "active",
+      "maxDevices": 35000,
+      "criticalAssets": 5500,
+      "rx360Only": true,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "aws"
+      ],
+      "skus": {
+        "enterprise": null,
+        "rx360": "REVX-360-EDA8200V"
+      },
+      "virtualSupport": []
+    },
+    {
+      "name": "EDA6320v",
+      "category": "multifunction_sensor",
+      "prefix": "EDA",
+      "throughputClass": 6,
+      "generation": 3,
+      "productType": 2,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 10,
+      "idsGbps": 10,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "supportsIDS": true,
+      "saleStatus": "active",
+      "maxDevices": 18000,
+      "criticalAssets": 3000,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "aws",
+        "gcp"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA6320V",
+        "rx360": "REVX-360-EDA6320V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ]
+    },
+    {
+      "name": "EDA8320v",
+      "category": "multifunction_sensor",
+      "prefix": "EDA",
+      "throughputClass": 8,
+      "generation": 3,
+      "productType": 2,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 20,
+      "idsGbps": 20,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "supportsIDS": true,
+      "saleStatus": "active",
+      "maxDevices": 35000,
+      "criticalAssets": 5500,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA8320V",
+        "rx360": "REVX-360-EDA8320V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ]
+    },
+    {
+      "name": "EDA6370v",
+      "category": "all_in_one",
+      "prefix": "EDA",
+      "throughputClass": 6,
+      "generation": 3,
+      "productType": 7,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 10,
+      "idsGbps": 10,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS",
+        "Packet Forensics"
+      ],
+      "supportsIDS": true,
+      "supportsPacketForensics": true,
+      "saleStatus": "active",
+      "maxDevices": 18000,
+      "criticalAssets": 3000,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "azure"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA6370V",
+        "rx360": "REVX-360-EDA6370V"
+      },
+      "virtualSupport": []
+    },
+    {
+      "name": "EDA8370v",
+      "category": "all_in_one",
+      "prefix": "EDA",
+      "throughputClass": 8,
+      "generation": 3,
+      "productType": 7,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 20,
+      "idsGbps": 20,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS",
+        "Packet Forensics"
+      ],
+      "supportsIDS": true,
+      "supportsPacketForensics": true,
+      "saleStatus": "active",
+      "maxDevices": 35000,
+      "criticalAssets": 5500,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "gcp"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA8370V",
+        "rx360": "REVX-360-EDA8370V"
+      },
+      "virtualSupport": []
+    },
+    {
+      "name": "IDS9380",
+      "category": "ids_standalone",
+      "prefix": "IDS",
+      "throughputClass": 9,
+      "generation": 3,
+      "productType": 8,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 50,
+      "idsGbps": 50,
+      "idsReductionPercent": 0,
+      "northSouthThroughput": 50,
+      "eastWestThroughput": 50,
+      "supportedModules": [
+        "IDS"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-IDS9380",
+        "rx360": "REVX-360-IDS9380"
+      }
+    },
+    {
+      "name": "IDS8280",
+      "category": "ids_standalone",
+      "prefix": "IDS",
+      "throughputClass": 8,
+      "generation": 2,
+      "productType": 8,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 20,
+      "idsGbps": 20,
+      "idsReductionPercent": 0,
+      "northSouthThroughput": 15,
+      "eastWestThroughput": 20,
+      "supportedModules": [
+        "IDS"
+      ],
+      "saleStatus": "end_of_sale",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-IDS8280",
+        "rx360": "REVX-360-IDS8280"
+      }
+    },
+    {
+      "name": "IDS1280v",
+      "category": "ids_standalone",
+      "prefix": "IDS",
+      "throughputClass": 1,
+      "generation": 2,
+      "productType": 8,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 1,
+      "idsGbps": 1,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "IDS"
+      ],
+      "saleStatus": "active",
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [],
+      "skus": {
+        "enterprise": "REVX-ENT-IDS1280V",
+        "rx360": "REVX-360-IDS1280V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ]
+    },
+    {
+      "name": "IDS6280v",
+      "category": "ids_standalone",
+      "prefix": "IDS",
+      "throughputClass": 6,
+      "generation": 2,
+      "productType": 8,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 9,
+      "idsGbps": 9,
+      "idsReductionPercent": 0,
+      "northSouthThroughput": 7,
+      "eastWestThroughput": 9,
+      "supportedModules": [
+        "IDS"
+      ],
+      "saleStatus": "active",
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [],
+      "skus": {
+        "enterprise": "REVX-ENT-IDS6280V",
+        "rx360": "REVX-360-IDS6280V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ]
+    },
+    {
+      "name": "EFC1290v",
+      "category": "flow_collector",
+      "prefix": "EFC",
+      "throughputClass": 1,
+      "generation": 2,
+      "productType": 9,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 0,
+      "flowsPerSecond": 10000,
+      "flowsPerMinute": 600000,
+      "supportedProtocols": [
+        "NetFlow",
+        "sFlow",
+        "IPFIX"
+      ],
+      "supportedModules": [
+        "Flow Analysis"
+      ],
+      "saleStatus": "active",
+      "rx360Only": true,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": null,
+        "rx360": "REVX-360-EFC1290V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ],
+      "cloudSupport": []
+    },
+    {
+      "name": "EFC1291v",
+      "category": "flow_collector",
+      "prefix": "EFC",
+      "throughputClass": 1,
+      "generation": 2,
+      "productType": 9,
+      "subtype": 1,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 0,
+      "flowsPerSecond": 10000,
+      "flowsPerMinute": 600000,
+      "supportedProtocols": [
+        "AWS VPC Flow Logs"
+      ],
+      "supportedModules": [
+        "Flow Analysis"
+      ],
+      "saleStatus": "active",
+      "rx360Only": true,
+      "enterpriseOnly": false,
+      "cloudOnly": true,
+      "cloudSupport": [
+        "aws"
+      ],
+      "skus": {
+        "enterprise": null,
+        "rx360": "REVX-360-EFC1291V"
+      },
+      "virtualSupport": []
+    },
+    {
+      "name": "EFC1292v",
+      "category": "flow_collector",
+      "prefix": "EFC",
+      "throughputClass": 1,
+      "generation": 2,
+      "productType": 9,
+      "subtype": 2,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 0,
+      "flowsPerSecond": 10000,
+      "flowsPerMinute": 600000,
+      "supportedProtocols": [
+        "NetFlow",
+        "sFlow",
+        "IPFIX"
+      ],
+      "supportedModules": [
+        "Flow Analysis"
+      ],
+      "saleStatus": "active",
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EFC1292V",
+        "rx360": "REVX-360-EFC1292V"
+      },
+      "virtualSupport": [
+        "kvm",
+        "vmware"
+      ],
+      "cloudSupport": []
+    },
+    {
+      "name": "EFC6392v",
+      "category": "flow_collector",
+      "prefix": "EFC",
+      "throughputClass": 6,
+      "generation": 3,
+      "productType": 9,
+      "subtype": 2,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 0,
+      "flowsPerSecond": 100000,
+      "flowsPerMinute": 6000000,
+      "supportedProtocols": [
+        "NetFlow",
+        "sFlow",
+        "IPFIX"
+      ],
+      "supportedModules": [
+        "Flow Analysis"
+      ],
+      "saleStatus": "active",
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EFC6392V",
+        "rx360": "REVX-360-EFC6392V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ],
+      "cloudSupport": []
+    },
+    {
+      "name": "ETA9350",
+      "category": "packetstore",
+      "prefix": "ETA",
+      "throughputClass": 9,
+      "generation": 3,
+      "productType": 5,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "scalingRules": [
+        {
+          "esuCount": 1,
+          "esuType": "240TB",
+          "throughputGbps": 10,
+          "packetsPerSecond": 3200000
+        },
+        {
+          "esuCount": "2-3",
+          "esuType": "240TB",
+          "throughputGbps": 25,
+          "packetsPerSecond": 8200000
+        },
+        {
+          "esuCount": 4,
+          "esuType": "240TB",
+          "throughputGbps": 50,
+          "packetsPerSecond": 16400000
+        },
+        {
+          "esuCount": 1,
+          "esuType": "1.2PB",
+          "throughputGbps": 50,
+          "packetsPerSecond": 16400000
+        }
+      ],
+      "supportedModules": [
+        "Packet Forensics"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "maxESUs": 4,
+      "compatibleESUs": [
+        "240TB ESU",
+        "HD ESU"
+      ],
+      "supportsPacketForensics": true,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA9350",
+        "rx360": "REVX-360-ETA9350"
+      }
+    },
+    {
+      "name": "ETA8250",
+      "category": "packetstore",
+      "prefix": "ETA",
+      "throughputClass": 8,
+      "generation": 2,
+      "productType": 5,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 10,
+      "withESUGbps": 25,
+      "packetsPerSecondStandalone": 3200000,
+      "packetsPerSecondWithESU": 8200000,
+      "supportedModules": [
+        "Packet Forensics"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "maxESUs": 4,
+      "compatibleESUs": [
+        "96TB ESU"
+      ],
+      "supportsPacketForensics": true,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA8250",
+        "rx360": "REVX-360-ETA8250"
+      }
+    },
+    {
+      "name": "ETA6150",
+      "category": "packetstore",
+      "prefix": "ETA",
+      "throughputClass": 6,
+      "generation": 1,
+      "productType": 5,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 10,
+      "withESUGbps": 10,
+      "packetsPerSecond": 3200000,
+      "supportedModules": [
+        "Packet Forensics"
+      ],
+      "saleStatus": "end_of_sale",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "maxESUs": 4,
+      "compatibleESUs": [
+        "72TB ESU",
+        "96TB ESU"
+      ],
+      "supportsPacketForensics": true,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA6150",
+        "rx360": "REVX-360-ETA6150"
+      }
+    },
+    {
+      "name": "ETA6150v",
+      "category": "packetstore",
+      "prefix": "ETA",
+      "throughputClass": 6,
+      "generation": 1,
+      "productType": 5,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 10,
+      "supportedModules": [
+        "Packet Forensics"
+      ],
+      "saleStatus": "active",
+      "supportsPacketForensics": true,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA6150V",
+        "rx360": "REVX-360-ETA6150V"
+      }
+    },
+    {
+      "name": "1150v",
+      "category": "packetstore",
+      "prefix": "ETA",
+      "throughputClass": 1,
+      "generation": 1,
+      "productType": 5,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 1,
+      "supportedModules": [
+        "Packet Forensics"
+      ],
+      "saleStatus": "active",
+      "supportsPacketForensics": true,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-1150V",
+        "rx360": "REVX-360-1150V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ],
+      "cloudSupport": [
+        "aws",
+        "azure",
+        "gcp"
+      ]
+    },
+    {
+      "name": "6150v",
+      "category": "packetstore",
+      "prefix": "ETA",
+      "throughputClass": 6,
+      "generation": 1,
+      "productType": 5,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 10,
+      "supportedModules": [
+        "Packet Forensics"
+      ],
+      "saleStatus": "active",
+      "supportsPacketForensics": true,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-6150V",
+        "rx360": "REVX-360-6150V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ],
+      "cloudSupport": []
+    },
+    {
+      "name": "240TB ESU",
+      "category": "extended_storage",
+      "prefix": "ESU",
+      "capacityTB": 240,
+      "isHDESU": false,
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "compatibleWith": [
+        "ETA9350"
+      ],
+      "maxPerETA": 4,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA9350-ESU",
+        "rx360": "REVX-360-ETA9350-ESU"
+      }
+    },
+    {
+      "name": "HD ESU",
+      "category": "extended_storage",
+      "prefix": "ESU",
+      "capacityTB": 1200,
+      "isHDESU": true,
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 1500,
+      "compatibleWith": [
+        "ETA9350"
+      ],
+      "maxPerETA": 1,
+      "cannotMixWith": [
+        "240TB ESU"
+      ],
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA9350-HD-ESU",
+        "rx360": "REVX-360-ETA9350-HD-ESU"
+      }
+    },
+    {
+      "name": "96TB ESU",
+      "category": "extended_storage",
+      "prefix": "ESU",
+      "capacityTB": 96,
+      "isHDESU": false,
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "compatibleWith": [
+        "ETA8250"
+      ],
+      "maxPerETA": 4,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA8250-ESU",
+        "rx360": "REVX-360-ETA8250-ESU"
+      }
+    },
+    {
+      "name": "72TB ESU",
+      "category": "extended_storage",
+      "prefix": "ESU",
+      "capacityTB": 72,
+      "isHDESU": false,
+      "saleStatus": "end_of_sale",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "compatibleWith": [
+        "ETA6150"
+      ],
+      "maxPerETA": 4,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA6150-ESU",
+        "rx360": "REVX-360-ETA6150-ESU"
+      }
+    },
+    {
+      "name": "EXA5300",
+      "category": "recordstore",
+      "prefix": "EXA",
+      "throughputClass": 5,
+      "generation": 3,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 0,
+      "ingestRecordsPerSec": 1000000,
+      "version": 2,
+      "internalEngine": "ClickHouse",
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "enterpriseOnly": true,
+      "rx360Only": false,
+      "supportedModules": [
+        "Investigation",
+        "Advanced Analytics"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EXA5300",
+        "rx360": null
+      }
+    },
+    {
+      "name": "EXA5300v",
+      "category": "recordstore",
+      "prefix": "EXA",
+      "throughputClass": 5,
+      "generation": 3,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 0,
+      "ingestRecordsPerSec": 1000000,
+      "version": 2,
+      "internalEngine": "ClickHouse",
+      "saleStatus": "active",
+      "enterpriseOnly": true,
+      "rx360Only": false,
+      "supportedModules": [
+        "Investigation",
+        "Advanced Analytics"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EXA5300V",
+        "rx360": null
+      }
+    },
+    {
+      "name": "EXA5200",
+      "category": "recordstore",
+      "prefix": "EXA",
+      "throughputClass": 5,
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 0,
+      "version": 1,
+      "internalEngine": "Elasticsearch",
+      "saleStatus": "end_of_sale",
+      "supportEndDate": "2027-08",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "enterpriseOnly": true,
+      "rx360Only": false,
+      "supportedModules": [
+        "Investigation"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EXA5200",
+        "rx360": null
+      }
+    },
+    {
+      "name": "EXA5100",
+      "category": "recordstore",
+      "prefix": "EXA",
+      "throughputClass": 5,
+      "generation": 1,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": false,
+      "isPhysical": true,
+      "baseGbps": 0,
+      "version": 1,
+      "internalEngine": "Elasticsearch",
+      "saleStatus": "end_of_sale",
+      "supportEndDate": "2022-12",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "enterpriseOnly": true,
+      "rx360Only": false,
+      "supportedModules": [
+        "Investigation"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EXA5100",
+        "rx360": null
+      }
+    },
+    {
+      "name": "EXA5100v",
+      "category": "recordstore",
+      "prefix": "EXA",
+      "throughputClass": 5,
+      "generation": 1,
+      "productType": 0,
+      "subtype": 0,
+      "isVirtual": true,
+      "isPhysical": false,
+      "baseGbps": 0,
+      "version": 1,
+      "internalEngine": "Elasticsearch",
+      "saleStatus": "active",
+      "enterpriseOnly": true,
+      "rx360Only": false,
+      "supportedModules": [
+        "Investigation"
+      ],
+      "cloudSupport": {
+        "aws": true,
+        "azure": true,
+        "vmware": true
+      },
+      "skus": {
+        "enterprise": "REVX-ENT-EXA5100V",
+        "rx360": null
+      }
+    }
+  ],
+  "businessRules": {
+    "trackConsistency": {
+      "rule": "All components must be same track (Enterprise or 360)",
+      "validation": "Prevent mixing tracks in single configuration"
+    },
+    "idsPerformanceImpact": {
+      "standardSensors": {
+        "generation3ReductionPercent": 50,
+        "generation2ReductionPercent": 60,
+        "generation1ReductionPercent": 60,
+        "description": "Standard sensors (productType 0) lose throughput with IDS"
+      },
+      "multifunctionSensors": {
+        "reductionPercent": 0,
+        "description": "Multifunction sensors (productType 2) have no IDS impact"
+      },
+      "allInOne": {
+        "reductionPercent": 0,
+        "description": "All-in-one appliances (productType 7) have no IDS impact"
+      },
+      "idsStandalone": {
+        "reductionPercent": 0,
+        "description": "Standalone IDS appliances have no performance reduction"
+      }
+    },
+    "etaEsuConstraints": {
+      "hdEsuPerEta": 1,
+      "standardEsuPerEta": 4,
+      "cannotMixESUTypes": true,
+      "description": "HD ESU = 1:1 ratio, Standard ESU = 4:1 max per ETA, cannot mix types",
+      "eta9350Scaling": [
+        {
+          "esuCount": 1,
+          "esuType": "240TB",
+          "throughputGbps": 10
+        },
+        {
+          "esuCount": "2-3",
+          "esuType": "240TB",
+          "throughputGbps": 25
+        },
+        {
+          "esuCount": 4,
+          "esuType": "240TB",
+          "throughputGbps": 50
+        },
+        {
+          "esuCount": 1,
+          "esuType": "HD",
+          "throughputGbps": 50
+        }
+      ]
+    },
+    "packetForensicsLicensing": {
+      "rule": "ETA/ESU require discrete licenses beyond band licensing",
+      "validation": "Auto-add forensics licenses when ETA/ESU added to configuration"
+    },
+    "moduleDependencies": {
+      "idsRequiresNdr": "IDS add-on only available if NDR module selected",
+      "investigationServices": {
+        "rx360": [
+          "Standard (BigQuery)",
+          "Premium (CrowdStrike)"
+        ],
+        "enterprise": [
+          "BYOL (Splunk/BigQuery)",
+          "EXA5300 appliance"
+        ]
+      }
+    },
+    "cloudSupport": {
+      "awsSupported": [
+        "EDA1000v",
+        "EDA1100v",
+        "EDA2000v",
+        "EDA6100v",
+        "EDA8200v",
+        "EDA6320v",
+        "EFC1291v",
+        "EXA5100v"
+      ],
+      "azureSupported": [
+        "EDA1000v",
+        "EDA1100v",
+        "EDA2000v",
+        "EDA6100v",
+        "EDA6370v",
+        "EXA5100v"
+      ],
+      "onPremOnly": [
+        "EDA8320v",
+        "EDA8370v",
+        "IDS1280v",
+        "IDS6280v"
+      ],
+      "limitations": {
+        "virtualIDS": "Virtual IDS not supported in cloud deployments",
+        "multifunctionVirtual": "EDA8320v limited to on-premises virtual only",
+        "gcp": "EDA8370v supported on GCP only, not AWS or Azure"
+      }
+    },
+    "rx360Exclusives": {
+      "products": [
+        "EDA4200",
+        "EDA1200",
+        "EDA1100v",
+        "EDA8200v",
+        "EFC1290v",
+        "EFC1291v"
+      ],
+      "description": "These products are only available with Reveal(x) 360 subscription"
+    }
+  },
+  "deviceBands": [
+    {
+      "band": 0,
+      "maxDevices": 1000
+    },
+    {
+      "band": 1,
+      "maxDevices": 2500
+    },
+    {
+      "band": 2,
+      "maxDevices": 5000
+    },
+    {
+      "band": 3,
+      "maxDevices": 7500
+    },
+    {
+      "band": 4,
+      "maxDevices": 10000
+    },
+    {
+      "band": 5,
+      "maxDevices": 15000
+    },
+    {
+      "band": 6,
+      "maxDevices": 22500
+    },
+    {
+      "band": 7,
+      "maxDevices": 30000
+    },
+    {
+      "band": 8,
+      "maxDevices": 40000
+    },
+    {
+      "band": 9,
+      "maxDevices": 50000
+    },
+    {
+      "band": 10,
+      "maxDevices": 65000
+    },
+    {
+      "band": 11,
+      "maxDevices": 80000
+    },
+    {
+      "band": 12,
+      "maxDevices": 100000
+    },
+    {
+      "band": 13,
+      "maxDevices": 125000
+    },
+    {
+      "band": 14,
+      "maxDevices": 150000
+    },
+    {
+      "band": 15,
+      "maxDevices": 185000
+    },
+    {
+      "band": 16,
+      "maxDevices": 225000
+    },
+    {
+      "band": 17,
+      "maxDevices": 275000
+    }
+  ],
+  "validationRules": {
+    "trackConsistency": "components.every(c => c.track === components[0].track)",
+    "idsPerformanceWarning": "if (hasIDS && product.productType === 0) show reduction warning",
+    "esuEtaRatio": "esus.length <= (isHDESU ? 1 : 4) * etas.length",
+    "esuTypeMixing": "cannot mix HD ESU and standard ESU on same ETA",
+    "throughputMatching": "warn if sensor throughput significantly exceeds ETA capacity",
+    "moduleCompatibility": "IDS requires NDR module to be selected",
+    "platformSupport": "validate virtual/cloud platform compatibility before deployment"
+  },
+  "implementationHelpers": {
+    "parseProductModel": {
+      "description": "Parse product model name into structured components",
+      "logic": "Match pattern [PREFIX][THROUGHPUT][GENERATION][TYPE][SUBTYPE][VIRTUAL?]",
+      "throughputClassToGbps": {
+        "10": 100,
+        "9": 50,
+        "8": 25,
+        "6": 10,
+        "4": 5,
+        "1": 1
+      },
+      "getIDSImpact": {
+        "productType0Generation3": 0.5,
+        "productType0Generation2": 0.6,
+        "productType0Generation1": 0.6,
+        "productType2": 0.0,
+        "productType7": 0.0,
+        "productType8": 0.0
+      }
+    },
+    "constraintChecking": {
+      "trackMixing": "Prevent Enterprise and Rx360 components in same configuration",
+      "idsPerformance": "Calculate throughput reduction based on product type and generation",
+      "esuLimits": "Enforce ESU count and type restrictions per ETA model",
+      "moduleDependencies": "Validate module selection dependencies",
+      "platformCompatibility": "Check virtual/cloud platform support"
+    }
+  }
+}

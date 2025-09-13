@@ -1,361 +1,283 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ExtraHop Catalog - Reconciled Viewer & Linter</title>
+  <title>ExtraHop Product Lookup</title>
+  <link rel="icon" href="favicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root { --bg:#0b0e14; --fg:#e6e6e6; --muted:#9aa4af; --card:#121723; --accent:#7cc5ff; --good:#34d399; --warn:#f59e0b; --bad:#ef4444; }
-    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; background:var(--bg); color:var(--fg); }
-    header { padding:18px 20px; border-bottom:1px solid #1f2937; display:flex; gap:16px; align-items:center; }
-    header h1 { font-size:18px; margin:0; font-weight:600; }
-    main { display:grid; grid-template-columns: 320px 1fr; gap:0; min-height: calc(100vh - 62px); }
-    aside { border-right:1px solid #1f2937; padding:16px; background:#0e1320; }
-    section { padding:16px; }
-    .panel { background:var(--card); border:1px solid #1f2937; border-radius:12px; padding:14px; margin-bottom:12px; }
-    .panel h3 { margin:0 0 10px; font-size:14px; color:var(--muted); font-weight:600; letter-spacing:.2px; }
-    .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-    label { font-size:12px; color:var(--muted); }
-    input[type="text"], select { background:#0c1320; color:var(--fg); border:1px solid #243041; border-radius:8px; padding:8px 10px; outline:none; }
-    input[type="file"] { font-size:12px; }
-    .chip { display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; border:1px solid #233046; font-size:11px; color:#c9d4e3; }
-    .chip.bad { border-color:#3b1e1e; color:#ffb4b4; background:#1a0f0f; }
-    .chip.ok { border-color:#1f3b2b; color:#b7ffd0; background:#0f1a14; }
-    .btn { background:#0c1726; color:#cfe8ff; border:1px solid #243041; padding:8px 10px; border-radius:8px; cursor:pointer; font-size:12px; }
-    .btn:hover { border-color:#32507a; }
-    .cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap:12px; }
-    .card { background:var(--card); border:1px solid #1f2937; border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:10px; }
-    .card h4 { margin:0; font-size:14px; display:flex; justify-content:space-between; align-items:center; }
-    .tag { font-size:10px; padding:2px 6px; border:1px solid #2a3b57; border-radius:999px; color:#c9d4e3; }
-    .kv { font-size:12px; color:#cfd7e3; }
-    .kv b { color:#9dc1ff; font-weight:600; }
-    .list { display:flex; gap:6px; flex-wrap:wrap; }
-    .empty { color:var(--muted); font-size:13px; padding:20px; text-align:center; }
-    .lint { display:flex; flex-direction:column; gap:6px; max-height:260px; overflow:auto; }
-    .lint-item { font-size:12px; background:#161d2b; border:1px solid #22304a; border-left:4px solid var(--warn); padding:8px; border-radius:6px; }
-    .lint-item.bad { border-left-color: var(--bad); }
-    .count { font-size:11px; color:var(--muted); }
-    .pill { border:1px solid #2b3b57; padding:1px 6px; border-radius:999px; font-size:10px; color:#c6d7f2; }
+    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji'; }
+    .chip { border-radius: 9999px; font-size: 0.75rem; padding: 0.125rem 0.5rem; background: #eef2ff; color: #3730a3; }
   </style>
 </head>
-<body>
-  <header>
-    <h1>ExtraHop Catalog - Reconciled Viewer & Linter</h1>
-    <div class="row">
-      <input id="file" type="file" accept="application/json" />
-      <button class="btn" id="loadSample">Load reconciled sample</button>
-      <span class="count" id="stats"></span>
-    </div>
-  </header>
-  <main>
-    <aside>
-      <div class="panel">
-        <h3>Search</h3>
-        <input id="q" type="text" placeholder="Filter by name, module, track, SKU..." style="width:100%" />
+<body class="bg-gray-50 text-gray-800">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside class="w-80 bg-white border-r border-gray-200 p-4 space-y-4 overflow-y-auto">
+      <h1 class="text-xl font-bold text-blue-900">Product Lookup</h1>
+      <p class="text-xs text-gray-500">Source: catalog.min.json</p>
+
+      <!-- Search -->
+      <div>
+        <label class="text-sm font-semibold">Search</label>
+        <input id="search" type="text" placeholder="Name, module, SKU, AWS, 50Gbps, etc" class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
-      <div class="panel">
-        <h3>Form Factor</h3>
-        <div class="row">
-          <label><input type="radio" name="ff" value="all" checked> All</label>
-          <label><input type="radio" name="ff" value="physical"> Physical</label>
-          <label><input type="radio" name="ff" value="virtual"> Virtual</label>
+
+      <!-- Category -->
+      <div>
+        <label class="text-sm font-semibold">Category</label>
+        <select id="category" class="mt-1 w-full rounded-md border border-gray-300 px-2 py-2">
+          <option value="">Any</option>
+        </select>
+      </div>
+
+      <!-- Form factor -->
+      <div>
+        <label class="text-sm font-semibold">Form factor</label>
+        <div class="mt-1 space-y-1">
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="phy" /> Physical</label>
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="vir" /> Virtual</label>
         </div>
       </div>
-      <div class="panel">
-        <h3>Virtual Platforms</h3>
-        <div class="row">
-          <label><input type="checkbox" class="hv" value="vmware"> VMware</label>
-          <label><input type="checkbox" class="hv" value="hyper-v"> Hyper‑V</label>
-          <label><input type="checkbox" class="hv" value="kvm"> KVM</label>
+
+      <!-- Sale status -->
+      <div>
+        <label class="text-sm font-semibold">Sale status</label>
+        <div id="saleStatusBox" class="mt-1 space-y-1"></div>
+      </div>
+
+      <!-- Modules -->
+      <div>
+        <label class="text-sm font-semibold">Supported modules</label>
+        <div id="modulesBox" class="mt-1 space-y-1"></div>
+      </div>
+
+      <!-- Cloud support -->
+      <div>
+        <label class="text-sm font-semibold">Cloud support</label>
+        <div id="cloudBox" class="mt-1 space-y-1"></div>
+      </div>
+
+      <!-- Numeric filters -->
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-sm font-semibold">Base Gbps ≥</label>
+          <input id="minBase" type="number" min="0" step="1" placeholder="0" class="mt-1 w-full rounded-md border border-gray-300 px-2 py-2" />
+        </div>
+        <div>
+          <label class="text-sm font-semibold">IDS Gbps ≥</label>
+          <input id="minIDS" type="number" min="0" step="1" placeholder="0" class="mt-1 w-full rounded-md border border-gray-300 px-2 py-2" />
         </div>
       </div>
-      <div class="panel">
-        <h3>Cloud Providers</h3>
-        <div class="row">
-          <label><input type="checkbox" class="cloud" value="aws"> AWS</label>
-          <label><input type="checkbox" class="cloud" value="azure"> Azure</label>
-          <label><input type="checkbox" class="cloud" value="gcp"> GCP</label>
-        </div>
-      </div>
-      <div class="panel">
-        <h3>Tracks</h3>
-        <div class="row">
-          <label><input type="checkbox" class="track" value="enterprise"> Enterprise</label>
-          <label><input type="checkbox" class="track" value="rx360"> RX360</label>
-        </div>
-      </div>
-      <div class="panel">
-        <h3>Linter - Deprecated Fields</h3>
-        <div id="lint" class="lint"></div>
-      </div>
+
+      <!-- Reset -->
+      <button id="resetBtn" class="w-full mt-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md py-2 text-sm font-semibold">Reset filters</button>
+
+      <p class="text-[11px] text-gray-400">Tip: filters are ANDed with search.</p>
     </aside>
-    <section>
-      <div class="row" style="justify-content:space-between; margin-bottom:10px; align-items:center;">
-        <div class="row" id="activeFilters"></div>
-        <button class="btn" id="clear">Clear filters</button>
+
+    <!-- Main -->
+    <main class="flex-1 p-4 overflow-y-auto">
+      <!-- Header search bar -->
+      <div class="max-w-3xl mx-auto mb-4">
+        <input id="searchTop" type="text" placeholder="Search all fields..." class="w-full rounded-full border border-gray-300 px-5 py-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
-      <div id="cards" class="cards"></div>
-      <div id="empty" class="empty" style="display:none">No products match your filters.</div>
-    </section>
-  </main>
 
-<script>
-(function(){
-  const DEPRECATED = [
-    "cloudSupport.aws", // legacy boolean style
-    "cloudSupport.azure",
-    "cloudSupport.onPremOnly",
-    "onPremOnly",
-    "cloudOnly",
-    "isVirtual", // flipped model should use isPhysical
-    "deploymentTargets",
-    "supportsIDS",
-    "supportsPacketForensics",
-    "throughputClass",
-    "rx360Only",
-    "enterpriseOnly",
-    "skus"
-  ];
+      <div id="count" class="text-center text-sm text-gray-600 mb-3"></div>
 
-  let PRODUCTS = [];
-  let FILTERS = { q:"", ff:"all", hv:[], cloud:[], track:[] };
+      <div id="grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4"></div>
 
-  function getProductsRoot(doc){
-    if (Array.isArray(doc)) return doc;
-    if (doc && Array.isArray(doc.products)) return doc.products;
-    if (doc && doc.catalog && Array.isArray(doc.catalog.products)) return doc.catalog.products;
-    // Fallback: first array of objects-with-name
-    for (const k of Object.keys(doc||{})){
-      const v = doc[k];
-      if (Array.isArray(v) && v.length && typeof v[0]==="object" && v[0].name){ return v; }
+      <div id="empty" class="hidden text-center py-16 text-gray-500">No products match the filters.</div>
+    </main>
+  </div>
+
+  <script>
+    let DATA = [];
+    let UNIQUE = {
+      categories: new Set(),
+      sale: new Set(),
+      modules: new Set(),
+      cloud: new Set(),
+    };
+
+    function val(v){ return v===null || v===undefined ? "" : v; }
+    function arr(a){ return Array.isArray(a) ? a : []; }
+    function toText(x){ return (Array.isArray(x) ? x.join(" ") : (x||"") + "").toLowerCase(); }
+
+    function fingerprint(p){
+      const parts = [
+        p.name, p.category, p.prefix,
+        p.baseGbps, p.idsGbps,
+        p.flowsPerSecond, p.flowsPerMinute,
+        p.northSouthGbps, p.eastWestGbps,
+        p.saleStatus,
+        arr(p.supportedModules).join(" "),
+        arr(p.cloudSupport).join(" "),
+        JSON.stringify(p.skus||{}),
+        p.isVirtual ? "virtual" : "physical"
+      ];
+      return parts.join(" ").toLowerCase() + " " + (p.searchText || "");
     }
-    return [];
-  }
 
-  function hasDeprecated(p){
-    const hits = [];
-    for (const key of DEPRECATED){
-      const path = key.split(".");
-      let cur = p;
-      let ok = true;
-      for (const seg of path){
-        if (cur && Object.prototype.hasOwnProperty.call(cur, seg)){
-          cur = cur[seg];
-        } else {
-          ok = false; break;
+    function card(p){
+      const chips = [];
+      if(p.category) chips.push(`<span class="chip">${p.category}</span>`);
+      if(p.saleStatus) chips.push(`<span class="chip">${p.saleStatus}</span>`);
+      if(p.isPhysical) chips.push(`<span class="chip">physical</span>`);
+      if(p.isVirtual) chips.push(`<span class="chip">virtual</span>`);
+      if(p.baseGbps!=null) chips.push(`<span class="chip">${p.baseGbps} Gbps</span>`);
+      if(p.idsGbps!=null) chips.push(`<span class="chip">IDS ${p.idsGbps} Gbps</span>`);
+      if(p.flowsPerSecond!=null) chips.push(`<span class="chip">${p.flowsPerSecond.toLocaleString()} fps</span>`);
+      const modules = arr(p.supportedModules).map(m=>`<span class="chip">${m}</span>`).join(" ");
+      const clouds = arr(p.cloudSupport).map(m=>`<span class="chip">${m}</span>`).join(" ");
+      const skuList = p.skus ? Object.entries(p.skus).map(([k,v])=> v ? `<div class="text-xs"><span class="font-semibold">${k}</span>: ${v}</div>` : "").join("") : "";
+
+      return `<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold text-blue-900">${p.name||""}</h3>
+          <div class="text-xs text-gray-500">${p.prefix||""}</div>
+        </div>
+        <div class="flex flex-wrap gap-1">${chips.join(" ")}</div>
+        ${modules ? `<div class="mt-1 flex flex-wrap gap-1">${modules}</div>` : ""}
+        ${clouds ? `<div class="mt-1 flex flex-wrap gap-1">${clouds}</div>` : ""}
+        ${skuList ? `<div class="mt-2">${skuList}</div>` : ""}
+      </div>`;
+    }
+
+    function render(){
+      const q = document.getElementById("search").value.trim().toLowerCase();
+      const q2 = document.getElementById("searchTop").value.trim().toLowerCase();
+      const category = document.getElementById("category").value;
+      const wantPhy = document.getElementById("phy").checked;
+      const wantVir = document.getElementById("vir").checked;
+      const minBase = parseFloat(document.getElementById("minBase").value || "0");
+      const minIDS = parseFloat(document.getElementById("minIDS").value || "0");
+
+      const saleChecked = [...document.querySelectorAll('input[name="saleOpt"]:checked')].map(i=>i.value);
+      const modChecked = [...document.querySelectorAll('input[name="modOpt"]:checked')].map(i=>i.value);
+      const cloudChecked = [...document.querySelectorAll('input[name="cloudOpt"]:checked')].map(i=>i.value);
+
+      let items = DATA.filter(p => {
+        // category
+        if(category && p.category !== category) return false;
+        // form factor
+        if(wantPhy && !p.isPhysical) return false;
+        if(wantVir && !p.isVirtual) return false;
+        // sale status
+        if(saleChecked.length && !saleChecked.includes(p.saleStatus||"")) return false;
+        // modules (all selected must be present)
+        if(modChecked.length){
+          const set = new Set(p.supportedModules||[]);
+          for(const m of modChecked){ if(!set.has(m)) return false; }
         }
+        // cloud (at least one match)
+        if(cloudChecked.length){
+          const set = new Set(p.cloudSupport||[]);
+          let ok = false;
+          for(const c of cloudChecked){ if(set.has(c)) { ok = True } }
+          if(!ok) return false;
+        }
+        // numeric
+        if(!isNaN(minBase) && (p.baseGbps ?? 0) < minBase) return false;
+        if(!isNaN(minIDS) && (p.idsGbps ?? 0) < minIDS) return false;
+        // search
+        const fp = p._fp;
+        if(q && !fp.includes(q)) return false;
+        if(q2 && !fp.includes(q2)) return false;
+        return True;
+      });
+
+      const count = document.getElementById("count");
+      const grid = document.getElementById("grid");
+      const empty = document.getElementById("empty");
+
+      count.textContent = items.length + " products";
+      if(items.length){
+        empty.classList.add("hidden");
+        grid.innerHTML = items.map(card).join("");
+      } else {
+        grid.innerHTML = "";
+        empty.classList.remove("hidden");
       }
-      if (ok) hits.push(key);
     }
-    return hits;
-  }
 
-  function tag(text){
-    const span = document.createElement('span');
-    span.className = 'tag';
-    span.textContent = text;
-    return span;
-  }
-
-  function chip(text, cls){
-    const span = document.createElement('span');
-    span.className = 'chip' + (cls?(' '+cls):'');
-    span.textContent = text;
-    return span;
-  }
-
-  function renderLint(){
-    const box = document.getElementById('lint');
-    box.innerHTML = '';
-    let total = 0;
-    PRODUCTS.forEach(p=>{
-      const hits = hasDeprecated(p);
-      if (hits.length){
-        total += hits.length;
-        const div = document.createElement('div');
-        div.className = 'lint-item bad';
-        div.innerHTML = `<b>${p.name}</b><br><span class="count">${hits.length} deprecated field(s): ${hits.join(', ')}</span>`;
-        box.appendChild(div);
-      }
-    });
-    if (!total){
-      const ok = document.createElement('div');
-      ok.className = 'lint-item';
-      ok.style.borderLeftColor = 'var(--good)';
-      ok.innerHTML = '<b>No deprecated fields found</b><br><span class="count">All entries look normalized.</span>';
-      box.appendChild(ok);
+    function resetFilters(){
+      document.getElementById("search").value = "";
+      document.getElementById("searchTop").value = "";
+      document.getElementById("category").value = "";
+      document.getElementById("phy").checked = false;
+      document.getElementById("vir").checked = false;
+      document.getElementById("minBase").value = "";
+      document.getElementById("minIDS").value = "";
+      document.querySelectorAll('input[name="saleOpt"]').forEach(i => i.checked = false);
+      document.querySelectorAll('input[name="modOpt"]').forEach(i => i.checked = false);
+      document.querySelectorAll('input[name="cloudOpt"]').forEach(i => i.checked = false);
+      render();
     }
-  }
 
-  function applyFilters(){
-    const q = FILTERS.q.trim().toLowerCase();
-    const ff = FILTERS.ff; // all | physical | virtual
-    const hv = new Set(FILTERS.hv);
-    const cloud = new Set(FILTERS.cloud);
-    const track = new Set(FILTERS.track);
+    function addOption(sel, val){
+      const opt = document.createElement("option");
+      opt.value = val; opt.textContent = val;
+      sel.appendChild(opt);
+    }
 
-    let list = PRODUCTS.filter(p=>{
-      // form factor
-      const isPhys = !!p.isPhysical;
-      if (ff === 'physical' && !isPhys) return false;
-      if (ff === 'virtual' && isPhys) return false;
+    function addCheck(box, name, val){
+      const id = name + "_" + val.replace(/[^a-z0-9]+/gi,"_");
+      const wrap = document.createElement("label");
+      wrap.className = "flex items-center gap-2 text-sm";
+      wrap.innerHTML = '<input type="checkbox" name="'+name+'" value="'+val+'" id="'+id+'" /> '+val;
+      box.appendChild(wrap);
+    }
 
-      // hypervisors / clouds
-      const vs = Array.isArray(p.virtualSupport) ? p.virtualSupport : [];
-      const cs = Array.isArray(p.cloudSupport) ? p.cloudSupport : [];
+    async function load(){
+      const res = await fetch("catalog.min.json");
+      const data = await res.json();
+      DATA = (data.products||[]).map(p => {
+        p._fp = fingerprint(p);
+        UNIQUE.categories.add(p.category||"");
+        if(p.saleStatus) UNIQUE.sale.add(p.saleStatus);
+        (p.supportedModules||[]).forEach(m => UNIQUE.modules.add(m));
+        (p.cloudSupport||[]).forEach(c => UNIQUE.cloud.add(c));
+        return p;
+      });
 
-      if (hv.size && !vs.some(v=>hv.has(v))) return false;
-      if (cloud.size && !cs.some(c=>cloud.has(c))) return false;
+      // Populate filters
+      const catSel = document.getElementById("category");
+      [...UNIQUE.categories].filter(Boolean).sort().forEach(c => addOption(catSel, c));
 
-      // tracks
-      const tracks = Array.isArray(p.tracksAvailable) ? p.tracksAvailable : [];
-      if (track.size && !tracks.some(t=>track.has(t))) return false;
+      const saleBox = document.getElementById("saleStatusBox");
+      [...UNIQUE.sale].filter(Boolean).sort().forEach(s => addCheck(saleBox, "saleOpt", s));
 
-      // query text
-      if (q){
-        const hay = [
-          p.name||'',
-          ...(p.supportedModules||[]),
-          ...(p.tracksAvailable||[]),
-          ...(p.virtualSupport||[]),
-          ...(p.cloudSupport||[]),
-          ...(p.skusByTrack?Object.values(p.skusByTrack):[])
-        ].join(' ').toLowerCase();
-        if (!hay.includes(q)) return false;
-      }
-      return true;
-    });
+      const modBox = document.getElementById("modulesBox");
+      [...UNIQUE.modules].filter(Boolean).sort().forEach(m => addCheck(modBox, "modOpt", m));
 
-    renderCards(list);
-    renderActiveFilters();
-  }
+      const cloudBox = document.getElementById("cloudBox");
+      [...UNIQUE.cloud].filter(Boolean).sort().forEach(c => addCheck(cloudBox, "cloudOpt", c));
 
-  function renderActiveFilters(){
-    const bar = document.getElementById('activeFilters');
-    bar.innerHTML = '';
-    if (FILTERS.q) bar.appendChild(chip(`q: ${FILTERS.q}`));
-    if (FILTERS.ff !== 'all') bar.appendChild(chip(`form: ${FILTERS.ff}`));
-    FILTERS.hv.forEach(v=>bar.appendChild(chip(`hv: ${v}`)));
-    FILTERS.cloud.forEach(v=>bar.appendChild(chip(`cloud: ${v}`)));
-    FILTERS.track.forEach(v=>bar.appendChild(chip(`track: ${v}`)));
-  }
+      // Events
+      document.getElementById("search").addEventListener("input", render);
+      document.getElementById("searchTop").addEventListener("input", render);
+      document.getElementById("category").addEventListener("change", render);
+      document.getElementById("phy").addEventListener("change", render);
+      document.getElementById("vir").addEventListener("change", render);
+      document.getElementById("minBase").addEventListener("input", render);
+      document.getElementById("minIDS").addEventListener("input", render);
+      document.getElementById("resetBtn").addEventListener("click", resetFilters);
+      saleBox.addEventListener("change", render);
+      modBox.addEventListener("change", render);
+      cloudBox.addEventListener("change", render);
 
-  function renderCards(list){
-    const wrap = document.getElementById('cards');
-    const empty = document.getElementById('empty');
-    wrap.innerHTML = '';
-    if (!list.length){ empty.style.display = 'block'; return; }
-    empty.style.display = 'none';
+      render();
+    }
 
-    list.forEach(p=>{
-      const card = document.createElement('div');
-      card.className = 'card';
-      const title = document.createElement('h4');
-      const left = document.createElement('div');
-      left.textContent = p.name || '(unnamed)';
-      const right = document.createElement('div');
-      right.className = 'list';
-      (p.tracksAvailable||[]).forEach(t=> right.appendChild(tag(t)));
-      title.appendChild(left); title.appendChild(right);
+    // Small True/False typo safeguard for older browsers in minifiers
+    const True = true, False = false;
 
-      const line1 = document.createElement('div');
-      line1.className = 'kv';
-      const modules = (p.supportedModules||[]).join(', ') || '—';
-      const perf = p.performance || {};
-      const perfBits = [];
-      if (typeof perf.baseGbps === 'number') perfBits.push(`${perf.baseGbps} Gbps base`);
-      if (typeof perf.idsGbps === 'number') perfBits.push(`${perf.idsGbps} Gbps IDS`);
-      line1.innerHTML = `<b>Modules:</b> ${modules}<br><b>Perf:</b> ${perfBits.join(' • ') || '—'}`;
-
-      const line2 = document.createElement('div');
-      line2.className = 'kv';
-      const ff = p.isPhysical ? 'Physical' : 'Virtual';
-      const hv = (p.virtualSupport||[]).join(', ') || '—';
-      const cl = (p.cloudSupport||[]).join(', ') || '—';
-      line2.innerHTML = `<b>Form:</b> ${ff} <span class="pill">HV: ${hv}</span> <span class="pill">Cloud: ${cl}</span>`;
-
-      const line3 = document.createElement('div');
-      line3.className = 'kv';
-      const skus = p.skusByTrack ? Object.entries(p.skusByTrack).map(([k,v])=>`${k}: ${v}`).join(' • ') : '—';
-      const life = p.lifecycle ? `${p.lifecycle.sales || ''}${p.lifecycle.supportEnd? ' • supportEnd: '+p.lifecycle.supportEnd : ''}` : '—';
-      line3.innerHTML = `<b>SKUs:</b> ${skus}<br><b>Lifecycle:</b> ${life}`;
-
-      const warn = hasDeprecated(p);
-      const foot = document.createElement('div');
-      foot.className = 'list';
-      if (warn.length) foot.appendChild(chip(`${warn.length} deprecated`, 'bad'));
-      else foot.appendChild(chip('clean', 'ok'));
-
-      card.appendChild(title);
-      card.appendChild(line1);
-      card.appendChild(line2);
-      card.appendChild(line3);
-      card.appendChild(foot);
-      wrap.appendChild(card);
-    });
-  }
-
-  function setStats(){
-    const el = document.getElementById('stats');
-    el.textContent = PRODUCTS.length ? `${PRODUCTS.length} products loaded` : '';
-  }
-
-  function attachEvents(){
-    document.getElementById('q').addEventListener('input', e=>{ FILTERS.q = e.target.value; applyFilters(); });
-    document.querySelectorAll('input[name="ff"]').forEach(r=>{
-      r.addEventListener('change', e=>{ FILTERS.ff = e.target.value; applyFilters(); });
-    });
-    document.querySelectorAll('.hv').forEach(cb=> cb.addEventListener('change', ()=>{
-      FILTERS.hv = Array.from(document.querySelectorAll('.hv:checked')).map(x=>x.value); applyFilters();
-    }));
-    document.querySelectorAll('.cloud').forEach(cb=> cb.addEventListener('change', ()=>{
-      FILTERS.cloud = Array.from(document.querySelectorAll('.cloud:checked')).map(x=>x.value); applyFilters();
-    }));
-    document.querySelectorAll('.track').forEach(cb=> cb.addEventListener('change', ()=>{
-      FILTERS.track = Array.from(document.querySelectorAll('.track:checked')).map(x=>x.value); applyFilters();
-    }));
-    document.getElementById('clear').addEventListener('click', ()=>{
-      FILTERS = { q:"", ff:"all", hv:[], cloud:[], track:[] };
-      document.getElementById('q').value = '';
-      document.querySelector('input[name="ff"][value="all"]').checked = true;
-      document.querySelectorAll('.hv, .cloud, .track').forEach(cb=> cb.checked=false);
-      applyFilters();
-    });
-
-    // File loader
-    document.getElementById('file').addEventListener('change', async (e)=>{
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-      const text = await file.text();
-      let doc; try { doc = JSON.parse(text); } catch(err){ alert('Invalid JSON'); return; }
-      PRODUCTS = getProductsRoot(doc);
-      setStats(); renderLint(); applyFilters();
-    });
-
-    // Sample loader (expects the reconciled filename in same directory OR falls back to embedded sample if fetch fails)
-    document.getElementById('loadSample').addEventListener('click', async ()=>{
-      try {
-        const res = await fetch('extrahop_catalog_json_v2_reconciled.json');
-        if (!res.ok) throw new Error('fetch failed');
-        const doc = await res.json();
-        PRODUCTS = getProductsRoot(doc);
-      } catch (e){
-        // Minimal embedded sample if fetch unavailable
-        PRODUCTS = [
-          { name:"EDA8370v", isPhysical:false, virtualSupport:[], cloudSupport:["gcp"], supportedModules:["NDR","NPM","IDS","Packet Forensics"], tracksAvailable:["enterprise","rx360"], skusByTrack:{enterprise:"REVX-ENT-EDA8370V", rx360:"REVX-360-EDA8370V"}, performance:{baseGbps:20, idsGbps:20}, lifecycle:{sales:"active"} },
-          { name:"EFC1291v", isPhysical:false, virtualSupport:[], cloudSupport:["aws"], supportedModules:["Flow Analysis"], tracksAvailable:["rx360"], skusByTrack:{rx360:"REVX-360-EFC1291V"}, performance:{}, lifecycle:{sales:"active"} },
-          { name:"EDA10300", isPhysical:true, supportedModules:["NDR","NPM"], tracksAvailable:["enterprise","rx360"], skusByTrack:{enterprise:"REVX-ENT-EDA10300", rx360:"REVX-360-EDA10300"}, performance:{baseGbps:100}, lifecycle:{sales:"active"} }
-        ];
-      }
-      setStats(); renderLint(); applyFilters();
-    });
-  }
-
-  // init
-  attachEvents();
-  // autoload sample to show UI quickly
-  document.getElementById('loadSample').click();
-})();
-</script>
+    load();
+  </script>
 </body>
 </html>
