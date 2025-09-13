@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExtraHop Product Finder</title>
+    <link rel="icon" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI4LjMuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzMiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxMjUuOCA4NC4yIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMjUuOCA4NC4yOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+Cgkuc3Qwe2ZpbGw6dXJsKCNTVkdJRF8xXyk7fQoJLnN0MXtmaWxsOiNGRkZGRkY7fQoJLnN0MntmaWxsOiM3RjI4NTQ7fQo8L3N0eWxlPgo8bGluZWFyR3JhZGllbnQgaWQ9IlNWR0lEXzFfIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjYuNzIiIHkxPSI0MS40IiB4Mj0iMTE4LjA4NTIiIHkyPSI0MS40Ij4KCTxzdG9wICBvZmZzZXQ9IjAiIHN0eWxlPSJzdG9wLWNvbG9yOiMyNjFGNjMiLz4KCTxzdG9wICBvZmZzZXQ9IjAuMjEzMSIgc3R5bGU9InN0b3AtY29sb3I6IzI5MUY2MyIvPgoJPHN0b3AgIG9mZnNldD0iMC4yMzk0IiBzdHlsZT0ic3RvcC1jb2xvcjojMkQxRjYyIi8+Cgk8c3RvcCAgb2Zmc2V0PSIwLjU0NDkiIHN0eWxlPSJzdG9wLWNvbG9yOiM1NzI0NUIiLz4KCTxzdG9wICBvZmZzZXQ9IjAuNzg0NCIgc3R5bGU9InN0b3AtY29sb3I6IzcxMjc1NiIvPgoJPHN0b3AgIG9mZnNldD0iMC45MjY5IiBzdHlsZT0ic3RvcC1jb2xvcjojN0IyODU0Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik00MS44LDc2LjhjLTUsMC05LjctMC45LTE0LTIuN2MtNC4zLTEuOC04LTQuMi0xMS4xLTcuNGMtMy4xLTMuMS01LjYtNi45LTcuMy0xMS4yYy0xLjgtNC4zLTIuNi05LjEtMi42LTE0LjIKCWMwLTUuMSwwLjktOS44LDIuNi0xNC4yYzEuNy00LjMsNC4yLTguMSw3LjMtMTEuMmMzLjEtMy4xLDYuOC01LjYsMTEuMS03LjNjNC4zLTEuNyw4LjktMi42LDE0LTIuNkg4M2M1LDAsOS43LDAuOSwxNCwyLjcKCWM0LjMsMS44LDgsNC4yLDExLjEsNy40YzMuMSwzLjEsNS42LDYuOSw3LjMsMTEuMmMxLjgsNC4zLDIuNiw5LjEsMi42LDE0LjJjMCw1LjEtMC45LDkuOC0yLjYsMTQuMmMtMS43LDQuMy00LjIsOC4xLTcuMywxMS4yCgljLTMuMSwzLjEtNi44LDUuNi0xMS4xLDcuM2MtNC4zLDEuNy04LjksMi42LTE0LDIuNkg0MS44eiIvPgo8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMjIuNSwyMi42aDI3LjF2OC42SDMyLjVWMzdoMTR2OC4xaC0xNHY2LjRoMTguM3Y4LjZIMjIuNVYyMi42eiBNNTkuOSwyMi42aDEwdjEzLjhoMjIuMlYyMi42aDEwdjM3LjZoLTEwCglWNDUuNUg2OS45djE0LjdoLTEwVjIyLjZ6Ii8+CjxwYXRoIGNsYXNzPSJzdDIiIGQ9Ik0xMTUuNCwxMS42Yy0wLjUsMC0wLjktMC4xLTEuMy0wLjRjLTAuNC0wLjItMC43LTAuNi0xLTFjLTAuMi0wLjQtMC40LTAuOS0wLjQtMS41YzAtMC41LDAuMS0xLDAuNC0xLjQKCWMwLjItMC40LDAuNi0wLjcsMS0xYzAuNC0wLjIsMC44LTAuNCwxLjMtMC40YzAuNSwwLDAuOSwwLjEsMS4zLDAuNGMwLjQsMC4yLDAuNywwLjYsMSwxYzAuMiwwLjQsMC40LDAuOSwwLjQsMS40CgljMCwwLjYtMC4xLDEtMC40LDEuNWMtMC4yLDAuNC0wLjYsMC43LTEsMUMxMTYuNCwxMS41LDExNS45LDExLjYsMTE1LjQsMTEuNnogTTExNS40LDExYzAuNCwwLDAuOC0wLjEsMS4xLTAuMwoJYzAuMy0wLjIsMC42LTAuNSwwLjgtMC44YzAuMi0wLjMsMC4zLTAuNywwLjMtMS4yYzAtMC40LTAuMS0wLjgtMC4zLTEuMmMtMC4yLTAuMy0wLjQtMC42LTAuOC0wLjhjLTAuMy0wLjItMC43LTAuMy0xLjEtMC4zCgljLTAuNCwwLTAuOCwwLjEtMS4xLDAuM2MtMC4zLDAuMi0wLjYsMC41LTAuNywwLjhjLTAuMiwwLjMtMC4zLDAuNy0wLjMsMS4yYzAsMC40LDAuMSwwLjgsMC4zLDEuMmMwLjIsMC4zLDAuNCwwLjYsMC43LDAuOAoJQzExNC43LDExLDExNSwxMSwxMTUuNCwxMXogTTExNC40LDEwLjJWNy4zaDEuMWMwLjMsMCwwLjYsMC4xLDAuOCwwLjJjMC4yLDAuMSwwLjMsMC40LDAuMywwLjdjMCwwLjIsMCwwLjMtMC4xLDAuNQoJYy0wLjEsMC4xLTAuMiwwLjItMC40LDAuM2wwLjcsMS4yaC0wLjdsLTAuNS0xSDExNXYxSDExNC40eiBNMTE1LDguN2gwLjRjMC4yLDAsMC4zLDAsMC40LTAuMWMwLjEtMC4xLDAuMi0wLjIsMC4yLTAuNAoJYzAtMC4xLDAtMC4zLTAuMS0wLjNjLTAuMS0wLjEtMC4yLTAuMS0wLjUtMC4xSDExNVY4Ljd6Ii8+Cjwvc3ZnPgo="><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232563eb%22></rect><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2250%22 font-family=%22sans-serif%22 fill=%22white%22 font-weight=%22bold%22>EH</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .bookmarklet-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .bookmarklet-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .details-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .card.expanded .details-section {
+            max-height: 1000px; /* Large enough to fit content */
+        }
+        .card.expanded .chevron-icon {
+            transform: rotate(180deg);
+        }
+        .chevron-icon {
+            transition: transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-blue-900">ExtraHop Product Finder</h1>
+            <p class="text-gray-600 mt-2">Search by any attribute (e.g., "AWS", "VMware", "1U", "50Gbps", "ClickHouse").</p>
+        </header>
+        
+        <!-- Search Input -->
+        <div class="sticky top-4 z-10 mb-8">
+             <div class="relative max-w-2xl mx-auto">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+                </div>
+                <input type="text" id="searchInput" placeholder="Search for products..." class="w-full p-4 pl-10 text-lg border border-gray-300 rounded-full shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+            </div>
+        </div>
+
+        <!-- Results Count -->
+        <div id="resultsCount" class="text-center text-gray-600 mb-6 font-medium"></div>
+
+        <!-- Product Grid -->
+        <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Products will be injected here -->
+        </div>
+        
+        <!-- No results message -->
+        <div id="noResults" class="hidden text-center py-16">
+            <h3 class="text-2xl font-semibold text-gray-700">No products found</h3>
+            <p class="text-gray-500 mt-2">Try a different search term.</p>
+        </div>
+
+        <!-- Bookmarklet Section -->
+        <footer class="text-center mt-12 pt-8 border-t border-gray-200">
+            <h2 class="text-2xl font-bold text-blue-900 mb-4">Create a Bookmarklet</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto mb-6">Drag the blue tile below to your bookmarks bar to create a bookmarklet. This lets you launch the Product Finder from any page.</p>
+            <div class="flex justify-center">
+                <a id="bookmarklet" href="#" class="bookmarklet-link inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700">EH Product Finder</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // Full product data from the source JSON, focusing on Gen 2 and 3 + active G1
+        const productData = {"products":[{"name":"EDA10300","category":"packet_sensor","prefix":"EDA","generation":3,"productType":0,"subtype":0,"isVirtual":false,"baseGbps":100,"idsGbps":50,"supportedModules":["IDS","NDR","NPM"],"rackUnits":2,"powerWatts":800,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EDA10300","rx360":"REVX-360-EDA10300"},"performance":{"baseGbps":100,"idsGbps":50,"idsReductionPercent_hint":50},"lifecycle":{"sales":"active"}},{"name":"EDA9300","category":"packet_sensor","prefix":"EDA","generation":3,"productType":0,"subtype":0,"isVirtual":false,"baseGbps":50,"idsGbps":25,"supportedModules":["IDS","NDR","NPM"],"rackUnits":2,"powerWatts":800,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EDA9300","rx360":"REVX-360-EDA9300"},"performance":{"baseGbps":50,"idsGbps":25,"idsReductionPercent_hint":50},"lifecycle":{"sales":"active"}},{"name":"EDA8320","category":"multifunction_sensor","prefix":"EDA","generation":3,"productType":2,"subtype":0,"isVirtual":false,"baseGbps":25,"idsGbps":25,"supportedModules":["IDS","NDR","NPM"],"rackUnits":1,"powerWatts":800,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EDA8320","rx360":"REVX-360-EDA8320"},"performance":{"baseGbps":25,"idsGbps":25,"idsReductionPercent_hint":0},"lifecycle":{"sales":"active"}},{"name":"EDA6370","category":"all_in_one","prefix":"EDA","generation":3,"productType":7,"subtype":0,"isVirtual":false,"baseGbps":10,"idsGbps":10,"supportedModules":["IDS","NDR","NPM","Packet Forensics"],"rackUnits":1,"powerWatts":800,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EDA6370","rx360":"REVX-360-EDA6370"},"performance":{"baseGbps":10,"idsGbps":10,"idsReductionPercent_hint":0},"lifecycle":{"sales":"active"}},{"name":"EDA10200","category":"packet_sensor","prefix":"EDA","generation":2,"productType":0,"subtype":0,"isVirtual":false,"baseGbps":100,"idsGbps":40,"supportedModules":["IDS","NDR","NPM"],"rackUnits":2,"powerWatts":800,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EDA10200","rx360":"REVX-360-EDA10200"},"performance":{"baseGbps":100,"idsGbps":40,"idsReductionPercent_hint":60},"lifecycle":{"sales":"end_of_sale"}},{"name":"EDA9200","category":"packet_sensor","prefix":"EDA","generation":2,"productType":0,"subtype":0,"isVirtual":false,"baseGbps":50,"idsGbps":20,"supportedModules":["IDS","NDR","NPM"],"rackUnits":2,"powerWatts":800,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EDA9200","rx360":"REVX-360-EDA9200"},"performance":{"baseGbps":50,"idsGbps":20,"idsReductionPercent_hint":60},"lifecycle":{"sales":"end_of_sale"}},{"name":"EDA8200","category":"packet_sensor","prefix":"EDA","generation":2,"productType":0,"subtype":0,"isVirtual":false,"baseGbps":25,"idsGbps":10,"supportedModules":["IDS","NDR","NPM"],"rackUnits":1,"powerWatts":800,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EDA8200","rx360":"REVX-360-EDA8200"},"performance":{"baseGbps":25,"idsGbps":10,"idsReductionPercent_hint":60},"lifecycle":{"sales":"end_of_sale"}},{"name":"EDA6200","category":"packet_sensor","prefix":"EDA","generation":2,"productType":0,"subtype":0,"isVirtual":false,"baseGbps":10,"idsGbps":4,"supportedModules":["IDS","NDR","NPM"],"rackUnits":1,"powerWatts":800,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EDA6200","rx360":"REVX-360-EDA6200"},"performance":{"baseGbps":10,"idsGbps":4,"idsReductionPercent_hint":60},"lifecycle":{"sales":"end_of_sale"}},{"name":"EDA4200","category":"packet_sensor","prefix":"EDA","generation":2,"productType":0,"subtype":0,"isVirtual":false,"baseGbps":5,"idsGbps":0,"supportedModules":["NDR","NPM"],"supportsIDS":false,"rackUnits":1,"powerWatts":800,"tracksAvailable":["rx360"],"skusByTrack":{"rx360":"REVX-360-EDA4200"},"performance":{"baseGbps":5,"idsGbps":0,"idsReductionPercent_hint":0},"lifecycle":{"sales":"end_of_sale"}},{"name":"EDA1200","category":"packet_sensor","prefix":"EDA","generation":2,"productType":0,"subtype":0,"isVirtual":false,"baseGbps":1,"idsGbps":0,"supportedModules":["NDR","NPM"],"supportsIDS":false,"rackUnits":1,"powerWatts":800,"tracksAvailable":["rx360"],"skusByTrack":{"rx360":"REVX-360-EDA1200"},"performance":{"baseGbps":1,"idsGbps":0,"idsReductionPercent_hint":0},"lifecycle":{"sales":"active"}},{"name":"EDA1000v","category":"packet_sensor","prefix":"EDA","generation":0,"productType":0,"subtype":0,"isVirtual":true,"baseGbps":1,"idsGbps":0,"supportedModules":["NDR","NPM"],"supportsIDS":false,"performanceOnly":true,"maxDevices":750,"criticalAssets":250,"tracksAvailable":["enterprise"],"skusByTrack":{"enterprise":"REVX-ENT-EDA1000V"},"deploymentTargets":["aws","azure"],"performance":{"baseGbps":1,"idsGbps":0,"idsReductionPercent_hint":0},"lifecycle":{"sales":"end_of_sale"}},{"name":"EDA1100v","category":"packet_sensor","prefix":"EDA","generation":1,"productType":0,"subtype":0,"isVirtual":true,"baseGbps":1,"idsGbps":0,"supportedModules":["NDR","NPM"],"supportsIDS":false,"maxDevices":750,"criticalAssets":250,"tracksAvailable":["rx360"],"skusByTrack":{"rx360":"REVX-360-EDA1100V"},"deploymentTargets":["aws","azure"],"performance":{"baseGbps":1,"idsGbps":0,"idsReductionPercent_hint":0},"lifecycle":{"sales":"active"}},{"name":"EDA2000v","category":"packet_sensor","prefix":"EDA","generation":0,"productType":0,"subtype":0,"isVirtual":true,"baseGbps":3,"idsGbps":0,"supportedModules":["NDR","NPM"],"supportsIDS":false,"performanceOnly":true,"maxDevices":1500,"criticalAssets":1000,"tracksAvailable":["enterprise"],"skusByTrack":{"enterprise":"REVX-ENT-EDA2000V"},"deploymentTargets":["aws","azure"],"performance":{"baseGbps":3,"idsGbps":0,"idsReductionPercent_hint":0},"lifecycle":{"sales":"end_of_sale"}},{"name":"EDA6100v","category":"packet_sensor","prefix":"EDA","generation":1,"productType":0,"subtype":0,"isVirtual":true,"baseGbps":10,"idsGbps":5,"supportedModules":["IDS","NDR","NPM"],"maxDevices":18000,"criticalAssets":3000,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EDA6100V","rx360":"REVX-360-EDA6100V"},"deploymentTargets":["aws","azure"],"performance":{"baseGbps":10,"idsGbps":5,"idsReductionPercent_hint":50},"lifecycle":{"sales":"active"}},{"name":"EDA8200v","category":"packet_sensor","prefix":"EDA","generation":2,"productType":0,"subtype":0,"isVirtual":true,"baseGbps":25,"idsGbps":12,"supportedModules":["IDS","NDR","NPM"],"maxDevices":35000,"criticalAssets":5500,"tracksAvailable":["rx360"],"skusByTrack":{"rx360":"REVX-360-EDA8200V"},"deploymentTargets":["aws"],"performance":{"baseGbps":25,"idsGbps":12,"idsReductionPercent_hint":50},"lifecycle":{"sales":"active"}},{"name":"EDA6320v","category":"multifunction_sensor","prefix":"EDA","generation":3,"productType":2,"subtype":0,"isVirtual":true,"baseGbps":10,"idsGbps":10,"supportedModules":["IDS","NDR","NPM"],"maxDevices":18000,"criticalAssets":3000,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EDA6320V","rx360":"REVX-360-EDA6320V"},"deploymentTargets":["aws"],"performance":{"baseGbps":10,"idsGbps":10,"idsReductionPercent_hint":0},"lifecycle":{"sales":"active"}},{"name":"EDA8320v","category":"multifunction_sensor","prefix":"EDA","generation":3,"productType":2,"subtype":0,"isVirtual":true,"baseGbps":20,"idsGbps":20,"supportedModules":["IDS","NDR","NPM"],"maxDevices":35000,"criticalAssets":5500,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EDA8320V","rx360":"REVX-360-EDA8320V"},"deploymentTargets":["on-prem"],"performance":{"baseGbps":20,"idsGbps":20,"idsReductionPercent_hint":0},"lifecycle":{"sales":"active"}},{"name":"EDA6370v","category":"all_in_one","prefix":"EDA","generation":3,"productType":7,"subtype":0,"isVirtual":true,"baseGbps":10,"idsGbps":10,"supportedModules":["IDS","NDR","NPM","Packet Forensics"],"maxDevices":18000,"criticalAssets":3000,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EDA6370V","rx360":"REVX-360-EDA6370V"},"deploymentTargets":["azure"],"performance":{"baseGbps":10,"idsGbps":10,"idsReductionPercent_hint":0},"lifecycle":{"sales":"active"}},{"name":"EDA8370v","category":"all_in_one","prefix":"EDA","generation":3,"productType":7,"subtype":0,"isVirtual":true,"baseGbps":20,"idsGbps":20,"supportedModules":["IDS","NDR","NPM","Packet Forensics"],"maxDevices":35000,"criticalAssets":5500,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EDA8370V","rx360":"REVX-360-EDA8370V"},"deploymentTargets":["on-prem"],"performance":{"baseGbps":20,"idsGbps":20,"idsReductionPercent_hint":0},"lifecycle":{"sales":"active"}},{"name":"IDS9380","category":"ids_standalone","prefix":"IDS","generation":3,"productType":8,"subtype":0,"isVirtual":false,"baseGbps":50,"idsGbps":50,"northSouthThroughput":50,"eastWestThroughput":50,"supportedModules":["IDS"],"rackUnits":2,"powerWatts":800,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-IDS9380","rx360":"REVX-360-IDS9380"},"performance":{"baseGbps":50,"idsGbps":50,"northSouthGbps":50,"eastWestGbps":50,"idsReductionPercent_hint":0},"lifecycle":{"sales":"active"}},{"name":"IDS8280","category":"ids_standalone","prefix":"IDS","generation":2,"productType":8,"subtype":0,"isVirtual":false,"baseGbps":20,"idsGbps":20,"northSouthThroughput":15,"eastWestThroughput":20,"supportedModules":["IDS"],"rackUnits":2,"powerWatts":800,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-IDS8280","rx360":"REVX-360-IDS8280"},"performance":{"baseGbps":20,"idsGbps":20,"northSouthGbps":15,"eastWestGbps":20,"idsReductionPercent_hint":0},"lifecycle":{"sales":"end_of_sale"}},{"name":"IDS1280v","category":"ids_standalone","prefix":"IDS","generation":2,"productType":8,"subtype":0,"isVirtual":true,"baseGbps":1,"idsGbps":1,"supportedModules":["IDS"],"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-IDS1280V","rx360":"REVX-360-IDS1280V"},"deploymentTargets":["on-prem"],"performance":{"baseGbps":1,"idsGbps":1,"idsReductionPercent_hint":0},"lifecycle":{"sales":"active"}},{"name":"IDS6280v","category":"ids_standalone","prefix":"IDS","generation":2,"productType":8,"subtype":0,"isVirtual":true,"baseGbps":9,"idsGbps":9,"northSouthThroughput":7,"eastWestThroughput":9,"supportedModules":["IDS"],"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-IDS6280V","rx360":"REVX-360-IDS6280V"},"deploymentTargets":["on-prem"],"performance":{"baseGbps":9,"idsGbps":9,"northSouthGbps":7,"eastWestGbps":9,"idsReductionPercent_hint":0},"lifecycle":{"sales":"active"}},{"name":"EFC1290v","category":"flow_collector","prefix":"EFC","generation":2,"productType":9,"subtype":0,"isVirtual":true,"baseGbps":0,"flowsPerSecond":10000,"flowsPerMinute":600000,"supportedProtocols":["NetFlow","sFlow","IPFIX"],"supportedModules":["Flow Analysis"],"tracksAvailable":["rx360"],"skusByTrack":{"rx360":"REVX-360-EFC1290V"},"deploymentTargets":["on-prem"],"performance":{"baseGbps":0},"lifecycle":{"sales":"active"}},{"name":"EFC1291v","category":"flow_collector","prefix":"EFC","generation":2,"productType":9,"subtype":1,"isVirtual":true,"baseGbps":0,"flowsPerSecond":10000,"flowsPerMinute":600000,"supportedProtocols":["AWS VPC Flow Logs"],"supportedModules":["Flow Analysis"],"tracksAvailable":["rx360"],"skusByTrack":{"rx360":"REVX-360-EFC1291V"},"deploymentTargets":["aws"],"performance":{"baseGbps":0},"lifecycle":{"sales":"active"}},{"name":"EFC1292v","category":"flow_collector","prefix":"EFC","generation":2,"productType":9,"subtype":2,"isVirtual":true,"baseGbps":0,"flowsPerSecond":10000,"flowsPerMinute":600000,"supportedProtocols":["NetFlow","sFlow","IPFIX"],"supportedModules":["Flow Analysis"],"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EFC1292V","rx360":"REVX-360-EFC1292V"},"deploymentTargets":["on-prem"],"performance":{"baseGbps":0},"lifecycle":{"sales":"active"}},{"name":"EFC6392v","category":"flow_collector","prefix":"EFC","generation":3,"productType":9,"subtype":2,"isVirtual":true,"baseGbps":0,"flowsPerSecond":100000,"flowsPerMinute":6000000,"supportedProtocols":["NetFlow","sFlow","IPFIX"],"supportedModules":["Flow Analysis"],"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-EFC6392V","rx360":"REVX-360-EFC6392V"},"deploymentTargets":["on-prem"],"performance":{"baseGbps":0},"lifecycle":{"sales":"active"}},{"name":"ETA9350","category":"packetstore","prefix":"ETA","throughputClass":9,"generation":3,"productType":5,"subtype":0,"isVirtual":false,"scalingRules":[{"esuCount":1,"esuType":"240TB","throughputGbps":10,"packetsPerSecond":3200000},{"esuCount":"2-3","esuType":"240TB","throughputGbps":25,"packetsPerSecond":8200000},{"esuCount":4,"esuType":"240TB","throughputGbps":50,"packetsPerSecond":16400000},{"esuCount":1,"esuType":"1.2PB","throughputGbps":50,"packetsPerSecond":16400000}],"supportedModules":["Packet Forensics"],"rackUnits":2,"powerWatts":800,"maxESUs":4,"compatibleESUs":["240TB ESU","HD ESU"],"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-ETA9350","rx360":"REVX-360-ETA9350"},"lifecycle":{"sales":"active"}},{"name":"ETA8250","category":"packetstore","prefix":"ETA","generation":2,"productType":5,"subtype":0,"isVirtual":false,"baseGbps":10,"withESUGbps":25,"packetsPerSecondStandalone":3200000,"packetsPerSecondWithESU":8200000,"supportedModules":["Packet Forensics"],"rackUnits":2,"powerWatts":800,"maxESUs":4,"compatibleESUs":["96TB ESU"],"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-ETA8250","rx360":"REVX-360-ETA8250"},"performance":{"baseGbps":10},"lifecycle":{"sales":"active"}},{"name":"ETA6150","category":"packetstore","prefix":"ETA","generation":1,"productType":5,"subtype":0,"isVirtual":false,"baseGbps":10,"withESUGbps":10,"packetsPerSecond":3200000,"supportedModules":["Packet Forensics"],"rackUnits":2,"powerWatts":800,"maxESUs":4,"compatibleESUs":["72TB ESU","96TB ESU"],"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-ETA6150","rx360":"REVX-360-ETA6150"},"performance":{"baseGbps":10},"lifecycle":{"sales":"end_of_sale"}},{"name":"ETA6150v","category":"packetstore","prefix":"ETA","generation":1,"productType":5,"subtype":0,"isVirtual":true,"baseGbps":10,"supportedModules":["Packet Forensics"],"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-ETA6150V","rx360":"REVX-360-ETA6150V"},"deploymentTargets":["on-prem"],"performance":{"baseGbps":10},"lifecycle":{"sales":"active"}},{"name":"ETA1150v","category":"packetstore","prefix":"ETA","generation":1,"productType":5,"subtype":0,"isVirtual":true,"baseGbps":1,"supportedModules":["Packet Forensics"],"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-1150V","rx360":"REVX-360-1150V"},"deploymentTargets":["on-prem"],"performance":{"baseGbps":1},"lifecycle":{"sales":"active"}},{"name":"ETA6150v","category":"packetstore","prefix":"ETA","generation":1,"productType":5,"subtype":0,"isVirtual":true,"baseGbps":10,"supportedModules":["Packet Forensics"],"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-6150V","rx360":"REVX-360-6150V"},"deploymentTargets":["on-prem"],"performance":{"baseGbps":10},"lifecycle":{"sales":"active"}},{"name":"240TB ESU","category":"extended_storage","prefix":"ESU","capacityTB":240,"isHDESU":false,"rackUnits":2,"powerWatts":800,"compatibleWith":["ETA9350"],"maxPerETA":4,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-ETA9350-ESU","rx360":"REVX-360-ETA9350-ESU"},"lifecycle":{"sales":"active"}},{"name":"HD ESU","category":"extended_storage","prefix":"ESU","capacityTB":1200,"isHDESU":true,"rackUnits":2,"powerWatts":1500,"compatibleWith":["ETA9350"],"maxPerETA":1,"cannotMixWith":["240TB ESU"],"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-ETA9350-HD-ESU","rx360":"REVX-360-ETA9350-HD-ESU"},"lifecycle":{"sales":"active"}},{"name":"96TB ESU","category":"extended_storage","prefix":"ESU","capacityTB":96,"isHDESU":false,"rackUnits":2,"powerWatts":800,"compatibleWith":["ETA8250"],"maxPerETA":4,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-ETA8250-ESU","rx360":"REVX-360-ETA8250-ESU"},"lifecycle":{"sales":"active"}},{"name":"72TB ESU","category":"extended_storage","prefix":"ESU","capacityTB":72,"isHDESU":false,"rackUnits":2,"powerWatts":800,"compatibleWith":["ETA6150"],"maxPerETA":4,"tracksAvailable":["enterprise","rx360"],"skusByTrack":{"enterprise":"REVX-ENT-ETA6150-ESU","rx360":"REVX-360-ETA6150-ESU"},"lifecycle":{"sales":"end_of_sale"}},{"name":"EXA5300","category":"recordstore","prefix":"EXA","generation":3,"productType":0,"subtype":0,"isVirtual":false,"baseGbps":0,"ingestRecordsPerSec":1000000,"version":2,"internalEngine":"ClickHouse","rackUnits":2,"powerWatts":800,"supportedModules":["Advanced Analytics","Investigation"],"tracksAvailable":["enterprise"],"skusByTrack":{"enterprise":"REVX-ENT-EXA5300"},"performance":{"baseGbps":0},"lifecycle":{"sales":"active"}},{"name":"EXA5300v","category":"recordstore","prefix":"EXA","generation":3,"productType":0,"subtype":0,"isVirtual":true,"baseGbps":0,"ingestRecordsPerSec":1000000,"version":2,"internalEngine":"ClickHouse","supportedModules":["Advanced Analytics","Investigation"],"tracksAvailable":["enterprise"],"skusByTrack":{"enterprise":"REVX-ENT-EXA5300V"},"deploymentTargets":["on-prem"],"performance":{"baseGbps":0},"lifecycle":{"sales":"active"}},{"name":"EXA5200","category":"recordstore","prefix":"EXA","generation":2,"productType":0,"subtype":0,"isVirtual":false,"baseGbps":0,"version":1,"internalEngine":"Elasticsearch","rackUnits":2,"powerWatts":800,"supportedModules":["Investigation"],"tracksAvailable":["enterprise"],"skusByTrack":{"enterprise":"REVX-ENT-EXA5200"},"performance":{"baseGbps":0},"lifecycle":{"sales":"end_of_sale","supportEnd":"2027-08"}},{"name":"EXA5100","category":"recordstore","prefix":"EXA","generation":1,"productType":0,"subtype":0,"isVirtual":false,"baseGbps":0,"version":1,"internalEngine":"Elasticsearch","rackUnits":2,"powerWatts":800,"supportedModules":["Investigation"],"tracksAvailable":["enterprise"],"skusByTrack":{"enterprise":"REVX-ENT-EXA5100"},"performance":{"baseGbps":0},"lifecycle":{"sales":"end_of_sale","supportEnd":"2022-12"}},{"name":"EXA5100v","category":"recordstore","prefix":"EXA","generation":1,"productType":0,"subtype":0,"isVirtual":true,"baseGbps":0,"version":1,"internalEngine":"Elasticsearch","supportedModules":["Investigation"],"tracksAvailable":["enterprise"],"skusByTrack":{"enterprise":"REVX-ENT-EXA5100V"},"deploymentTargets":["aws","azure"],"performance":{"baseGbps":0},"lifecycle":{"sales":"active"}}]};
+
+        const searchInput = document.getElementById('searchInput');
+        const productGrid = document.getElementById('productGrid');
+        const noResults = document.getElementById('noResults');
+        const resultsCount = document.getElementById('resultsCount');
+
+        const allProducts = productData.products.sort((a, b) => a.name.localeCompare(b.name)).map(p => {
+            const keys = ['name','category','internalEngine','prefix','version'];
+            const arrays = ['supportedModules','deploymentTargets','virtualizationTech','tracksAvailable','compatibleESUs','compatibleWith','supportedProtocols'];
+            const numericKeys = ['baseGbps','idsGbps','northSouthGbps','eastWestGbps','flowsPerSecond','ingestRecordsPerSec','rackUnits','capacityTB','packetsPerSecond','packetsPerSecondStandalone','packetsPerSecondWithESU'];
+            const skuValues = Object.values(p.skusByTrack||{});
+            const arrVals = arrays.flatMap(k => (p[k]||[]));
+            const simpleVals = keys.map(k => p[k]);
+            const numericVals = numericKeys.flatMap(k => p[k]!==undefined? [String(p[k])]: []);
+            const searchable = []
+                .concat(simpleVals, arrVals, skuValues, numericVals)
+                .filter(Boolean)
+                .map(item => String(item).toLowerCase().replace(/_/g,' '));
+
+            if (p.baseGbps) searchable.push(`${p.baseGbps}gb`, `${p.baseGbps}gbps`);
+            if (p.rackUnits) searchable.push(`${p.rackUnits}u`);
+            if (p.capacityTB) searchable.push(`${p.capacityTB}tb`);
+            if (p.isVirtual) searchable.push('virtual');
+            
+            p.searchableString = searchable.join(' ');
+            return p;
+        });
+
+        const ICONS = {
+            throughput: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 inline-block text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>`,
+            rack: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 inline-block text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>`,
+            capacity: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 inline-block text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4M4 7a8 8 0 0116 0" /></svg>`,
+        };
+        
+        function getSummaryMetric(product) {
+            if (product.baseGbps !== undefined && product.baseGbps > 0) return `${ICONS.throughput} <span class="font-bold">${product.baseGbps}</span> Gbps`;
+            if (product.capacityTB) return `${ICONS.capacity} <span class="font-bold">${product.capacityTB}</span> TB`;
+            if (product.ingestRecordsPerSec) return `${ICONS.throughput} <span class="font-bold">${(product.ingestRecordsPerSec / 1000000)}M</span> rec/s`;
+            if (product.flowsPerSecond) return `${ICONS.throughput} <span class="font-bold">${(product.flowsPerSecond / 1000)}k</span> flows/s`;
+            return '';
+        }
+
+        function renderProducts(products) {
+            productGrid.innerHTML = '';
+            resultsCount.textContent = `${products.length} product${products.length === 1 ? '' : 's'} found.`;
+            noResults.classList.toggle('hidden', products.length > 0);
+            productGrid.classList.toggle('hidden', products.length === 0);
+
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 flex flex-col';
+                
+                const statusBadge = p.lifecycle?.sales === 'end_of_sale' ? `<div class="absolute top-3 right-3 px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full shadow-lg z-10">End of Sale</div>` : '';
+                
+                let detailsHtml = '<dl class="space-y-4">';
+                // Performance
+                if (p.performance) {
+                    let perfDetails = `Base: ${p.performance.baseGbps || 0} Gbps`;
+                    if (p.performance.idsGbps !== undefined) perfDetails += `, IDS: ${p.performance.idsGbps} Gbps (${p.performance.idsReductionPercent_hint || 0}% impact)`;
+                    detailsHtml += `<div><dt class="font-semibold text-gray-700">Performance</dt><dd class="text-gray-600 pl-2 border-l-2 border-gray-200 ml-1 mt-1">${perfDetails}</dd></div>`;
+                }
+                if (p.supportedModules) detailsHtml += `<div><dt class="font-semibold text-gray-700">Modules</dt><dd class="text-gray-600 pl-2 border-l-2 border-gray-200 ml-1 mt-1">${p.supportedModules.join(", ")}</dd></div>`;
+                if (p.supportedProtocols) detailsHtml += `<div><dt class="font-semibold text-gray-700">Protocols</dt><dd class="text-gray-600 pl-2 border-l-2 border-gray-200 ml-1 mt-1">${p.supportedProtocols.join(", ")}</dd></div>`;
+                if (p.tracksAvailable) detailsHtml += `<div><dt class="font-semibold text-gray-700">Tracks</dt><dd class="text-gray-600 pl-2 border-l-2 border-gray-200 ml-1 mt-1">${p.tracksAvailable.join(", ")}</dd></div>`;
+                if (p.deploymentTargets) detailsHtml += `<div><dt class="font-semibold text-gray-700">Deployments</dt><dd class="text-gray-600 pl-2 border-l-2 border-gray-200 ml-1 mt-1">${(p.deploymentTargets||[]).join(", ")}</dd></div>`;
+                if (p.lifecycle?.supportEnd) detailsHtml += `<div><dt class="font-semibold text-gray-700">Support Ends</dt><dd class="text-gray-600 pl-2 border-l-2 border-gray-200 ml-1 mt-1">${p.lifecycle.supportEnd}</dd></div>`;
+                if (p.rackUnits) detailsHtml += `<div><dt class="font-semibold text-gray-700">Hardware</dt><dd class="text-gray-600 pl-2 border-l-2 border-gray-200 ml-1 mt-1">${p.rackUnits}U, ${p.powerWatts || 'N/A'} Watts</dd></div>`;
+                 // Scaling
+                 if (p.maxDevices) detailsHtml += `<div><dt class="font-semibold text-gray-700">Scaling</dt><dd class="text-gray-600 pl-2 border-l-2 border-gray-200 ml-1 mt-1">Max Devices: ${p.maxDevices.toLocaleString()}, Critical Assets: ${p.criticalAssets.toLocaleString()}</dd></div>`;
+                // Environment
+                const envTags = (p.deploymentTargets || []).concat(p.virtualizationTech || []);
+                if (envTags.length) detailsHtml += `<div><dt class="font-semibold text-gray-700">Environment</dt><dd class="pl-2 border-l-2 border-gray-200 ml-1 mt-1 flex flex-wrap gap-1">${envTags.map(t => `<span class="bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md text-xs">${t.toUpperCase()}</span>`).join(' ')}</dd></div>`;
+                // SKUs
+                if(p.skusByTrack) detailsHtml += `<div><dt class="font-semibold text-gray-700">SKUs</dt><dd class="text-gray-600 pl-2 border-l-2 border-gray-200 ml-1 mt-1">${Object.entries(p.skusByTrack).map(([track, sku]) => `<strong>${track}:</strong> ${sku}`).join('<br>')}</dd></div>`;
+                // Lifecycle
+                if (p.lifecycle?.supportEnd) detailsHtml += `<div><dt class="font-semibold text-gray-700">Lifecycle</dt><dd class="text-gray-600 pl-2 border-l-2 border-gray-200 ml-1 mt-1">End of Support: ${p.lifecycle.supportEnd}</dd></div>`;
+                 // Scaling Rules for ETA
+                if (p.scalingRules) {
+                    detailsHtml += `<div><dt class="font-semibold text-gray-700">ETA Scaling Rules</dt><dd class="text-gray-600 pl-2 border-l-2 border-gray-200 ml-1 mt-1"><ul>`;
+                    p.scalingRules.forEach(rule => {
+                        detailsHtml += `<li class="mt-1"><strong>${rule.esuCount} x ${rule.esuType}:</strong> ${rule.throughputGbps} Gbps</li>`;
+                    });
+                    detailsHtml += `</ul></dd></div>`;
+                }
+
+                detailsHtml += '</dl>';
+
+                card.innerHTML = `
+                    <div class="p-6 cursor-pointer relative flex-grow">
+                        ${statusBadge}
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="text-sm font-semibold text-blue-600 uppercase tracking-wide">${p.category.replace(/_/g, ' ')} ${p.isVirtual ? '(Virtual)' : ''}</div>
+                                <h3 class="text-2xl font-bold text-black mt-1">${p.name}</h3>
+                            </div>
+                            <div class="chevron-icon text-gray-400"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></div>
+                        </div>
+                        <div class="mt-4 text-gray-600 flex items-center h-6">${getSummaryMetric(p)}</div>
+                        <div class="mt-2 flex flex-wrap gap-1">
+                            ${(p.tracksAvailable || []).map(t => `<span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-md text-xs font-medium">${t}</span>`).join('')}
+                            ${(p.supportedModules || []).map(m => `<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-md text-xs font-medium">${m}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="details-section bg-gray-50 px-6 pb-6 text-sm">
+                        ${detailsHtml}
+                    </div>
+                `;
+                card.querySelector('.cursor-pointer').addEventListener('click', () => card.classList.toggle('expanded'));
+                productGrid.appendChild(card);
+            });
+        }
+
+        searchInput.addEventListener('keyup', () => {
+            const query = searchInput.value.toLowerCase().trim();
+            const searchTerms = query.split(/\s+/).filter(Boolean);
+            
+            const filtered = searchTerms.length === 0 ? allProducts : allProducts.filter(p => {
+                return searchTerms.every(term => p.searchableString.includes(term));
+            });
+            renderProducts(filtered);
+        });
+
+        function setupBookmarklet() {
+            const bookmarkletLink = document.getElementById('bookmarklet');
+            bookmarkletLink.href = `data:text/html;charset=utf-8,${encodeURIComponent(document.documentElement.outerHTML)}`;
+        }
+
+        // Initial render, sorted alphabetically
+        renderProducts(allProducts);
+        setupBookmarklet();
+    </script>
+</body>
+</html>
+
