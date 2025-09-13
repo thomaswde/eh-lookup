@@ -1,0 +1,813 @@
+[
+  {
+    "name": "EDA 10300",
+    "interfaces": {
+      "management": [
+        {
+          "id": 1,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 2,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 3,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP",
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            10,
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "10G SR"
+        },
+        {
+          "id": 4,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP",
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            10,
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "10G SR"
+        }
+      ],
+      "capture": [
+        {
+          "id": 5,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            40,
+            100
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "100G/40G SR4"
+        },
+        {
+          "id": 6,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            40,
+            100
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "100G/40G SR4"
+        },
+        {
+          "id": 7,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            40,
+            100
+          ],
+          "transceiverIncluded": false,
+          "transceiverType": "100G/40G SR4"
+        },
+        {
+          "id": 8,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            40,
+            100
+          ],
+          "transceiverIncluded": false,
+          "transceiverType": "100G/40G SR4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "EDA 9300",
+    "interfaces": {
+      "management": [
+        {
+          "id": 1,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 2,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 3,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP",
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            10,
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "10G SR"
+        },
+        {
+          "id": 4,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP",
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            10,
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "10G SR"
+        }
+      ],
+      "capture": [
+        {
+          "id": 5,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "25G/10G SR"
+        },
+        {
+          "id": 6,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "25G/10G SR"
+        }
+      ]
+    }
+  },
+  {
+    "name": "EDA 8320",
+    "interfaces": {
+      "management": [
+        {
+          "id": 1,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 2,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 3,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 4,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        }
+      ],
+      "capture": [
+        {
+          "id": 5,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "25G/10G SR"
+        },
+        {
+          "id": 6,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "25G/10G SR"
+        }
+      ]
+    }
+  },
+  {
+    "name": "EDA 6370",
+    "interfaces": {
+      "management": [
+        {
+          "id": 1,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 2,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 3,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 4,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        }
+      ],
+      "capture": [
+        {
+          "id": 5,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            10
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "10G SR"
+        },
+        {
+          "id": 6,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            10
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "10G SR"
+        }
+      ]
+    }
+  },
+  {
+    "name": "EDA 10200",
+    "interfaces": {
+      "management": [
+        {
+          "id": 1,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 2,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        }
+      ],
+      "capture": [
+        {
+          "id": 3,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            40,
+            100
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "100G/40G SR4"
+        },
+        {
+          "id": 4,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            40,
+            100
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "100G/40G SR4"
+        },
+        {
+          "id": 5,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            40,
+            100
+          ],
+          "transceiverIncluded": false,
+          "transceiverType": "100G/40G SR4"
+        },
+        {
+          "id": 6,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            40,
+            100
+          ],
+          "transceiverIncluded": false,
+          "transceiverType": "100G/40G SR4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "EDA 9200",
+    "interfaces": {
+      "management": [
+        {
+          "id": 1,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 2,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        }
+      ],
+      "capture": [
+        {
+          "id": 3,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "25G/10G SR"
+        },
+        {
+          "id": 4,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "25G/10G SR"
+        },
+        {
+          "id": 5,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "25G/10G SR"
+        },
+        {
+          "id": 6,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "25G/10G SR"
+        }
+      ]
+    }
+  },
+  {
+    "name": "EDA 8200",
+    "interfaces": {
+      "management": [
+        {
+          "id": 1,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 2,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 3,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 4,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        }
+      ],
+      "capture": [
+        {
+          "id": 5,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "25G/10G SR"
+        },
+        {
+          "id": 6,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            25
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "25G/10G SR"
+        }
+      ]
+    }
+  },
+  {
+    "name": "EDA 6200",
+    "interfaces": {
+      "management": [
+        {
+          "id": 1,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 2,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 3,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 4,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        }
+      ],
+      "capture": [
+        {
+          "id": 5,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            10
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "10G SR"
+        },
+        {
+          "id": 6,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            10
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "10G SR"
+        }
+      ]
+    }
+  },
+  {
+    "name": "EDA 4200",
+    "interfaces": {
+      "management": [
+        {
+          "id": 1,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 2,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 3,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 4,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        }
+      ],
+      "capture": [
+        {
+          "id": 5,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            10
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "10G SR"
+        },
+        {
+          "id": 6,
+          "roles": [
+            "capture"
+          ],
+          "supportedSpeedsGb": [
+            10
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "10G SR"
+        }
+      ]
+    }
+  },
+  {
+    "name": "EDA 1200",
+    "interfaces": {
+      "management": [
+        {
+          "id": 1,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        },
+        {
+          "id": 2,
+          "roles": [
+            "mgmt",
+            "ERSPAN",
+            "RPCAP"
+          ],
+          "supportedSpeedsGb": [
+            1
+          ],
+          "transceiverIncluded": true,
+          "transceiverType": "onboard"
+        }
+      ],
+      "capture": []
+    }
+  }
+]

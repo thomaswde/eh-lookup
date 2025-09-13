@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ExtraHop Product Lookup</title>
+  <link rel="icon" href="favicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji'; }
+    .chip { border-radius: 9999px; font-size: 0.75rem; padding: 0.125rem 0.5rem; background: #eef2ff; color: #3730a3; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside class="w-80 bg-white border-r border-gray-200 p-4 space-y-4 overflow-y-auto">
+      <h1 class="text-xl font-bold text-blue-900">Product Lookup</h1>
+      <p class="text-xs text-gray-500">Source: catalog.min.json</p>
+
+      <!-- Search -->
+      <div>
+        <label class="text-sm font-semibold">Search</label>
+        <input id="search" type="text" placeholder="Name, module, SKU, AWS, 50Gbps, etc" class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <!-- Category -->
+      <div>
+        <label class="text-sm font-semibold">Category</label>
+        <select id="category" class="mt-1 w-full rounded-md border border-gray-300 px-2 py-2">
+          <option value="">Any</option>
+        </select>
+      </div>
+
+      <!-- Form factor -->
+      <div>
+        <label class="text-sm font-semibold">Form factor</label>
+        <div class="mt-1 space-y-1">
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="phy" /> Physical</label>
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="vir" /> Virtual</label>
+        </div>
+      </div>
+
+      <!-- Sale status -->
+      <div>
+        <label class="text-sm font-semibold">Sale status</label>
+        <div id="saleStatusBox" class="mt-1 space-y-1"></div>
+      </div>
+
+      <!-- Modules -->
+      <div>
+        <label class="text-sm font-semibold">Supported modules</label>
+        <div id="modulesBox" class="mt-1 space-y-1"></div>
+      </div>
+
+      <!-- Cloud support -->
+      <div>
+        <label class="text-sm font-semibold">Cloud support</label>
+        <div id="cloudBox" class="mt-1 space-y-1"></div>
+      </div>
+
+      <!-- Numeric filters -->
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-sm font-semibold">Base Gbps ≥</label>
+          <input id="minBase" type="number" min="0" step="1" placeholder="0" class="mt-1 w-full rounded-md border border-gray-300 px-2 py-2" />
+        </div>
+        <div>
+          <label class="text-sm font-semibold">IDS Gbps ≥</label>
+          <input id="minIDS" type="number" min="0" step="1" placeholder="0" class="mt-1 w-full rounded-md border border-gray-300 px-2 py-2" />
+        </div>
+      </div>
+
+      <!-- Reset -->
+      <button id="resetBtn" class="w-full mt-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md py-2 text-sm font-semibold">Reset filters</button>
+
+      <p class="text-[11px] text-gray-400">Tip: filters are ANDed with search.</p>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-4 overflow-y-auto">
+      <!-- Header search bar -->
+      <div class="max-w-3xl mx-auto mb-4">
+        <input id="searchTop" type="text" placeholder="Search all fields..." class="w-full rounded-full border border-gray-300 px-5 py-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <div id="count" class="text-center text-sm text-gray-600 mb-3"></div>
+
+      <div id="grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4"></div>
+
+      <div id="empty" class="hidden text-center py-16 text-gray-500">No products match the filters.</div>
+    </main>
+  </div>
+
+  <script>
+    let DATA = [];
+    let UNIQUE = {
+      categories: new Set(),
+      sale: new Set(),
+      modules: new Set(),
+      cloud: new Set(),
+    };
+
+    function val(v){ return v===null || v===undefined ? "" : v; }
+    function arr(a){ return Array.isArray(a) ? a : []; }
+    function toText(x){ return (Array.isArray(x) ? x.join(" ") : (x||"") + "").toLowerCase(); }
+
+    function fingerprint(p){
+      const parts = [
+        p.name, p.category, p.prefix,
+        p.baseGbps, p.idsGbps,
+        p.flowsPerSecond, p.flowsPerMinute,
+        p.northSouthGbps, p.eastWestGbps,
+        p.saleStatus,
+        arr(p.supportedModules).join(" "),
+        arr(p.cloudSupport).join(" "),
+        JSON.stringify(p.skus||{}),
+        p.isVirtual ? "virtual" : "physical"
+      ];
+      return parts.join(" ").toLowerCase() + " " + (p.searchText || "");
+    }
+
+    function card(p){
+      const chips = [];
+      if(p.category) chips.push(`<span class="chip">${p.category}</span>`);
+      if(p.saleStatus) chips.push(`<span class="chip">${p.saleStatus}</span>`);
+      if(p.isPhysical) chips.push(`<span class="chip">physical</span>`);
+      if(p.isVirtual) chips.push(`<span class="chip">virtual</span>`);
+      if(p.baseGbps!=null) chips.push(`<span class="chip">${p.baseGbps} Gbps</span>`);
+      if(p.idsGbps!=null) chips.push(`<span class="chip">IDS ${p.idsGbps} Gbps</span>`);
+      if(p.flowsPerSecond!=null) chips.push(`<span class="chip">${p.flowsPerSecond.toLocaleString()} fps</span>`);
+      const modules = arr(p.supportedModules).map(m=>`<span class="chip">${m}</span>`).join(" ");
+      const clouds = arr(p.cloudSupport).map(m=>`<span class="chip">${m}</span>`).join(" ");
+      const skuList = p.skus ? Object.entries(p.skus).map(([k,v])=> v ? `<div class="text-xs"><span class="font-semibold">${k}</span>: ${v}</div>` : "").join("") : "";
+
+      return `<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold text-blue-900">${p.name||""}</h3>
+          <div class="text-xs text-gray-500">${p.prefix||""}</div>
+        </div>
+        <div class="flex flex-wrap gap-1">${chips.join(" ")}</div>
+        ${modules ? `<div class="mt-1 flex flex-wrap gap-1">${modules}</div>` : ""}
+        ${clouds ? `<div class="mt-1 flex flex-wrap gap-1">${clouds}</div>` : ""}
+        ${skuList ? `<div class="mt-2">${skuList}</div>` : ""}
+      </div>`;
+    }
+
+    function render(){
+      const q = document.getElementById("search").value.trim().toLowerCase();
+      const q2 = document.getElementById("searchTop").value.trim().toLowerCase();
+      const category = document.getElementById("category").value;
+      const wantPhy = document.getElementById("phy").checked;
+      const wantVir = document.getElementById("vir").checked;
+      const minBase = parseFloat(document.getElementById("minBase").value || "0");
+      const minIDS = parseFloat(document.getElementById("minIDS").value || "0");
+
+      const saleChecked = [...document.querySelectorAll('input[name="saleOpt"]:checked')].map(i=>i.value);
+      const modChecked = [...document.querySelectorAll('input[name="modOpt"]:checked')].map(i=>i.value);
+      const cloudChecked = [...document.querySelectorAll('input[name="cloudOpt"]:checked')].map(i=>i.value);
+
+      let items = DATA.filter(p => {
+        // category
+        if(category && p.category !== category) return false;
+        // form factor
+        if(wantPhy && !p.isPhysical) return false;
+        if(wantVir && !p.isVirtual) return false;
+        // sale status
+        if(saleChecked.length && !saleChecked.includes(p.saleStatus||"")) return false;
+        // modules (all selected must be present)
+        if(modChecked.length){
+          const set = new Set(p.supportedModules||[]);
+          for(const m of modChecked){ if(!set.has(m)) return false; }
+        }
+        // cloud (at least one match)
+        if(cloudChecked.length){
+          const set = new Set(p.cloudSupport||[]);
+          let ok = false;
+          for(const c of cloudChecked){ if(set.has(c)) { ok = True } }
+          if(!ok) return false;
+        }
+        // numeric
+        if(!isNaN(minBase) && (p.baseGbps ?? 0) < minBase) return false;
+        if(!isNaN(minIDS) && (p.idsGbps ?? 0) < minIDS) return false;
+        // search
+        const fp = p._fp;
+        if(q && !fp.includes(q)) return false;
+        if(q2 && !fp.includes(q2)) return false;
+        return True;
+      });
+
+      const count = document.getElementById("count");
+      const grid = document.getElementById("grid");
+      const empty = document.getElementById("empty");
+
+      count.textContent = items.length + " products";
+      if(items.length){
+        empty.classList.add("hidden");
+        grid.innerHTML = items.map(card).join("");
+      } else {
+        grid.innerHTML = "";
+        empty.classList.remove("hidden");
+      }
+    }
+
+    function resetFilters(){
+      document.getElementById("search").value = "";
+      document.getElementById("searchTop").value = "";
+      document.getElementById("category").value = "";
+      document.getElementById("phy").checked = false;
+      document.getElementById("vir").checked = false;
+      document.getElementById("minBase").value = "";
+      document.getElementById("minIDS").value = "";
+      document.querySelectorAll('input[name="saleOpt"]').forEach(i => i.checked = false);
+      document.querySelectorAll('input[name="modOpt"]').forEach(i => i.checked = false);
+      document.querySelectorAll('input[name="cloudOpt"]').forEach(i => i.checked = false);
+      render();
+    }
+
+    function addOption(sel, val){
+      const opt = document.createElement("option");
+      opt.value = val; opt.textContent = val;
+      sel.appendChild(opt);
+    }
+
+    function addCheck(box, name, val){
+      const id = name + "_" + val.replace(/[^a-z0-9]+/gi,"_");
+      const wrap = document.createElement("label");
+      wrap.className = "flex items-center gap-2 text-sm";
+      wrap.innerHTML = '<input type="checkbox" name="'+name+'" value="'+val+'" id="'+id+'" /> '+val;
+      box.appendChild(wrap);
+    }
+
+    async function load(){
+      const res = await fetch("catalog.min.json");
+      const data = await res.json();
+      DATA = (data.products||[]).map(p => {
+        p._fp = fingerprint(p);
+        UNIQUE.categories.add(p.category||"");
+        if(p.saleStatus) UNIQUE.sale.add(p.saleStatus);
+        (p.supportedModules||[]).forEach(m => UNIQUE.modules.add(m));
+        (p.cloudSupport||[]).forEach(c => UNIQUE.cloud.add(c));
+        return p;
+      });
+
+      // Populate filters
+      const catSel = document.getElementById("category");
+      [...UNIQUE.categories].filter(Boolean).sort().forEach(c => addOption(catSel, c));
+
+      const saleBox = document.getElementById("saleStatusBox");
+      [...UNIQUE.sale].filter(Boolean).sort().forEach(s => addCheck(saleBox, "saleOpt", s));
+
+      const modBox = document.getElementById("modulesBox");
+      [...UNIQUE.modules].filter(Boolean).sort().forEach(m => addCheck(modBox, "modOpt", m));
+
+      const cloudBox = document.getElementById("cloudBox");
+      [...UNIQUE.cloud].filter(Boolean).sort().forEach(c => addCheck(cloudBox, "cloudOpt", c));
+
+      // Events
+      document.getElementById("search").addEventListener("input", render);
+      document.getElementById("searchTop").addEventListener("input", render);
+      document.getElementById("category").addEventListener("change", render);
+      document.getElementById("phy").addEventListener("change", render);
+      document.getElementById("vir").addEventListener("change", render);
+      document.getElementById("minBase").addEventListener("input", render);
+      document.getElementById("minIDS").addEventListener("input", render);
+      document.getElementById("resetBtn").addEventListener("click", resetFilters);
+      saleBox.addEventListener("change", render);
+      modBox.addEventListener("change", render);
+      cloudBox.addEventListener("change", render);
+
+      render();
+    }
+
+    // Small True/False typo safeguard for older browsers in minifiers
+    const True = true, False = false;
+
+    load();
+  </script>
+</body>
+</html>

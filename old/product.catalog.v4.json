@@ -1,0 +1,2050 @@
+{
+  "products": [
+    {
+      "name": "EDA10300",
+      "category": "packet_sensor",
+      "generation": 3,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 100,
+      "idsGbps": 50,
+      "idsReductionPercent": 50,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA10300",
+        "rx360": "REVX-360-EDA10300"
+      },
+      "basePacketrate": 10000000,
+      "advancedAnalysis": 16000,
+      "standardAnalysis": 100000,
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 3,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP",
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              10,
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          },
+          {
+            "id": 4,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP",
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              10,
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          }
+        ],
+        "capture": [
+          {
+            "id": 5,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              40,
+              100
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "100G/40G SR4"
+          },
+          {
+            "id": 6,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              40,
+              100
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "100G/40G SR4"
+          },
+          {
+            "id": 7,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              40,
+              100
+            ],
+            "transceiverIncluded": false,
+            "transceiverType": "100G/40G SR4"
+          },
+          {
+            "id": 8,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              40,
+              100
+            ],
+            "transceiverIncluded": false,
+            "transceiverType": "100G/40G SR4"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EDA9300",
+      "category": "packet_sensor",
+      "generation": 3,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 50,
+      "idsGbps": 25,
+      "idsReductionPercent": 50,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA9300",
+        "rx360": "REVX-360-EDA9300"
+      },
+      "basePacketrate": 5000000,
+      "advancedAnalysis": 8000,
+      "standardAnalysis": 50000,
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 3,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP",
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              10,
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          },
+          {
+            "id": 4,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP",
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              10,
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          }
+        ],
+        "capture": [
+          {
+            "id": 5,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          },
+          {
+            "id": 6,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EDA8320",
+      "category": "multifunction_sensor",
+      "generation": 3,
+      "productType": 2,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 25,
+      "idsGbps": 25,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 1,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA8320",
+        "rx360": "REVX-360-EDA8320"
+      },
+      "basePacketrate": 2500000,
+      "advancedAnalysis": 5500,
+      "standardAnalysis": 35000,
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 3,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 4,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          }
+        ],
+        "capture": [
+          {
+            "id": 5,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          },
+          {
+            "id": 6,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EDA6370",
+      "category": "all_in_one",
+      "generation": 3,
+      "productType": 7,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 10,
+      "idsGbps": 10,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS",
+        "Packet Forensics"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 1,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "supportsPacketForensics": true,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA6370",
+        "rx360": "REVX-360-EDA6370"
+      },
+      "basePacketrate": 1000000,
+      "advancedAnalysis": 3000,
+      "standardAnalysis": 18000,
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 3,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 4,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          }
+        ],
+        "capture": [
+          {
+            "id": 5,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              10
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          },
+          {
+            "id": 6,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              10
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EDA10200",
+      "category": "packet_sensor",
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 100,
+      "idsGbps": 40,
+      "idsReductionPercent": 60,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "end_of_sale",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA10200",
+        "rx360": "REVX-360-EDA10200"
+      },
+      "basePacketrate": 10000000,
+      "advancedAnalysis": 16000,
+      "standardAnalysis": 100000,
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          }
+        ],
+        "capture": [
+          {
+            "id": 3,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              40,
+              100
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "100G/40G SR4"
+          },
+          {
+            "id": 4,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              40,
+              100
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "100G/40G SR4"
+          },
+          {
+            "id": 5,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              40,
+              100
+            ],
+            "transceiverIncluded": false,
+            "transceiverType": "100G/40G SR4"
+          },
+          {
+            "id": 6,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              40,
+              100
+            ],
+            "transceiverIncluded": false,
+            "transceiverType": "100G/40G SR4"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EDA9200",
+      "category": "packet_sensor",
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 50,
+      "idsGbps": 20,
+      "idsReductionPercent": 60,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "end_of_sale",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA9200",
+        "rx360": "REVX-360-EDA9200"
+      },
+      "basePacketrate": 5000000,
+      "advancedAnalysis": 8000,
+      "standardAnalysis": 50000,
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          }
+        ],
+        "capture": [
+          {
+            "id": 3,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          },
+          {
+            "id": 4,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          },
+          {
+            "id": 5,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          },
+          {
+            "id": 6,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EDA8200",
+      "category": "packet_sensor",
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 25,
+      "idsGbps": 10,
+      "idsReductionPercent": 60,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "end_of_sale",
+      "rackUnits": 1,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA8200",
+        "rx360": "REVX-360-EDA8200"
+      },
+      "basePacketrate": 2500000,
+      "advancedAnalysis": 5500,
+      "standardAnalysis": 35000,
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 3,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 4,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          }
+        ],
+        "capture": [
+          {
+            "id": 5,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          },
+          {
+            "id": 6,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EDA6200",
+      "category": "packet_sensor",
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 10,
+      "idsGbps": 4,
+      "idsReductionPercent": 60,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "saleStatus": "end_of_sale",
+      "rackUnits": 1,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EDA6200",
+        "rx360": "REVX-360-EDA6200"
+      },
+      "basePacketrate": 1000000,
+      "advancedAnalysis": 3000,
+      "standardAnalysis": 18000,
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 3,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 4,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          }
+        ],
+        "capture": [
+          {
+            "id": 5,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              10
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          },
+          {
+            "id": 6,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              10
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EDA4200",
+      "category": "packet_sensor",
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 5,
+      "idsGbps": 0,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM"
+      ],
+      "supportsIDS": false,
+      "saleStatus": "end_of_sale",
+      "rackUnits": 1,
+      "powerWatts": 800,
+      "rx360Only": true,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": null,
+        "rx360": "REVX-360-EDA4200"
+      },
+      "basePacketrate": 500000,
+      "advancedAnalysis": 1500,
+      "standardAnalysis": 9000,
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 3,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 4,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          }
+        ],
+        "capture": [
+          {
+            "id": 5,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              10
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          },
+          {
+            "id": 6,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              10
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EDA1200",
+      "category": "packet_sensor",
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 1,
+      "idsGbps": 0,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM"
+      ],
+      "supportsIDS": false,
+      "saleStatus": "active",
+      "rackUnits": 1,
+      "powerWatts": 800,
+      "rx360Only": true,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": null,
+        "rx360": "REVX-360-EDA1200"
+      },
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750,
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          }
+        ],
+        "capture": []
+      }
+    },
+    {
+      "name": "EDA1000v",
+      "category": "packet_sensor",
+      "generation": 0,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 1,
+      "idsGbps": 0,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM"
+      ],
+      "supportsIDS": false,
+      "saleStatus": "end_of_sale",
+      "performanceOnly": true,
+      "maxDevices": 750,
+      "criticalAssets": 250,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "aws",
+        "azure"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA1000V",
+        "rx360": null
+      },
+      "virtualSupport": [
+        "hyper-v",
+        "kvm",
+        "vmware"
+      ],
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    },
+    {
+      "name": "EDA1100v",
+      "category": "packet_sensor",
+      "generation": 1,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 1,
+      "idsGbps": 0,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM"
+      ],
+      "supportsIDS": false,
+      "saleStatus": "active",
+      "maxDevices": 750,
+      "criticalAssets": 250,
+      "rx360Only": true,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "aws",
+        "azure",
+        "gcp"
+      ],
+      "skus": {
+        "enterprise": null,
+        "rx360": "REVX-360-EDA1100V"
+      },
+      "virtualSupport": [
+        "hyper-v",
+        "kvm",
+        "vmware"
+      ],
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    },
+    {
+      "name": "EDA2000v",
+      "category": "packet_sensor",
+      "generation": 0,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 3,
+      "idsGbps": 0,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM"
+      ],
+      "supportsIDS": false,
+      "saleStatus": "end_of_sale",
+      "performanceOnly": true,
+      "maxDevices": 1500,
+      "criticalAssets": 1000,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "aws",
+        "azure"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA2000V",
+        "rx360": null
+      },
+      "virtualSupport": [
+        "hyper-v",
+        "kvm",
+        "vmware"
+      ],
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    },
+    {
+      "name": "EDA6100v",
+      "category": "packet_sensor",
+      "generation": 1,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 10,
+      "idsGbps": 5,
+      "idsReductionPercent": 50,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "supportsIDS": true,
+      "saleStatus": "active",
+      "maxDevices": 18000,
+      "criticalAssets": 3000,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "aws",
+        "azure"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA6100V",
+        "rx360": "REVX-360-EDA6100V"
+      },
+      "virtualSupport": [
+        "hyper-v",
+        "kvm",
+        "vmware"
+      ],
+      "basePacketrate": 1000000,
+      "advancedAnalysis": 3000,
+      "standardAnalysis": 18000
+    },
+    {
+      "name": "EDA8200v",
+      "category": "packet_sensor",
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 25,
+      "idsGbps": 12,
+      "idsReductionPercent": 50,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "supportsIDS": true,
+      "saleStatus": "active",
+      "maxDevices": 35000,
+      "criticalAssets": 5500,
+      "rx360Only": true,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "aws"
+      ],
+      "skus": {
+        "enterprise": null,
+        "rx360": "REVX-360-EDA8200V"
+      },
+      "virtualSupport": [],
+      "basePacketrate": 2500000,
+      "advancedAnalysis": 5500,
+      "standardAnalysis": 35000
+    },
+    {
+      "name": "EDA6320v",
+      "category": "multifunction_sensor",
+      "generation": 3,
+      "productType": 2,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 10,
+      "idsGbps": 10,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "supportsIDS": true,
+      "saleStatus": "active",
+      "maxDevices": 18000,
+      "criticalAssets": 3000,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "aws",
+        "gcp"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA6320V",
+        "rx360": "REVX-360-EDA6320V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ],
+      "basePacketrate": 1000000,
+      "advancedAnalysis": 3000,
+      "standardAnalysis": 18000
+    },
+    {
+      "name": "EDA8320v",
+      "category": "multifunction_sensor",
+      "generation": 3,
+      "productType": 2,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 20,
+      "idsGbps": 20,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS"
+      ],
+      "supportsIDS": true,
+      "saleStatus": "active",
+      "maxDevices": 35000,
+      "criticalAssets": 5500,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA8320V",
+        "rx360": "REVX-360-EDA8320V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ],
+      "basePacketrate": 2000000,
+      "advancedAnalysis": 5500,
+      "standardAnalysis": 35000
+    },
+    {
+      "name": "EDA6370v",
+      "category": "all_in_one",
+      "generation": 3,
+      "productType": 7,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 10,
+      "idsGbps": 10,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS",
+        "Packet Forensics"
+      ],
+      "supportsIDS": true,
+      "supportsPacketForensics": true,
+      "saleStatus": "active",
+      "maxDevices": 18000,
+      "criticalAssets": 3000,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "azure"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA6370V",
+        "rx360": "REVX-360-EDA6370V"
+      },
+      "virtualSupport": [],
+      "basePacketrate": 1000000,
+      "advancedAnalysis": 3000,
+      "standardAnalysis": 18000
+    },
+    {
+      "name": "EDA8370v",
+      "category": "all_in_one",
+      "generation": 3,
+      "productType": 7,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 20,
+      "idsGbps": 20,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS",
+        "Packet Forensics"
+      ],
+      "supportsIDS": true,
+      "supportsPacketForensics": true,
+      "saleStatus": "active",
+      "maxDevices": 35000,
+      "criticalAssets": 5500,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [
+        "gcp"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EDA8370V",
+        "rx360": "REVX-360-EDA8370V"
+      },
+      "virtualSupport": [],
+      "basePacketrate": 2000000,
+      "advancedAnalysis": 5500,
+      "standardAnalysis": 35000
+    },
+    {
+      "name": "IDS9380",
+      "category": "ids_standalone",
+      "generation": 3,
+      "productType": 8,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 50,
+      "idsGbps": 50,
+      "idsReductionPercent": 0,
+      "northSouthThroughput": 50,
+      "eastWestThroughput": 50,
+      "supportedModules": [
+        "IDS"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-IDS9380",
+        "rx360": "REVX-360-IDS9380"
+      },
+      "basePacketrate": 5000000,
+      "advancedAnalysis": 8000,
+      "standardAnalysis": 50000
+    },
+    {
+      "name": "IDS8280",
+      "category": "ids_standalone",
+      "generation": 2,
+      "productType": 8,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 20,
+      "idsGbps": 20,
+      "idsReductionPercent": 0,
+      "northSouthThroughput": 15,
+      "eastWestThroughput": 20,
+      "supportedModules": [
+        "IDS"
+      ],
+      "saleStatus": "end_of_sale",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-IDS8280",
+        "rx360": "REVX-360-IDS8280"
+      },
+      "basePacketrate": 2000000,
+      "advancedAnalysis": 5500,
+      "standardAnalysis": 35000
+    },
+    {
+      "name": "IDS1280v",
+      "category": "ids_standalone",
+      "generation": 2,
+      "productType": 8,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 1,
+      "idsGbps": 1,
+      "idsReductionPercent": 0,
+      "supportedModules": [
+        "IDS"
+      ],
+      "saleStatus": "active",
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [],
+      "skus": {
+        "enterprise": "REVX-ENT-IDS1280V",
+        "rx360": "REVX-360-IDS1280V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ],
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    },
+    {
+      "name": "IDS6280v",
+      "category": "ids_standalone",
+      "generation": 2,
+      "productType": 8,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 9,
+      "idsGbps": 9,
+      "idsReductionPercent": 0,
+      "northSouthThroughput": 7,
+      "eastWestThroughput": 9,
+      "supportedModules": [
+        "IDS"
+      ],
+      "saleStatus": "active",
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "cloudSupport": [],
+      "skus": {
+        "enterprise": "REVX-ENT-IDS6280V",
+        "rx360": "REVX-360-IDS6280V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ],
+      "basePacketrate": 1000000,
+      "advancedAnalysis": 3000,
+      "standardAnalysis": 18000
+    },
+    {
+      "name": "EFC1290v",
+      "category": "flow_collector",
+      "generation": 2,
+      "productType": 9,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 0,
+      "flowsPerSecond": 10000,
+      "flowsPerMinute": 600000,
+      "supportedProtocols": [
+        "NetFlow",
+        "sFlow",
+        "IPFIX"
+      ],
+      "supportedModules": [
+        "Flow Analysis"
+      ],
+      "saleStatus": "active",
+      "rx360Only": true,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": null,
+        "rx360": "REVX-360-EFC1290V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ],
+      "cloudSupport": [],
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    },
+    {
+      "name": "EFC1291v",
+      "category": "flow_collector",
+      "generation": 2,
+      "productType": 9,
+      "subtype": 1,
+      "isPhysical": false,
+      "baseGbps": 0,
+      "flowsPerSecond": 10000,
+      "flowsPerMinute": 600000,
+      "supportedProtocols": [
+        "AWS VPC Flow Logs"
+      ],
+      "supportedModules": [
+        "Flow Analysis"
+      ],
+      "saleStatus": "active",
+      "rx360Only": true,
+      "enterpriseOnly": false,
+      "cloudOnly": true,
+      "cloudSupport": [
+        "aws"
+      ],
+      "skus": {
+        "enterprise": null,
+        "rx360": "REVX-360-EFC1291V"
+      },
+      "virtualSupport": [],
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    },
+    {
+      "name": "EFC1292v",
+      "category": "flow_collector",
+      "generation": 2,
+      "productType": 9,
+      "subtype": 2,
+      "isPhysical": false,
+      "baseGbps": 0,
+      "flowsPerSecond": 10000,
+      "flowsPerMinute": 600000,
+      "supportedProtocols": [
+        "NetFlow",
+        "sFlow",
+        "IPFIX"
+      ],
+      "supportedModules": [
+        "Flow Analysis"
+      ],
+      "saleStatus": "active",
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EFC1292V",
+        "rx360": "REVX-360-EFC1292V"
+      },
+      "virtualSupport": [
+        "kvm",
+        "vmware"
+      ],
+      "cloudSupport": [],
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    },
+    {
+      "name": "EFC6392v",
+      "category": "flow_collector",
+      "generation": 3,
+      "productType": 9,
+      "subtype": 2,
+      "isPhysical": false,
+      "baseGbps": 0,
+      "flowsPerSecond": 100000,
+      "flowsPerMinute": 6000000,
+      "supportedProtocols": [
+        "NetFlow",
+        "sFlow",
+        "IPFIX"
+      ],
+      "supportedModules": [
+        "Flow Analysis"
+      ],
+      "saleStatus": "active",
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-EFC6392V",
+        "rx360": "REVX-360-EFC6392V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ],
+      "cloudSupport": [],
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    },
+    {
+      "name": "ETA9350",
+      "category": "packetstore",
+      "generation": 3,
+      "productType": 5,
+      "subtype": 0,
+      "isPhysical": true,
+      "scalingRules": [
+        {
+          "esuCount": 1,
+          "esuType": "240TB",
+          "throughputGbps": 10,
+          "packetsPerSecond": 3200000
+        },
+        {
+          "esuCount": "2-3",
+          "esuType": "240TB",
+          "throughputGbps": 25,
+          "packetsPerSecond": 8200000
+        },
+        {
+          "esuCount": 4,
+          "esuType": "240TB",
+          "throughputGbps": 50,
+          "packetsPerSecond": 16400000
+        },
+        {
+          "esuCount": 1,
+          "esuType": "1.2PB",
+          "throughputGbps": 50,
+          "packetsPerSecond": 16400000
+        }
+      ],
+      "supportedModules": [
+        "Packet Forensics"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "maxESUs": 4,
+      "compatibleESUs": [
+        "240TB ESU",
+        "HD ESU"
+      ],
+      "supportsPacketForensics": true,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA9350",
+        "rx360": "REVX-360-ETA9350"
+      }
+    },
+    {
+      "name": "ETA8250",
+      "category": "packetstore",
+      "generation": 2,
+      "productType": 5,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 10,
+      "withESUGbps": 25,
+      "packetsPerSecondStandalone": 3200000,
+      "packetsPerSecondWithESU": 8200000,
+      "supportedModules": [
+        "Packet Forensics"
+      ],
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "maxESUs": 4,
+      "compatibleESUs": [
+        "96TB ESU"
+      ],
+      "supportsPacketForensics": true,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA8250",
+        "rx360": "REVX-360-ETA8250"
+      },
+      "basePacketrate": 1000000,
+      "advancedAnalysis": 3000,
+      "standardAnalysis": 18000
+    },
+    {
+      "name": "ETA6150",
+      "category": "packetstore",
+      "generation": 1,
+      "productType": 5,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 10,
+      "withESUGbps": 10,
+      "packetsPerSecond": 3200000,
+      "supportedModules": [
+        "Packet Forensics"
+      ],
+      "saleStatus": "end_of_sale",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "maxESUs": 4,
+      "compatibleESUs": [
+        "72TB ESU",
+        "96TB ESU"
+      ],
+      "supportsPacketForensics": true,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA6150",
+        "rx360": "REVX-360-ETA6150"
+      },
+      "basePacketrate": 1000000,
+      "advancedAnalysis": 3000,
+      "standardAnalysis": 18000
+    },
+    {
+      "name": "ETA6150v",
+      "category": "packetstore",
+      "generation": 1,
+      "productType": 5,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 10,
+      "supportedModules": [
+        "Packet Forensics"
+      ],
+      "saleStatus": "active",
+      "supportsPacketForensics": true,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA6150V",
+        "rx360": "REVX-360-ETA6150V"
+      },
+      "basePacketrate": 1000000,
+      "advancedAnalysis": 3000,
+      "standardAnalysis": 18000
+    },
+    {
+      "name": "1150v",
+      "category": "packetstore",
+      "generation": 1,
+      "productType": 5,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 1,
+      "supportedModules": [
+        "Packet Forensics"
+      ],
+      "saleStatus": "active",
+      "supportsPacketForensics": true,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-1150V",
+        "rx360": "REVX-360-1150V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ],
+      "cloudSupport": [
+        "aws",
+        "azure",
+        "gcp"
+      ],
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    },
+    {
+      "name": "6150v",
+      "category": "packetstore",
+      "generation": 1,
+      "productType": 5,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 10,
+      "supportedModules": [
+        "Packet Forensics"
+      ],
+      "saleStatus": "active",
+      "supportsPacketForensics": true,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-6150V",
+        "rx360": "REVX-360-6150V"
+      },
+      "virtualSupport": [
+        "vmware"
+      ],
+      "cloudSupport": [],
+      "basePacketrate": 1000000,
+      "advancedAnalysis": 3000,
+      "standardAnalysis": 18000
+    },
+    {
+      "name": "240TB ESU",
+      "category": "extended_storage",
+      "capacityTB": 240,
+      "isHDESU": false,
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "compatibleWith": [
+        "ETA9350"
+      ],
+      "maxPerETA": 4,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA9350-ESU",
+        "rx360": "REVX-360-ETA9350-ESU"
+      }
+    },
+    {
+      "name": "HD ESU",
+      "category": "extended_storage",
+      "capacityTB": 1200,
+      "isHDESU": true,
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 1500,
+      "compatibleWith": [
+        "ETA9350"
+      ],
+      "maxPerETA": 1,
+      "cannotMixWith": [
+        "240TB ESU"
+      ],
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA9350-HD-ESU",
+        "rx360": "REVX-360-ETA9350-HD-ESU"
+      }
+    },
+    {
+      "name": "96TB ESU",
+      "category": "extended_storage",
+      "capacityTB": 96,
+      "isHDESU": false,
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "compatibleWith": [
+        "ETA8250"
+      ],
+      "maxPerETA": 4,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA8250-ESU",
+        "rx360": "REVX-360-ETA8250-ESU"
+      }
+    },
+    {
+      "name": "72TB ESU",
+      "category": "extended_storage",
+      "capacityTB": 72,
+      "isHDESU": false,
+      "saleStatus": "end_of_sale",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "compatibleWith": [
+        "ETA6150"
+      ],
+      "maxPerETA": 4,
+      "rx360Only": false,
+      "enterpriseOnly": false,
+      "skus": {
+        "enterprise": "REVX-ENT-ETA6150-ESU",
+        "rx360": "REVX-360-ETA6150-ESU"
+      }
+    },
+    {
+      "name": "EXA5300",
+      "category": "recordstore",
+      "generation": 3,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 0,
+      "ingestRecordsPerSec": 1000000,
+      "version": 2,
+      "internalEngine": "ClickHouse",
+      "saleStatus": "active",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "enterpriseOnly": true,
+      "rx360Only": false,
+      "supportedModules": [
+        "Investigation",
+        "Advanced Analytics"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EXA5300",
+        "rx360": null
+      },
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    },
+    {
+      "name": "EXA5300v",
+      "category": "recordstore",
+      "generation": 3,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 0,
+      "ingestRecordsPerSec": 1000000,
+      "version": 2,
+      "internalEngine": "ClickHouse",
+      "saleStatus": "active",
+      "enterpriseOnly": true,
+      "rx360Only": false,
+      "supportedModules": [
+        "Investigation",
+        "Advanced Analytics"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EXA5300V",
+        "rx360": null
+      },
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    },
+    {
+      "name": "EXA5200",
+      "category": "recordstore",
+      "generation": 2,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 0,
+      "version": 1,
+      "internalEngine": "Elasticsearch",
+      "saleStatus": "end_of_sale",
+      "supportEndDate": "2027-08",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "enterpriseOnly": true,
+      "rx360Only": false,
+      "supportedModules": [
+        "Investigation"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EXA5200",
+        "rx360": null
+      },
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    },
+    {
+      "name": "EXA5100",
+      "category": "recordstore",
+      "generation": 1,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": true,
+      "baseGbps": 0,
+      "version": 1,
+      "internalEngine": "Elasticsearch",
+      "saleStatus": "end_of_sale",
+      "supportEndDate": "2022-12",
+      "rackUnits": 2,
+      "powerWatts": 800,
+      "enterpriseOnly": true,
+      "rx360Only": false,
+      "supportedModules": [
+        "Investigation"
+      ],
+      "skus": {
+        "enterprise": "REVX-ENT-EXA5100",
+        "rx360": null
+      },
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    },
+    {
+      "name": "EXA5100v",
+      "category": "recordstore",
+      "generation": 1,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 0,
+      "version": 1,
+      "internalEngine": "Elasticsearch",
+      "saleStatus": "active",
+      "enterpriseOnly": true,
+      "rx360Only": false,
+      "supportedModules": [
+        "Investigation"
+      ],
+      "cloudSupport": {
+        "aws": true,
+        "azure": true,
+        "vmware": true
+      },
+      "skus": {
+        "enterprise": "REVX-ENT-EXA5100V",
+        "rx360": null
+      },
+      "basePacketrate": 140000,
+      "advancedAnalysis": 250,
+      "standardAnalysis": 750
+    }
+  ]
+}
