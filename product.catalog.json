@@ -1932,10 +1932,7 @@
       "skus": {
         "enterprise": "REVX-ENT-EXA5300",
         "rx360": null
-      },
-      "basePacketrate": 140000,
-      "advancedAnalysis": 250,
-      "standardAnalysis": 750
+      }
     },
     {
       "name": "EXA5300v",
@@ -1958,10 +1955,7 @@
       "skus": {
         "enterprise": "REVX-ENT-EXA5300V",
         "rx360": null
-      },
-      "basePacketrate": 140000,
-      "advancedAnalysis": 250,
-      "standardAnalysis": 750
+      }
     },
     {
       "name": "EXA5200",
@@ -1985,10 +1979,7 @@
       "skus": {
         "enterprise": "REVX-ENT-EXA5200",
         "rx360": null
-      },
-      "basePacketrate": 140000,
-      "advancedAnalysis": 250,
-      "standardAnalysis": 750
+      }
     },
     {
       "name": "EXA5100",
@@ -2012,10 +2003,7 @@
       "skus": {
         "enterprise": "REVX-ENT-EXA5100",
         "rx360": null
-      },
-      "basePacketrate": 140000,
-      "advancedAnalysis": 250,
-      "standardAnalysis": 750
+      }
     },
     {
       "name": "EXA5100v",
@@ -2041,10 +2029,7 @@
       "skus": {
         "enterprise": "REVX-ENT-EXA5100V",
         "rx360": null
-      },
-      "basePacketrate": 140000,
-      "advancedAnalysis": 250,
-      "standardAnalysis": 750
+      }
     }
   ]
 }
