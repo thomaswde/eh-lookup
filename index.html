@@ -474,7 +474,7 @@
                 detailsHtml += '</dl>';
 
                 let scalingHtml = '';
-                if (product.category === 'packetstore') {
+                if (product.scalingRules) {
                     scalingHtml = renderScalingInfo(product);
                 }
 
@@ -489,7 +489,7 @@
                 }
 
                 let interfacesHtml = '';
-                if(product.isPhysical && product.interfaces) {
+                if(product.interfaces) {
                     interfacesHtml += renderInterfacesTable(product.interfaces.management, 'Management Interfaces');
                     interfacesHtml += renderInterfacesTable(product.interfaces.capture, 'Capture Interfaces');
                 }
