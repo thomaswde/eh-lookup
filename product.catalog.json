@@ -433,7 +433,6 @@
       "powerWatts": 800,
       "rx360Only": false,
       "enterpriseOnly": false,
-      "supportsPacketForensics": true,
       "skus": {
         "enterprise": "REVX-ENT-EDA6370",
         "rx360": "REVX-360-EDA6370"
@@ -1378,7 +1377,6 @@
         "IDS",
         "Packet Forensics"
       ],
-      "supportsPacketForensics": true,
       "saleStatus": "active",
       "maxDevices": 18000,
       "criticalAssets": 3000,
@@ -1412,7 +1410,6 @@
         "IDS",
         "Packet Forensics"
       ],
-      "supportsPacketForensics": true,
       "saleStatus": "active",
       "maxDevices": 35000,
       "criticalAssets": 5500,
@@ -1803,7 +1800,6 @@
         "240TB ESU",
         "HD ESU"
       ],
-      "supportsPacketForensics": true,
       "rx360Only": false,
       "enterpriseOnly": false,
       "skus": {
@@ -1814,6 +1810,7 @@
     {
       "name": "ETA8250",
       "category": "packetstore",
+      "capacityTB": 1200,
       "generation": 2,
       "productType": 5,
       "subtype": 0,
@@ -1902,6 +1899,20 @@
       "withESUGbps": 25,
       "packetsPerSecondStandalone": 3200000,
       "packetsPerSecondWithESU": 8200000,
+      "scalingRules": [
+        {
+          "esuCount": 1,
+          "esuType": "96TB",
+          "throughputGbps": 10,
+          "packetsPerSecond": 3200000
+        },
+        {
+          "esuCount": "2-4",
+          "esuType": "96TB",
+          "throughputGbps": 25,
+          "packetsPerSecond": 8200000
+        }
+      ],
       "supportedModules": [
         "Packet Forensics"
       ],
@@ -1912,7 +1923,6 @@
       "compatibleESUs": [
         "96TB ESU"
       ],
-      "supportsPacketForensics": true,
       "rx360Only": false,
       "enterpriseOnly": false,
       "skus": {
@@ -1941,7 +1951,6 @@
         "72TB ESU",
         "96TB ESU"
       ],
-      "supportsPacketForensics": true,
       "rx360Only": false,
       "enterpriseOnly": false,
       "skus": {
@@ -1961,7 +1970,6 @@
         "Packet Forensics"
       ],
       "saleStatus": "active",
-      "supportsPacketForensics": true,
       "rx360Only": false,
       "enterpriseOnly": false,
       "skus": {
@@ -1981,7 +1989,6 @@
         "Packet Forensics"
       ],
       "saleStatus": "end_of_sale",
-      "supportsPacketForensics": true,
       "rx360Only": false,
       "enterpriseOnly": false,
       "skus": {

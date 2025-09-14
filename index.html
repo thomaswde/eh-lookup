@@ -397,10 +397,11 @@
                 let scalingHtml = `
                     <div class="mt-6 pt-6 border-t border-gray-200">
                         <h4 class="text-lg font-semibold mb-4 text-gray-700">Storage Scalability</h4>
+                        ${(product.maxESUs || product.compatibleESUs) ? `
                         <div class="space-y-1 mb-4">
                             ${createDetailItem('Max Storage Units (ESU)', product.maxESUs)}
                             ${createDetailItem('Compatible ESUs', product.compatibleESUs)}
-                        </div>
+                        </div>` : ''}
                         <h5 class="text-md font-semibold mb-3 text-gray-600">Performance Tiers</h5>
                         <div class="space-y-3">`;
 
@@ -413,15 +414,32 @@
                         </div>`;
 
                     if (esuProduct && esuProduct.diskQty && esuProduct.diskSizeTB) {
-                        const count = parseInt(rule.esuCount, 10);
-                        const rawCapacityTB = count * esuProduct.diskQty * esuProduct.diskSizeTB;
-                        let capacityDisplay = rawCapacityTB >= 1000 ? `${(rawCapacityTB / 1000).toFixed(2)} PB` : `${rawCapacityTB.toLocaleString()} TB`;
-                        
-                        capacityHtml = `
-                        <div class="border-l border-gray-300">
-                            <p class="font-bold text-lg text-[#00aaef]">${capacityDisplay}</p>
-                            <p class="text-xs text-gray-500">Raw Capacity</p>
-                        </div>`;
+                        const rawCapacityPerUnit = esuProduct.diskQty * esuProduct.diskSizeTB;
+                        let capacityDisplay;
+
+                        if (typeof rule.esuCount === 'string' && rule.esuCount.includes('-')) {
+                            const parts = rule.esuCount.split('-');
+                            const minCount = parseInt(parts[0], 10);
+                            const maxCount = parseInt(parts[1], 10);
+                            const minRawCapacity = minCount * rawCapacityPerUnit;
+                            const maxRawCapacity = maxCount * rawCapacityPerUnit;
+                            const formatCapacity = (tb) => tb >= 1000 ? `${(tb / 1000).toFixed(2)} PB` : `${tb.toLocaleString()} TB`;
+                            capacityDisplay = `${formatCapacity(minRawCapacity)} - ${formatCapacity(maxRawCapacity)}`;
+                        } else {
+                            const count = parseInt(rule.esuCount, 10);
+                            if (!isNaN(count)) {
+                                const rawCapacityTB = count * rawCapacityPerUnit;
+                                capacityDisplay = rawCapacityTB >= 1000 ? `${(rawCapacityTB / 1000).toFixed(2)} PB` : `${rawCapacityTB.toLocaleString()} TB`;
+                            }
+                        }
+
+                        if (capacityDisplay) {
+                            capacityHtml = `
+                            <div class="border-l border-gray-300">
+                                <p class="font-bold text-lg text-[#00aaef]">${capacityDisplay}</p>
+                                <p class="text-xs text-gray-500">Raw Capacity</p>
+                            </div>`;
+                        }
                     }
                     
                     scalingHtml += `
