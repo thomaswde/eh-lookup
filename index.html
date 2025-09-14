@@ -227,6 +227,11 @@
             }
 
             function formatString(str) {
+                 const overrides = {
+                    'ids_standalone': 'Standalone IDS', 'ids': 'IDS', 'npm': 'NPM', 'ndr': 'NDR',
+                    'kvm': 'KVM', 'vmware': 'VMware', 'gcp': 'GCP', 'aws': 'AWS'
+                };
+                if (overrides[str]) return overrides[str];
                 if (typeof str !== 'string' || !str) return 'N/A';
                 return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
             }
@@ -363,10 +368,17 @@
                     let esuProduct = products.find(p => p.name === rule.esu_type);
                     if (!esuProduct) { esuProduct = products.find(p => p.platform === 'extended_storage' && p.name.startsWith(rule.esu_type.split(' ')[0]));}
                     let capacityHtml = `<div class="border-l border-gray-300"><p class="font-bold text-lg text-gray-400">N/A</p><p class="text-xs text-gray-500">Raw Capacity</p></div>`;
+                    
                     if (esuProduct?.storage?.continuous_pcap) {
-                        const { disk_qty, disk_size_tb } = esuProduct.storage.continuous_pcap;
-                        if(disk_qty && disk_size_tb) {
-                             const rawCapacityPerUnit = disk_qty * disk_size_tb;
+                        const pcap = esuProduct.storage.continuous_pcap;
+                        let rawCapacityPerUnit = 0;
+                        if (pcap.disk_qty && pcap.disk_size_tb) {
+                            rawCapacityPerUnit = pcap.disk_qty * pcap.disk_size_tb;
+                        } else if (pcap.capacity_tb) {
+                            rawCapacityPerUnit = pcap.capacity_tb;
+                        }
+
+                        if (rawCapacityPerUnit > 0) {
                              let capacityDisplay;
                              if (typeof rule.esu_count === 'string' && rule.esu_count.includes('-')) {
                                 const [min, max] = rule.esu_count.split('-').map(n => parseInt(n.trim()));
@@ -380,6 +392,7 @@
                             capacityHtml = `<div class="border-l border-gray-300"><p class="font-bold text-lg text-[#00aaef]">${capacityDisplay}</p><p class="text-xs text-gray-500">Raw Capacity</p></div>`;
                         }
                     }
+
                     scalingHtml += `<div class="grid grid-cols-4 items-center gap-2 bg-gray-100 rounded-lg p-3 text-center">
                         <div><p class="font-bold text-[#261f63]">${rule.esu_count} &times; ${rule.esu_type}</p><p class="text-xs text-gray-500">ESU Config</p></div>
                         ${capacityHtml}
@@ -405,6 +418,7 @@
                     ${createDetailItem('Platform', formatString(p.platform))}
                     ${createDetailItem('Sale Status', formatString(p.sale_status))}
                     ${p.sale_end_date ? createDetailItem('End of Sale', p.sale_end_date) : ''}
+                    ${p.firmware_end_date ? createDetailItem('End of Firmware', p.firmware_end_date) : ''}
                     ${p.support_end_date ? createDetailItem('End of Support', p.support_end_date) : ''}
                 </dl>`;
 
@@ -418,14 +432,11 @@
                     if(ingest_records_per_sec) perfHtml += createDetailItem('Ingest Rate', `${ingest_records_per_sec.toLocaleString()} records/sec`);
                 }
                 perfHtml += '</dl>';
-
+                
+                let ingestHtml = p.ingest?.supported_protocols ? createDetailItem('Supported Protocols', p.ingest.supported_protocols) : '';
                 let modulesHtml = p.modules ? createDetailItem('Supported Modules', Object.keys(p.modules).filter(m => p.modules[m])) : '';
-                
-                let formFactorHtml = '';
-                if(p.form_factor) formFactorHtml = `<dl class="divide-y divide-gray-200">${createDetailItem('Rack Units', p.form_factor.rack_units)}${createDetailItem('Power (Watts)', p.form_factor.power_watts)}</dl>`;
-                
-                let deploymentHtml = '';
-                if(p.deployments) deploymentHtml = `<dl class="divide-y divide-gray-200">${createDetailItem('Hypervisors', p.deployments.hypervisors)}${createDetailItem('Clouds', p.deployments.clouds)}</dl>`;
+                let formFactorHtml = p.form_factor ? `<dl class="divide-y divide-gray-200">${createDetailItem('Rack Units', p.form_factor.rack_units)}${createDetailItem('Power (Watts)', p.form_factor.power_watts)}</dl>` : '';
+                let deploymentHtml = p.deployments ? `<dl class="divide-y divide-gray-200">${createDetailItem('Hypervisors', p.deployments.hypervisors)}${createDetailItem('Clouds', p.deployments.clouds)}</dl>` : '';
 
                 let storageHtml = '';
                 if(p.storage?.continuous_pcap) {
@@ -456,6 +467,7 @@
                     + createDetailSection('Modules', modulesHtml)
                     + createDetailSection('Form Factor', formFactorHtml)
                     + createDetailSection('Deployment', deploymentHtml)
+                    + createDetailSection('Ingest', ingestHtml)
                     + createDetailSection('Storage', storageHtml)
                     + interfacesHtml
                     + createDetailSection('Notes', notesHtml);
@@ -512,3 +524,4 @@
     </script>
 </body>
 </html>
+

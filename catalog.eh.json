@@ -2410,8 +2410,7 @@
       "rx360": null
     },
     "modules": {
-      "investigation": true,
-      "advanced_analytics": true
+      "investigation": true
     },
     "performance": {
       "base_gbps": 0,
@@ -2503,8 +2502,7 @@
       "rx360": null
     },
     "modules": {
-      "investigation": true,
-      "advanced_analytics": true
+      "investigation": true
     },
     "performance": {
       "base_gbps": 0,
