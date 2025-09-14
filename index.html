@@ -405,17 +405,37 @@
                         <div class="space-y-3">`;
 
                 product.scalingRules.forEach(rule => {
+                    const esuProduct = products.find(p => p.name === rule.esuType);
+                    let capacityHtml = `
+                        <div class="border-l border-gray-300">
+                            <p class="font-bold text-lg text-gray-400">N/A</p>
+                            <p class="text-xs text-gray-500">Raw Capacity</p>
+                        </div>`;
+
+                    if (esuProduct && esuProduct.diskQty && esuProduct.diskSizeTB) {
+                        const count = parseInt(rule.esuCount, 10);
+                        const rawCapacityTB = count * esuProduct.diskQty * esuProduct.diskSizeTB;
+                        let capacityDisplay = rawCapacityTB >= 1000 ? `${(rawCapacityTB / 1000).toFixed(2)} PB` : `${rawCapacityTB.toLocaleString()} TB`;
+                        
+                        capacityHtml = `
+                        <div class="border-l border-gray-300">
+                            <p class="font-bold text-lg text-[#00aaef]">${capacityDisplay}</p>
+                            <p class="text-xs text-gray-500">Raw Capacity</p>
+                        </div>`;
+                    }
+                    
                     scalingHtml += `
-                        <div class="grid grid-cols-3 items-center gap-2 bg-gray-100 rounded-lg p-3 text-center">
+                        <div class="grid grid-cols-4 items-center gap-2 bg-gray-100 rounded-lg p-3 text-center">
                             <div>
                                 <p class="font-bold text-[#261f63]">${rule.esuCount} x ${rule.esuType}</p>
                                 <p class="text-xs text-gray-500">ESU Configuration</p>
                             </div>
-                            <div class="border-l border-r border-gray-300">
+                            ${capacityHtml}
+                            <div class="border-l border-gray-300">
                                 <p class="font-bold text-lg text-[#00aaef]">${rule.throughputGbps} Gbps</p>
                                 <p class="text-xs text-gray-500">Throughput</p>
                             </div>
-                            <div>
+                            <div class="border-l border-gray-300">
                                 <p class="font-bold text-lg text-[#00aaef]">${(rule.packetsPerSecond / 1000000).toFixed(1)} Mpps</p>
                                 <p class="text-xs text-gray-500">Packet Rate</p>
                             </div>
@@ -450,6 +470,9 @@
                 }
                  if (product.category === 'extended_storage') {
                     detailsHtml += createDetailItem('Capacity', `${product.capacityTB}TB`);
+                    if(product.diskQty && product.diskSizeTB) {
+                        detailsHtml += createDetailItem('Disk Config', `${product.diskQty} x ${product.diskSizeTB}TB`);
+                    }
                     detailsHtml += createDetailItem('Compatible With', product.compatibleWith);
                     detailsHtml += createDetailItem('Max per ETA', product.maxPerETA);
                     if (product.cannotMixWith) {
