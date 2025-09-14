@@ -7,6 +7,8 @@
     <link rel="icon" href="favicon.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -161,7 +163,10 @@
         <div id="modal-content" class="modal-content bg-white rounded-lg shadow-xl w-full max-w-5xl max-h-[90vh] overflow-y-auto relative">
             <div class="sticky top-0 bg-white px-6 py-4 border-b border-gray-200 flex justify-between items-center z-10">
                 <h2 id="modal-title" class="text-2xl font-bold text-[#261f63]"></h2>
-                <button id="modal-close" class="text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+                <div class="flex items-center">
+                    <button id="export-pdf-btn" class="text-sm bg-[#00aaef] hover:bg-[#0098d7] text-white font-bold py-2 px-3 rounded-md mr-4">Export PDF</button>
+                    <button id="modal-close" class="text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+                </div>
             </div>
             <div id="modal-body" class="p-6 text-gray-700">
                 <!-- Details will be injected here -->
@@ -181,6 +186,7 @@
             const modalTitle = document.getElementById('modal-title');
             const modalBody = document.getElementById('modal-body');
             const resetFiltersButton = document.getElementById('reset-filters');
+            const exportPdfButton = document.getElementById('export-pdf-btn');
             
             const filenameInput = document.getElementById('filename-input');
             const loadDataBtn = document.getElementById('load-data-btn');
@@ -404,15 +410,7 @@
                 return scalingHtml;
             }
 
-            function showModal(productName) {
-                const p = products.find(p => p.name === productName);
-                if (!p) return;
-                
-                document.body.classList.add('body-no-scroll');
-                Object.values(chartInstances).forEach(chart => chart.destroy());
-                chartInstances = {};
-                modalTitle.textContent = p.name;
-
+            function buildModalHtml(p) {
                 let skusHtml = renderSkus(p.skus);
                 let mainDetails = `<dl class="divide-y divide-gray-200">
                     ${createDetailItem('Platform', formatString(p.platform))}
@@ -422,16 +420,16 @@
                     ${p.support_end_date ? createDetailItem('End of Support', p.support_end_date) : ''}
                 </dl>`;
 
-                let perfHtml = '<dl class="divide-y divide-gray-200">';
+                let perfHtml = '';
                 if(p.performance) {
                     const { base_gbps, ids_gbps, base_packetrate, flows_per_second, ingest_records_per_sec } = p.performance;
-                    perfHtml += createDetailItem('Base Throughput', `${(base_gbps || 1)} Gbps`);
-                    if(ids_gbps) perfHtml += createDetailItem('IDS Throughput', `${ids_gbps} Gbps`);
-                    if(base_packetrate) perfHtml += createDetailItem('Packet Rate', `${base_packetrate.toLocaleString()} pps`);
-                    if(flows_per_second) perfHtml += createDetailItem('Flows Per Second', `${flows_per_second.toLocaleString()}`);
-                    if(ingest_records_per_sec) perfHtml += createDetailItem('Ingest Rate', `${ingest_records_per_sec.toLocaleString()} records/sec`);
+                    let content = createDetailItem('Base Throughput', `${(base_gbps || 1)} Gbps`);
+                    if(ids_gbps) content += createDetailItem('IDS Throughput', `${ids_gbps} Gbps`);
+                    if(base_packetrate) content += createDetailItem('Packet Rate', `${base_packetrate.toLocaleString()} pps`);
+                    if(flows_per_second) content += createDetailItem('Flows Per Second', `${flows_per_second.toLocaleString()}`);
+                    if(ingest_records_per_sec) content += createDetailItem('Ingest Rate', `${ingest_records_per_sec.toLocaleString()} records/sec`);
+                    perfHtml = `<dl class="divide-y divide-gray-200">${content}</dl>`;
                 }
-                perfHtml += '</dl>';
                 
                 let ingestHtml = p.ingest?.supported_protocols ? createDetailItem('Supported Protocols', p.ingest.supported_protocols) : '';
                 let modulesHtml = p.modules ? createDetailItem('Supported Modules', Object.keys(p.modules).filter(m => p.modules[m])) : '';
@@ -462,7 +460,7 @@
 
                 let notesHtml = p.notes ? `<div class="prose prose-sm max-w-none mt-4"><ul>${p.notes.map(n => `<li>${n}</li>`).join('')}</ul></div>` : '';
 
-                modalBody.innerHTML = skusHtml + mainDetails 
+                return skusHtml + mainDetails 
                     + createDetailSection('Performance', perfHtml)
                     + createDetailSection('Modules', modulesHtml)
                     + createDetailSection('Form Factor', formFactorHtml)
@@ -471,13 +469,55 @@
                     + createDetailSection('Storage', storageHtml)
                     + interfacesHtml
                     + createDetailSection('Notes', notesHtml);
+            }
 
+            function showModal(productName) {
+                const product = products.find(p => p.name === productName);
+                if (!product) return;
+                
+                document.body.classList.add('body-no-scroll');
+                modalTitle.textContent = product.name;
+                modalBody.innerHTML = buildModalHtml(product);
                 modal.classList.remove('hidden');
             }
             
             function closeModal() {
                 modal.classList.add('hidden');
                 document.body.classList.remove('body-no-scroll');
+            }
+            
+            async function exportToPdf() {
+                const { jsPDF } = window.jspdf;
+                const modalContent = document.getElementById('modal-body');
+                const productTitle = document.getElementById('modal-title').textContent;
+
+                const tempTitle = document.createElement('h1');
+                tempTitle.className = 'text-3xl font-bold text-center mb-6 text-[#261f63]';
+                tempTitle.textContent = `${productTitle} Datasheet`;
+                modalContent.prepend(tempTitle);
+
+                await html2canvas(modalContent, { scale: 2, useCORS: true }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const imgProps= pdf.getImageProperties(imgData);
+                    const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                    let heightLeft = imgHeight;
+                    let position = 0;
+
+                    pdf.addImage(imgData, 'PNG', 10, position, pdfWidth - 20, imgHeight);
+                    heightLeft -= pdf.internal.pageSize.getHeight();
+
+                    while (heightLeft >= 0) {
+                      position = heightLeft - imgHeight;
+                      pdf.addPage();
+                      pdf.addImage(imgData, 'PNG', 10, position, pdfWidth - 20, imgHeight);
+                      heightLeft -= pdf.internal.pageSize.getHeight();
+                    }
+                    pdf.save(`${productTitle}-Datasheet.pdf`);
+                });
+
+                modalContent.removeChild(tempTitle);
             }
 
             function addFilterListeners() {
@@ -516,6 +556,7 @@
 
             resultsContainer.addEventListener('click', (e) => e.target.closest('.product-card')?.dataset.productName && showModal(e.target.closest('.product-card').dataset.productName));
             modalCloseButton.addEventListener('click', closeModal);
+            exportPdfButton.addEventListener('click', exportToPdf);
             modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
             resetFiltersButton.addEventListener('click', resetFilters);
             loadDataBtn.addEventListener('click', loadProducts);
