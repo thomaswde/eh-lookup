@@ -1269,13 +1269,12 @@
       "productType": 0,
       "subtype": 0,
       "isPhysical": false,
+      "idsGbps": 0,
+      "idsReductionPercent": 0,
       "baseGbps": 25,
-      "idsGbps": 12,
-      "idsReductionPercent": 50,
       "supportedModules": [
         "NDR",
-        "NPM",
-        "IDS"
+        "NPM"
       ],
       "saleStatus": "active",
       "maxDevices": 35000,
