@@ -1,6 +1,35 @@
 {
   "products": [
     {
+      "name": "ECA",
+      "category": "command",
+      "generation": 1,
+      "productType": 0,
+      "subtype": 0,
+      "isPhysical": false,
+      "baseGbps": 1,
+      "supportedModules": [
+        "NDR",
+        "NPM",
+        "IDS",
+        "Packet Forensics",
+        "Investigation",
+        "Flow Analysis"
+      ],
+      "supportsIDS": true,
+      "saleStatus": "active",
+      "rx360Only": true,
+      "enterpriseOnly": true,
+      "skus": {
+        "enterprise": "ECA"
+      },
+      "virtualSupport": [
+        "hyper-v",
+        "kvm",
+        "vmware"
+      ]
+    },
+    {
       "name": "EDA10300",
       "category": "packet_sensor",
       "generation": 3,
@@ -1640,6 +1669,90 @@
       "productType": 5,
       "subtype": 0,
       "isPhysical": true,
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 3,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP",
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              10,
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          },
+          {
+            "id": 4,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP",
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              10,
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          }
+        ],
+        "capture": [
+          {
+            "id": 5,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          },
+          {
+            "id": 6,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          }
+        ]
+      },
       "scalingRules": [
         {
           "esuCount": 1,
@@ -1692,6 +1805,86 @@
       "productType": 5,
       "subtype": 0,
       "isPhysical": true,
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 3,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 4,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          }
+        ],
+        "capture": [
+          {
+            "id": 5,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          },
+          {
+            "id": 6,
+            "roles": [
+              "capture"
+            ],
+            "supportedSpeedsGb": [
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "25G/10G SR"
+          }
+        ]
+      },
       "baseGbps": 10,
       "withESUGbps": 25,
       "packetsPerSecondStandalone": 3200000,
@@ -1883,6 +2076,65 @@
       "isPhysical": true,
       "baseGbps": 0,
       "ingestRecordsPerSec": 1000000,
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 3,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              10,
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          },
+          {
+            "id": 4,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              10,
+              25
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          }
+        ],
+        "capture": []
+      },
       "version": 2,
       "internalEngine": "ClickHouse",
       "saleStatus": "active",
@@ -1932,6 +2184,63 @@
       "baseGbps": 0,
       "version": 1,
       "internalEngine": "Elasticsearch",
+      "interfaces": {
+        "management": [
+          {
+            "id": 1,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 2,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              1
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "onboard"
+          },
+          {
+            "id": 3,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              10
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          },
+          {
+            "id": 4,
+            "roles": [
+              "mgmt",
+              "ERSPAN",
+              "RPCAP"
+            ],
+            "supportedSpeedsGb": [
+              10
+            ],
+            "transceiverIncluded": true,
+            "transceiverType": "10G SR"
+          }
+        ],
+        "capture": []
+      },
       "saleStatus": "end_of_sale",
       "supportEndDate": "2027-08",
       "rackUnits": 2,
