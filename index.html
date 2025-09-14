@@ -497,6 +497,8 @@
                 const leftMargin = 15;
                 const rightMargin = 195; // A4 width is 210mm
                 const lineSpacing = 7;
+                const sapphire = [38, 31, 99];
+                const plum = [127, 40, 84];
 
                 // --- Helper Functions for PDF Generation ---
                 const addSection = (title, contentFunc) => {
@@ -507,7 +509,9 @@
                     yPos += lineSpacing * 1.5;
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(14);
+                    doc.setTextColor.apply(null, sapphire);
                     doc.text(title, leftMargin, yPos);
+                    doc.setTextColor(0, 0, 0); // Reset to black
                     yPos += lineSpacing;
                     contentFunc();
                 };
@@ -521,7 +525,7 @@
                     
                     doc.setFont('helvetica', 'normal');
                     const valueText = Array.isArray(value) ? value.map(formatString).join(', ') : value;
-                    const splitText = doc.splitTextToSize(valueText, rightMargin - leftMargin - 45); // 45 is approx label width
+                    const splitText = doc.splitTextToSize(valueText.toString(), rightMargin - leftMargin - 45);
                     doc.text(splitText, leftMargin + 45, yPos);
                     yPos += (splitText.length * 4) + (lineSpacing / 2);
                 };
@@ -529,8 +533,10 @@
                 // --- PDF Content ---
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(22);
-                doc.text(`${currentProduct.name} Datasheet`, doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
-                yPos = 30;
+                doc.setTextColor.apply(null, sapphire);
+                doc.text(`${currentProduct.name} Datasheet`, doc.internal.pageSize.getWidth() / 2, 25, { align: 'center' });
+                doc.setTextColor(0, 0, 0);
+                yPos = 35;
 
                 // SKUs
                 if(currentProduct.skus) {
@@ -598,7 +604,7 @@
                                 }
                                 return [`${rule.esu_count} \u00D7 ${rule.esu_type}`, capacityText, `${rule.throughput_gbps} Gbps`, `${(rule.packets_per_second / 1000000).toFixed(1)} Mpps`];
                              });
-                             doc.autoTable({ head, body, startY: yPos + 5, theme: 'grid', styles: { font: 'helvetica' } });
+                             doc.autoTable({ head, body, startY: yPos + 5, theme: 'grid', styles: { font: 'helvetica' }, headStyles: { fillColor: plum } });
                              yPos = doc.lastAutoTable.finalY + 10;
                         }
                     });
@@ -606,36 +612,21 @@
 
                 // Interfaces
                 if(currentProduct.interfaces) {
+                    const tableConfig = { theme: 'striped', styles: { font: 'helvetica' }, headStyles: { fillColor: plum } };
+                    const sectionTitleConfig = { theme: 'plain', styles: { font: 'helvetica', fontStyle: 'bold', fontSize: 14, textColor: sapphire } };
+
                     if(currentProduct.interfaces.management?.length > 0) {
                         if (yPos > 250) { doc.addPage(); yPos = 20; }
-                        doc.autoTable({
-                            startY: yPos + 5,
-                            head: [['Management Interfaces']], body: [], theme: 'plain',
-                            styles: { font: 'helvetica', fontStyle: 'bold', fontSize: 14 }
-                        });
+                        doc.autoTable({ startY: yPos + 5, head: [['Management Interfaces']], body: [], ...sectionTitleConfig });
                         yPos = doc.lastAutoTable.finalY;
-                        doc.autoTable({
-                            startY: yPos,
-                            head: [['ID', 'Roles', 'Speeds (Gb)', 'Transceiver']],
-                            body: currentProduct.interfaces.management.map(i => [i.id, i.roles.map(formatString).join(', '), i.supported_speeds_gb.join(', '), `${i.transceiver_type} ${i.transceiver_included ? '(Included)' : ''}`]),
-                            theme: 'striped', styles: { font: 'helvetica' }
-                        });
+                        doc.autoTable({ startY: yPos, head: [['ID', 'Roles', 'Speeds (Gb)', 'Transceiver']], body: currentProduct.interfaces.management.map(i => [i.id, i.roles.map(formatString).join(', '), i.supported_speeds_gb.join(', '), `${i.transceiver_type} ${i.transceiver_included ? '(Included)' : ''}`]), ...tableConfig });
                         yPos = doc.lastAutoTable.finalY + 10;
                     }
                      if(currentProduct.interfaces.capture?.length > 0) {
                         if (yPos > 250) { doc.addPage(); yPos = 20; }
-                        doc.autoTable({
-                            startY: yPos,
-                            head: [['Capture Interfaces']], body: [], theme: 'plain',
-                            styles: { font: 'helvetica', fontStyle: 'bold', fontSize: 14 }
-                        });
+                        doc.autoTable({ startY: yPos, head: [['Capture Interfaces']], body: [], ...sectionTitleConfig });
                         yPos = doc.lastAutoTable.finalY;
-                        doc.autoTable({
-                            startY: yPos,
-                            head: [['ID', 'Roles', 'Speeds (Gb)', 'Transceiver']],
-                            body: currentProduct.interfaces.capture.map(i => [i.id, i.roles.map(formatString).join(', '), i.supported_speeds_gb.join(', '), `${i.transceiver_type} ${i.transceiver_included ? '(Included)' : ''}`]),
-                            theme: 'striped', styles: { font: 'helvetica' }
-                        });
+                        doc.autoTable({ startY: yPos, head: [['ID', 'Roles', 'Speeds (Gb)', 'Transceiver']], body: currentProduct.interfaces.capture.map(i => [i.id, i.roles.map(formatString).join(', '), i.supported_speeds_gb.join(', '), `${i.transceiver_type} ${i.transceiver_included ? '(Included)' : ''}`]), ...tableConfig });
                         yPos = doc.lastAutoTable.finalY + 10;
                     }
                 }
