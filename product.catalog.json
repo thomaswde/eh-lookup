@@ -1699,7 +1699,7 @@
       "supportedModules": [
         "Packet Forensics"
       ],
-      "saleStatus": "active",
+      "saleStatus": "end_of_sale",
       "rackUnits": 2,
       "powerWatts": 800,
       "maxESUs": 4,
@@ -1712,10 +1712,7 @@
       "skus": {
         "enterprise": "REVX-ENT-ETA8250",
         "rx360": "REVX-360-ETA8250"
-      },
-      "basePacketrate": 1000000,
-      "advancedAnalysis": 3000,
-      "standardAnalysis": 18000
+      }
     },
     {
       "name": "ETA6150",
@@ -1744,10 +1741,7 @@
       "skus": {
         "enterprise": "REVX-ENT-ETA6150",
         "rx360": "REVX-360-ETA6150"
-      },
-      "basePacketrate": 1000000,
-      "advancedAnalysis": 3000,
-      "standardAnalysis": 18000
+      }
     },
     {
       "name": "ETA6150v",
@@ -1767,10 +1761,7 @@
       "skus": {
         "enterprise": "REVX-ENT-ETA6150V",
         "rx360": "REVX-360-ETA6150V"
-      },
-      "basePacketrate": 1000000,
-      "advancedAnalysis": 3000,
-      "standardAnalysis": 18000
+      }
     },
     {
       "name": "1150v",
@@ -1783,7 +1774,7 @@
       "supportedModules": [
         "Packet Forensics"
       ],
-      "saleStatus": "active",
+      "saleStatus": "end_of_sale",
       "supportsPacketForensics": true,
       "rx360Only": false,
       "enterpriseOnly": false,
@@ -1798,42 +1789,14 @@
         "aws",
         "azure",
         "gcp"
-      ],
-      "basePacketrate": 140000,
-      "advancedAnalysis": 250,
-      "standardAnalysis": 750
-    },
-    {
-      "name": "6150v",
-      "category": "packetstore",
-      "generation": 1,
-      "productType": 5,
-      "subtype": 0,
-      "isPhysical": false,
-      "baseGbps": 10,
-      "supportedModules": [
-        "Packet Forensics"
-      ],
-      "saleStatus": "active",
-      "supportsPacketForensics": true,
-      "rx360Only": false,
-      "enterpriseOnly": false,
-      "skus": {
-        "enterprise": "REVX-ENT-6150V",
-        "rx360": "REVX-360-6150V"
-      },
-      "virtualSupport": [
-        "vmware"
-      ],
-      "cloudSupport": [],
-      "basePacketrate": 1000000,
-      "advancedAnalysis": 3000,
-      "standardAnalysis": 18000
+      ]
     },
     {
       "name": "240TB ESU",
       "category": "extended_storage",
       "capacityTB": 240,
+      "diskQty": 12,
+      "diskSizeTB": 20,
       "isHDESU": false,
       "saleStatus": "active",
       "rackUnits": 2,
@@ -1854,8 +1817,10 @@
       "category": "extended_storage",
       "capacityTB": 1200,
       "isHDESU": true,
+      "diskQty": 60,
+      "diskSizeTB": 20,
       "saleStatus": "active",
-      "rackUnits": 2,
+      "rackUnits": 4,
       "powerWatts": 1500,
       "compatibleWith": [
         "ETA9350"

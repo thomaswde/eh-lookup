@@ -263,8 +263,8 @@
                         (selectedDeployments.includes('virtual') && p.virtualSupport && p.virtualSupport.length > 0) ||
                         (selectedDeployments.includes('cloud') && p.cloudSupport && p.cloudSupport.length > 0);
 
-                    const virtualMatch = selectedVirtual.length === 0 || (p.virtualSupport && selectedVirtual.every(v => p.virtualSupport.includes(v)));
-                    const cloudMatch = selectedCloud.length === 0 || (p.cloudSupport && selectedCloud.every(c => p.cloudSupport.includes(c)));
+                    const virtualMatch = selectedVirtual.length === 0 || (p.virtualSupport && selectedVirtual.some(v => p.virtualSupport.includes(v)));
+                    const cloudMatch = selectedCloud.length === 0 || (p.cloudSupport && selectedCloud.some(c => p.cloudSupport.includes(c)));
 
                     return searchMatch && categoryMatch && activeMatch && deploymentMatch && virtualMatch && cloudMatch;
                 });
@@ -290,7 +290,7 @@
                             </div>
                             <p class="text-sm text-gray-500 mb-4">${formatString(product.category)}</p>
                             <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm mb-4">
-                                <div class="text-gray-500">Throughput: <span class="font-semibold text-gray-800">${product.baseGbps ?? 'N/A'} Gbps</span></div>
+                                <div class="text-gray-500">Throughput: <span class="font-semibold text-gray-800">${(product.baseGbps || 1)} Gbps</span></div>
                                 <div class="text-gray-500">Form Factor: <span class="font-semibold text-gray-800">${product.isPhysical ? 'Physical' : 'Virtual/Cloud'}</span></div>
                             </div>
                         </div>
@@ -389,12 +389,25 @@
                 if (product.isPhysical) {
                     detailsHtml += createDetailItem('Rack Units', product.rackUnits);
                     detailsHtml += createDetailItem('Power (Watts)', product.powerWatts);
+                    if(product.diskQty && product.diskSizeTB) {
+                        detailsHtml += createDetailItem('Disk Config', `${product.diskQty} x ${product.diskSizeTB}TB`);
+                    }
+                }
+                 if (product.category === 'extended_storage') {
+                    detailsHtml += createDetailItem('Capacity', `${product.capacityTB}TB`);
+                    detailsHtml += createDetailItem('Compatible With', product.compatibleWith);
+                    detailsHtml += createDetailItem('Max per ETA', product.maxPerETA);
+                    if (product.cannotMixWith) {
+                        detailsHtml += createDetailItem('Cannot Mix With', product.cannotMixWith);
+                    }
                 }
                 if (product.category === 'recordstore' && product.ingestRecordsPerSec) {
                     detailsHtml += createDetailItem('Ingest Rate', `${product.ingestRecordsPerSec.toLocaleString()} records/sec`);
                 }
-                detailsHtml += createDetailItem('Base Throughput', `${product.baseGbps ?? 0} Gbps`);
-                detailsHtml += createDetailItem('IDS Throughput', `${product.idsGbps ?? 0} Gbps`);
+                detailsHtml += createDetailItem('Base Throughput', `${(product.baseGbps || 1)} Gbps`);
+                if (product.idsGbps) {
+                    detailsHtml += createDetailItem('IDS Throughput', `${product.idsGbps} Gbps`);
+                }
                 detailsHtml += createDetailItem('Supported Modules', product.supportedModules);
                 if (product.virtualSupport) detailsHtml += createDetailItem('Virtual Support', product.virtualSupport);
                 if (product.cloudSupport) detailsHtml += createDetailItem('Cloud Support', product.cloudSupport);
