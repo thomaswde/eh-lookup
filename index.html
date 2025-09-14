@@ -406,7 +406,16 @@
                         <div class="space-y-3">`;
 
                 product.scalingRules.forEach(rule => {
-                    const esuProduct = products.find(p => p.name === rule.esuType);
+                    // Robust ESU lookup
+                    let esuProduct = products.find(p => p.name === rule.esuType);
+                    if (!esuProduct) {
+                         esuProduct = products.find(p => p.category === 'extended_storage' && p.name.startsWith(rule.esuType));
+                    }
+                     if (!esuProduct && rule.esuType === '1.2PB') {
+                        esuProduct = products.find(p => p.name === 'HD ESU');
+                    }
+
+
                     let capacityHtml = `
                         <div class="border-l border-gray-300">
                             <p class="font-bold text-lg text-gray-400">N/A</p>
