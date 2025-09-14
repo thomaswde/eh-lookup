@@ -231,39 +231,18 @@
                         <label for="cat-${cat}" class="ml-2 text-sm text-gray-700">${formatString(cat)}</label>
                     </div>`).join('');
 
-                const virtualPlatforms = [...new Set(products.flatMap(p => p.virtualSupport || []))].filter(Boolean);
-                const cloudPlatforms = [...new Set(products.flatMap(p => p.cloudSupport || []))].filter(Boolean);
-
                 deploymentOptionsContainer.innerHTML = `
                     <div class="flex items-center">
                         <input type="checkbox" id="dep-physical" name="deployment" value="physical" class="h-4 w-4 rounded border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
                         <label for="dep-physical" class="ml-2 text-sm text-gray-700">Physical</label>
                     </div>
-                    <div>
-                        <div class="flex items-center">
-                            <input type="checkbox" id="dep-virtual" name="deployment" value="virtual" class="h-4 w-4 rounded border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
-                            <label for="dep-virtual" class="ml-2 text-sm text-gray-700">Virtual</label>
-                        </div>
-                        <div class="pl-6 mt-1 space-y-1" id="virtual-subfilters">
-                        ${virtualPlatforms.map(p => `
-                            <div class="flex items-center">
-                                <input type="checkbox" id="virt-${p}" name="virtualSupport" value="${p}" class="h-4 w-4 rounded border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
-                                <label for="virt-${p}" class="ml-2 text-sm text-gray-500">${formatString(p)}</label>
-                            </div>`).join('')}
-                        </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="dep-virtual" name="deployment" value="virtual" class="h-4 w-4 rounded border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
+                        <label for="dep-virtual" class="ml-2 text-sm text-gray-700">Virtual</label>
                     </div>
-                    <div>
-                        <div class="flex items-center">
-                            <input type="checkbox" id="dep-cloud" name="deployment" value="cloud" class="h-4 w-4 rounded border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
-                            <label for="dep-cloud" class="ml-2 text-sm text-gray-700">Cloud</label>
-                        </div>
-                        <div class="pl-6 mt-1 space-y-1" id="cloud-subfilters">
-                        ${cloudPlatforms.map(p => `
-                            <div class="flex items-center">
-                                <input type="checkbox" id="cloud-${p}" name="cloudSupport" value="${p}" class="h-4 w-4 rounded border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
-                                <label for="cloud-${p}" class="ml-2 text-sm text-gray-500">${formatString(p)}</label>
-                            </div>`).join('')}
-                        </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="dep-cloud" name="deployment" value="cloud" class="h-4 w-4 rounded border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
+                        <label for="dep-cloud" class="ml-2 text-sm text-gray-700">Cloud</label>
                     </div>`;
 
                 addFilterListeners();
@@ -275,8 +254,6 @@
                 const excludeEos = excludeEosToggle.checked;
                 
                 const selectedDeployments = Array.from(document.querySelectorAll('input[name="deployment"]:checked')).map(cb => cb.value);
-                const selectedVirtual = Array.from(document.querySelectorAll('input[name="virtualSupport"]:checked')).map(cb => cb.value);
-                const selectedCloud = Array.from(document.querySelectorAll('input[name="cloudSupport"]:checked')).map(cb => cb.value);
                 
                 const selectedLicense = document.querySelector('input[name="license"]:checked').value;
 
@@ -291,13 +268,10 @@
 
                     const deploymentMatch = selectedDeployments.length === 0 || 
                         (selectedDeployments.includes('physical') && p.isPhysical) ||
-                        (selectedDeployments.includes('virtual') && p.virtualSupport && p.virtualSupport.length > 0) ||
-                        (selectedDeployments.includes('cloud') && p.cloudSupport && p.cloudSupport.length > 0);
+                        (selectedDeployments.includes('virtual') && !p.isPhysical && p.virtualSupport && p.virtualSupport.length > 0) ||
+                        (selectedDeployments.includes('cloud') && !p.isPhysical && p.cloudSupport && p.cloudSupport.length > 0);
 
-                    const virtualMatch = selectedVirtual.length === 0 || (p.virtualSupport && selectedVirtual.some(v => p.virtualSupport.includes(v)));
-                    const cloudMatch = selectedCloud.length === 0 || (p.cloudSupport && selectedCloud.some(c => p.cloudSupport.includes(c)));
-
-                    return searchMatch && categoryMatch && activeMatch && deploymentMatch && virtualMatch && cloudMatch && licenseMatch;
+                    return searchMatch && categoryMatch && activeMatch && deploymentMatch && licenseMatch;
                 });
 
                 resultsContainer.innerHTML = '';
@@ -614,4 +588,10 @@
     </script>
 </body>
 </html>
+" selected, I'd like to make this change:
+Ok one last tweak before calling it good for now.
+Cloudfilters still suck.
+Lets simplify:
+Physical, Virtual, Cloud.
+Drop the sub filter tick boxes because they don't seem to work properly anyway and I don't think they are super needed since you can just search "AWS" for example
 
