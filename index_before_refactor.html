@@ -101,19 +101,11 @@
             </div>
 
 
-            <!-- Platform (Category) Filter -->
-            <div id="platform-filter">
-                <h3 class="text-sm font-medium text-gray-600 mb-2 border-t border-gray-200 pt-4">Platform</h3>
-                <div id="platform-options" class="space-y-2">
+            <!-- Category Filter -->
+            <div id="category-filter">
+                <h3 class="text-sm font-medium text-gray-600 mb-2 border-t border-gray-200 pt-4">Category</h3>
+                <div id="category-options" class="space-y-2">
                     <!-- Checkboxes will be dynamically inserted here -->
-                </div>
-            </div>
-
-            <!-- Modules Filter -->
-            <div id="module-filter">
-                <h3 class="text-sm font-medium text-gray-600 mb-2 border-t border-gray-200 pt-4">Modules</h3>
-                <div id="module-options" class="space-y-2">
-                    <!-- Module checkboxes inserted here -->
                 </div>
             </div>
 
@@ -132,7 +124,7 @@
                     <div>
                         <label for="filename-input" class="block text-xs font-medium text-gray-500">Filename</label>
                         <div class="flex items-center space-x-2 mt-1">
-                             <input type="text" id="filename-input" value="catalog.eh.json" class="flex-grow bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#00aaef] text-sm">
+                             <input type="text" id="filename-input" value="product.catalog.json" class="flex-grow bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#00aaef] text-sm">
                              <button id="load-data-btn" class="bg-[#00aaef] hover:bg-[#0098d7] text-white font-bold py-2 px-3 rounded-md text-sm">Load</button>
                         </div>
                     </div>
@@ -174,7 +166,7 @@
             const resultsContainer = document.getElementById('results');
             const noResultsMessage = document.getElementById('no-results');
             const searchInput = document.getElementById('search');
-            const platformOptionsContainer = document.getElementById('platform-options');
+            const categoryOptionsContainer = document.getElementById('category-options');
             const productCountElement = document.getElementById('product-count');
             const modal = document.getElementById('modal');
             const modalCloseButton = document.getElementById('modal-close');
@@ -190,7 +182,6 @@
             const excludeEosToggle = document.getElementById('exclude-eos-toggle');
             const deploymentOptionsContainer = document.getElementById('deployment-options');
             const licenseOptionsContainer = document.getElementById('license-options');
-            const moduleOptionsContainer = document.getElementById('module-options');
 
             let products = [];
             let chartInstances = {}; 
@@ -208,7 +199,7 @@
                     const response = await fetch(filePath);
                     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                     const data = await response.json();
-                    products = data; // The new JSON is an array at the root
+                    products = data.products;
                     initializeFilters();
                     renderProducts();
                     dataSourceStatus.textContent = `Loaded from: ${filename}`;
@@ -227,64 +218,60 @@
             }
 
             function formatString(str) {
+                if (str === 'ids_standalone') return 'Standalone IDS';
                 if (typeof str !== 'string' || !str) return 'N/A';
                 return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
             }
-            
-            function createCheckbox(id, name, value, label) {
-                return `
-                <div class="flex items-center">
-                    <input type="checkbox" id="${id}" name="${name}" value="${value}" class="h-4 w-4 rounded border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
-                    <label for="${id}" class="ml-2 text-sm text-gray-700">${label}</label>
-                </div>`;
-            }
 
             function initializeFilters() {
-                const platforms = [...new Set(products.map(p => p.platform))].filter(Boolean).sort();
-                platformOptionsContainer.innerHTML = platforms.map(plat => createCheckbox(`plat-${plat}`, 'platform', plat, formatString(plat))).join('');
-
-                const allModules = products.reduce((acc, p) => {
-                    if (p.modules) Object.keys(p.modules).forEach(mod => acc.add(mod));
-                    return acc;
-                }, new Set());
-                moduleOptionsContainer.innerHTML = [...allModules].sort().map(mod => createCheckbox(`mod-${mod}`, 'module', mod, formatString(mod))).join('');
+                const categories = [...new Set(products.map(p => p.category))].filter(Boolean); // Filter out null/undefined
+                categoryOptionsContainer.innerHTML = categories.map(cat => `
+                    <div class="flex items-center">
+                        <input type="checkbox" id="cat-${cat}" name="category" value="${cat}" class="h-4 w-4 rounded border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
+                        <label for="cat-${cat}" class="ml-2 text-sm text-gray-700">${formatString(cat)}</label>
+                    </div>`).join('');
 
                 deploymentOptionsContainer.innerHTML = `
-                    ${createCheckbox('dep-physical', 'deployment', 'physical', 'Physical')}
-                    ${createCheckbox('dep-virtual', 'deployment', 'virtual', 'Virtual')}
-                    ${createCheckbox('dep-cloud', 'deployment', 'cloud', 'Cloud')}
-                `;
+                    <div class="flex items-center">
+                        <input type="checkbox" id="dep-physical" name="deployment" value="physical" class="h-4 w-4 rounded border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
+                        <label for="dep-physical" class="ml-2 text-sm text-gray-700">Physical</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="dep-virtual" name="deployment" value="virtual" class="h-4 w-4 rounded border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
+                        <label for="dep-virtual" class="ml-2 text-sm text-gray-700">Virtual</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="dep-cloud" name="deployment" value="cloud" class="h-4 w-4 rounded border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
+                        <label for="dep-cloud" class="ml-2 text-sm text-gray-700">Cloud</label>
+                    </div>`;
 
                 addFilterListeners();
             }
 
             function renderProducts() {
                 const searchTerm = searchInput.value.toLowerCase();
-                const selectedPlatforms = Array.from(document.querySelectorAll('input[name="platform"]:checked')).map(cb => cb.value);
-                const selectedModules = Array.from(document.querySelectorAll('input[name="module"]:checked')).map(cb => cb.value);
+                const selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
                 const excludeEos = excludeEosToggle.checked;
+                
                 const selectedDeployments = Array.from(document.querySelectorAll('input[name="deployment"]:checked')).map(cb => cb.value);
+                
                 const selectedLicense = document.querySelector('input[name="license"]:checked').value;
 
                 const filteredProducts = products.filter(p => {
                     const searchMatch = !searchTerm || JSON.stringify(p).toLowerCase().includes(searchTerm);
-                    const platformMatch = selectedPlatforms.length === 0 || selectedPlatforms.includes(p.platform);
-                    const activeMatch = !excludeEos || (p.sale_status !== 'end_of_sale' && p.sale_status !== 'end_of_support');
+                    const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(p.category);
+                    const activeMatch = !excludeEos || (p.saleStatus !== 'end_of_sale' && p.saleStatus !== 'end_of_support');
 
-                    const moduleMatch = selectedModules.length === 0 || selectedModules.every(mod => p.modules && p.modules[mod]);
-                    
-                    const compatibility = p.compatibility || {};
-                    const trackLimits = compatibility.track_limits || [];
                     const licenseMatch = selectedLicense === 'all' ||
-                        (selectedLicense === 'rx360' && p.skus?.rx360 && !trackLimits.includes('enterprise_only')) ||
-                        (selectedLicense === 'enterprise' && p.skus?.enterprise && !trackLimits.includes('rx360_only'));
+                        (selectedLicense === 'rx360' && p.skus && p.skus.rx360) ||
+                        (selectedLicense === 'enterprise' && p.skus && p.skus.enterprise);
 
                     const deploymentMatch = selectedDeployments.length === 0 || 
-                        (selectedDeployments.includes('physical') && p.is_physical) ||
-                        (selectedDeployments.includes('virtual') && p.deployments?.hypervisors?.length > 0) ||
-                        (selectedDeployments.includes('cloud') && p.deployments?.clouds?.length > 0);
+                        (selectedDeployments.includes('physical') && p.isPhysical) ||
+                        (selectedDeployments.includes('virtual') && !p.isPhysical && p.virtualSupport && p.virtualSupport.length > 0) ||
+                        (selectedDeployments.includes('cloud') && !p.isPhysical && p.cloudSupport && p.cloudSupport.length > 0);
 
-                    return searchMatch && platformMatch && activeMatch && deploymentMatch && licenseMatch && moduleMatch;
+                    return searchMatch && categoryMatch && activeMatch && deploymentMatch && licenseMatch;
                 });
 
                 resultsContainer.innerHTML = '';
@@ -295,37 +282,34 @@
                     card.className = 'product-card bg-white rounded-lg shadow-md p-5 flex flex-col cursor-pointer border border-gray-200';
                     card.dataset.productName = product.name;
 
-                    const statusColor = product.sale_status === 'active' ? 'bg-[#dae343] text-black' : 'bg-[#f05918] text-white';
-                    const modules = product.modules ? Object.keys(product.modules).filter(m => product.modules[m]) : [];
-                    
+                    const statusColor = product.saleStatus === 'active' ? 'bg-[#dae343] text-black' : 'bg-[#f05918] text-white';
+                    const supportedModulesText = (product.supportedModules && product.supportedModules.length > 0)
+                        ? `Modules: ${product.supportedModules.join(', ')}`
+                        : 'Modules: N/A';
+
                     card.innerHTML = `
                         <div class="flex-grow">
                              <div class="flex justify-between items-start mb-2">
                                 <h3 class="text-xl font-bold text-[#261f63]">${product.name}</h3>
-                                <span class="text-xs font-semibold px-2 py-1 ${statusColor} rounded-full">${formatString(product.platform)}</span>
+                                <span class="text-xs font-semibold px-2 py-1 ${statusColor} rounded-full">${formatString(product.category)}</span>
                             </div>
                             <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm mb-4">
-                                <div class="text-gray-500">Throughput: <span class="font-semibold text-gray-800">${(product.performance?.base_gbps || 1)} Gbps</span></div>
-                                <div class="text-gray-500">Form Factor: <span class="font-semibold text-gray-800">${product.is_physical ? 'Physical' : 'Virtual/Cloud'}</span></div>
+                                <div class="text-gray-500">Throughput: <span class="font-semibold text-gray-800">${(product.baseGbps || 1)} Gbps</span></div>
+                                <div class="text-gray-500">Form Factor: <span class="font-semibold text-gray-800">${product.isPhysical ? 'Physical' : 'Virtual/Cloud'}</span></div>
                             </div>
                         </div>
                         <div class="border-t border-gray-200 pt-3 text-xs text-gray-400">
-                           Modules: ${modules.map(formatString).join(', ') || 'N/A'}
+                           ${supportedModulesText}
                         </div>`;
                     resultsContainer.appendChild(card);
                 });
                 productCountElement.textContent = `${filteredProducts.length} of ${products.length} products shown`;
             }
 
-            function createDetailSection(title, content) {
-                if (!content) return '';
-                return `<div class="mt-6 pt-6 border-t border-gray-200"><h4 class="text-lg font-semibold mb-2 text-gray-700">${title}</h4>${content}</div>`;
-            }
-            
             function createDetailItem(label, value) {
                 if (value === undefined || value === null || (Array.isArray(value) && value.length === 0)) return '';
                 let displayValue = (typeof value === 'boolean')
-                    ? value ? `<span class="px-2 py-1 text-xs rounded-full bg-green-200 text-green-800">Yes</span>` : `<span class="px-2 py-1 text-xs rounded-full bg-red-200 text-red-800">No</span>`
+                    ? value ? `<span class="px-2 py-1 text-xs rounded-full bg-[#00aaef] text-white">Yes</span>` : `<span class="px-2 py-1 text-xs rounded-full bg-gray-500 text-white">No</span>`
                     : Array.isArray(value)
                     ? value.map(item => `<span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">${formatString(item)}</span>`).join('')
                     : `<p class="text-gray-800">${value}</p>`;
@@ -336,11 +320,18 @@
                 if (!skus) return '';
                 let skuHtml = '<div class="mb-4 space-y-3">';
                 const copyIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg>`;
+                
                 if (skus.enterprise) {
-                    skuHtml += `<div class="flex items-center justify-between bg-gray-100 p-2 rounded-md"><div><span class="font-semibold text-sm text-gray-600">Enterprise SKU:</span> <code class="text-sm text-[#7f2054]">${skus.enterprise}</code></div><button class="copy-btn text-gray-400 hover:text-[#00aaef]" data-copy-text="${skus.enterprise}" title="Copy SKU">${copyIcon}</button></div>`;
+                    skuHtml += `<div class="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+                        <div><span class="font-semibold text-sm text-gray-600">Enterprise SKU:</span> <code class="text-sm text-[#7f2054]">${skus.enterprise}</code></div>
+                        <button class="copy-btn text-gray-400 hover:text-[#00aaef]" data-copy-text="${skus.enterprise}" title="Copy SKU">${copyIcon}</button>
+                    </div>`;
                 }
                 if (skus.rx360) {
-                     skuHtml += `<div class="flex items-center justify-between bg-gray-100 p-2 rounded-md"><div><span class="font-semibold text-sm text-gray-600">360 SKU:</span> <code class="text-sm text-[#7f2054]">${skus.rx360}</code></div><button class="copy-btn text-gray-400 hover:text-[#00aaef]" data-copy-text="${skus.rx360}" title="Copy SKU">${copyIcon}</button></div>`;
+                     skuHtml += `<div class="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+                        <div><span class="font-semibold text-sm text-gray-600">360 SKU:</span> <code class="text-sm text-[#7f2054]">${skus.rx360}</code></div>
+                        <button class="copy-btn text-gray-400 hover:text-[#00aaef]" data-copy-text="${skus.rx360}" title="Copy SKU">${copyIcon}</button>
+                    </div>`;
                 }
                 skuHtml += '</div>';
                 return skuHtml;
@@ -348,117 +339,189 @@
 
             function renderInterfacesTable(interfaces, title) {
                 if (!interfaces || interfaces.length === 0) return '';
-                let tableHtml = `<div class="overflow-x-auto"><table class="min-w-full text-sm text-left text-gray-600"><thead class="text-xs text-gray-500 uppercase bg-gray-100"><tr><th scope="col" class="px-4 py-2">ID</th><th scope="col" class="px-4 py-2">Roles</th><th scope="col" class="px-4 py-2">Speeds (Gb)</th><th scope="col" class="px-4 py-2">Transceiver</th></tr></thead><tbody>`;
+                let tableHtml = `
+                    <div class="mt-6">
+                        <h4 class="text-lg font-semibold mb-2 text-gray-700">${title}</h4>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-sm text-left text-gray-600">
+                                <thead class="text-xs text-gray-500 uppercase bg-gray-100">
+                                    <tr>
+                                        <th scope="col" class="px-4 py-2">ID</th>
+                                        <th scope="col" class="px-4 py-2">Roles</th>
+                                        <th scope="col" class="px-4 py-2">Speeds (Gb)</th>
+                                        <th scope="col" class="px-4 py-2">Transceiver</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
                 interfaces.forEach(iface => {
-                    tableHtml += `<tr class="border-b border-gray-200"><td class="px-4 py-2">${iface.id}</td><td class="px-4 py-2">${iface.roles.map(formatString).join(', ')}</td><td class="px-4 py-2">${iface.supported_speeds_gb.join(', ')}</td><td class="px-4 py-2">${iface.transceiver_type} ${iface.transceiver_included ? '(Included)' : ''}</td></tr>`;
+                    tableHtml += `
+                        <tr class="border-b border-gray-200">
+                            <td class="px-4 py-2">${iface.id}</td>
+                            <td class="px-4 py-2">${iface.roles.map(formatString).join(', ')}</td>
+                            <td class="px-4 py-2">${iface.supportedSpeedsGb.join(', ')}</td>
+                            <td class="px-4 py-2">${iface.transceiverType} ${iface.transceiverIncluded ? '(Included)' : ''}</td>
+                        </tr>`;
                 });
-                tableHtml += '</tbody></table></div>';
-                return createDetailSection(title, tableHtml);
+                tableHtml += '</tbody></table></div></div>';
+                return tableHtml;
             }
-            
-            function renderScalingInfo(rules) {
-                 if (!rules) return '';
-                 let scalingHtml = `<h5 class="text-md font-semibold mb-3 text-gray-600">Performance Tiers</h5><div class="space-y-3">`;
-                 rules.forEach(rule => {
-                    let esuProduct = products.find(p => p.name === rule.esu_type);
-                    if (!esuProduct) { esuProduct = products.find(p => p.platform === 'extended_storage' && p.name.startsWith(rule.esu_type.split(' ')[0]));}
-                    let capacityHtml = `<div class="border-l border-gray-300"><p class="font-bold text-lg text-gray-400">N/A</p><p class="text-xs text-gray-500">Raw Capacity</p></div>`;
-                    if (esuProduct?.storage?.continuous_pcap) {
-                        const { disk_qty, disk_size_tb } = esuProduct.storage.continuous_pcap;
-                        if(disk_qty && disk_size_tb) {
-                             const rawCapacityPerUnit = disk_qty * disk_size_tb;
-                             let capacityDisplay;
-                             if (typeof rule.esu_count === 'string' && rule.esu_count.includes('-')) {
-                                const [min, max] = rule.esu_count.split('-').map(n => parseInt(n.trim()));
-                                const format = (tb) => tb >= 1000 ? `${(tb / 1000).toFixed(2)} PB` : `${tb.toLocaleString()} TB`;
-                                capacityDisplay = `${format(min * rawCapacityPerUnit)} - ${format(max * rawCapacityPerUnit)}`;
-                             } else {
-                                const count = parseInt(rule.esu_count, 10);
+
+            function renderScalingInfo(product) {
+                if (!product.scalingRules) return '';
+                let scalingHtml = `
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <h4 class="text-lg font-semibold mb-4 text-gray-700">Storage Scalability</h4>
+                        ${(product.maxESUs || product.compatibleESUs) ? `
+                        <div class="space-y-1 mb-4">
+                            ${createDetailItem('Max Storage Units (ESU)', product.maxESUs)}
+                            ${createDetailItem('Compatible ESUs', product.compatibleESUs)}
+                        </div>` : ''}
+                        <h5 class="text-md font-semibold mb-3 text-gray-600">Performance Tiers</h5>
+                        <div class="space-y-3">`;
+
+                product.scalingRules.forEach(rule => {
+                    // Robust ESU lookup
+                    let esuProduct = products.find(p => p.name === rule.esuType);
+                    if (!esuProduct) {
+                         esuProduct = products.find(p => p.category === 'extended_storage' && p.name.startsWith(rule.esuType));
+                    }
+                     if (!esuProduct && rule.esuType === '1.2PB') {
+                        esuProduct = products.find(p => p.name === 'HD ESU');
+                    }
+
+
+                    let capacityHtml = `
+                        <div class="border-l border-gray-300">
+                            <p class="font-bold text-lg text-gray-400">N/A</p>
+                            <p class="text-xs text-gray-500">Raw Capacity</p>
+                        </div>`;
+
+                    if (esuProduct && esuProduct.diskQty && esuProduct.diskSizeTB) {
+                        const rawCapacityPerUnit = esuProduct.diskQty * esuProduct.diskSizeTB;
+                        let capacityDisplay;
+
+                        if (typeof rule.esuCount === 'string' && rule.esuCount.includes('-')) {
+                            const parts = rule.esuCount.split('-');
+                            const minCount = parseInt(parts[0], 10);
+                            const maxCount = parseInt(parts[1], 10);
+                            const minRawCapacity = minCount * rawCapacityPerUnit;
+                            const maxRawCapacity = maxCount * rawCapacityPerUnit;
+                            const formatCapacity = (tb) => tb >= 1000 ? `${(tb / 1000).toFixed(2)} PB` : `${tb.toLocaleString()} TB`;
+                            capacityDisplay = `${formatCapacity(minRawCapacity)} - ${formatCapacity(maxRawCapacity)}`;
+                        } else {
+                            const count = parseInt(rule.esuCount, 10);
+                            if (!isNaN(count)) {
                                 const rawCapacityTB = count * rawCapacityPerUnit;
                                 capacityDisplay = rawCapacityTB >= 1000 ? `${(rawCapacityTB / 1000).toFixed(2)} PB` : `${rawCapacityTB.toLocaleString()} TB`;
-                             }
-                            capacityHtml = `<div class="border-l border-gray-300"><p class="font-bold text-lg text-[#00aaef]">${capacityDisplay}</p><p class="text-xs text-gray-500">Raw Capacity</p></div>`;
+                            }
+                        }
+
+                        if (capacityDisplay) {
+                            capacityHtml = `
+                            <div class="border-l border-gray-300">
+                                <p class="font-bold text-lg text-[#00aaef]">${capacityDisplay}</p>
+                                <p class="text-xs text-gray-500">Raw Capacity</p>
+                            </div>`;
                         }
                     }
-                    scalingHtml += `<div class="grid grid-cols-4 items-center gap-2 bg-gray-100 rounded-lg p-3 text-center">
-                        <div><p class="font-bold text-[#261f63]">${rule.esu_count} &times; ${rule.esu_type}</p><p class="text-xs text-gray-500">ESU Config</p></div>
-                        ${capacityHtml}
-                        <div class="border-l border-gray-300"><p class="font-bold text-lg text-[#00aaef]">${rule.throughput_gbps} Gbps</p><p class="text-xs text-gray-500">Throughput</p></div>
-                        <div class="border-l border-gray-300"><p class="font-bold text-lg text-[#00aaef]">${(rule.packets_per_second / 1000000).toFixed(1)} Mpps</p><p class="text-xs text-gray-500">Packet Rate</p></div>
-                    </div>`;
+                    
+                    scalingHtml += `
+                        <div class="grid grid-cols-4 items-center gap-2 bg-gray-100 rounded-lg p-3 text-center">
+                            <div>
+                                <p class="font-bold text-[#261f63]">${rule.esuCount} x ${rule.esuType}</p>
+                                <p class="text-xs text-gray-500">ESU Configuration</p>
+                            </div>
+                            ${capacityHtml}
+                            <div class="border-l border-gray-300">
+                                <p class="font-bold text-lg text-[#00aaef]">${rule.throughputGbps} Gbps</p>
+                                <p class="text-xs text-gray-500">Throughput</p>
+                            </div>
+                            <div class="border-l border-gray-300">
+                                <p class="font-bold text-lg text-[#00aaef]">${(rule.packetsPerSecond / 1000000).toFixed(1)} Mpps</p>
+                                <p class="text-xs text-gray-500">Packet Rate</p>
+                            </div>
+                        </div>`;
                 });
-                scalingHtml += '</div>';
+
+                scalingHtml += '</div></div>';
                 return scalingHtml;
             }
 
             function showModal(productName) {
-                const p = products.find(p => p.name === productName);
-                if (!p) return;
+                const product = products.find(p => p.name === productName);
+                if (!product) return;
                 
                 document.body.classList.add('body-no-scroll');
+
                 Object.values(chartInstances).forEach(chart => chart.destroy());
                 chartInstances = {};
-                modalTitle.textContent = p.name;
+                modalTitle.textContent = product.name;
 
-                let skusHtml = renderSkus(p.skus);
-                let mainDetails = `<dl class="divide-y divide-gray-200">
-                    ${createDetailItem('Platform', formatString(p.platform))}
-                    ${createDetailItem('Sale Status', formatString(p.sale_status))}
-                    ${p.sale_end_date ? createDetailItem('End of Sale', p.sale_end_date) : ''}
-                    ${p.support_end_date ? createDetailItem('End of Support', p.support_end_date) : ''}
-                </dl>`;
+                let skusHtml = renderSkus(product.skus);
 
-                let perfHtml = '<dl class="divide-y divide-gray-200">';
-                if(p.performance) {
-                    const { base_gbps, ids_gbps, base_packetrate, flows_per_second, ingest_records_per_sec } = p.performance;
-                    perfHtml += createDetailItem('Base Throughput', `${(base_gbps || 1)} Gbps`);
-                    if(ids_gbps) perfHtml += createDetailItem('IDS Throughput', `${ids_gbps} Gbps`);
-                    if(base_packetrate) perfHtml += createDetailItem('Packet Rate', `${base_packetrate.toLocaleString()} pps`);
-                    if(flows_per_second) perfHtml += createDetailItem('Flows Per Second', `${flows_per_second.toLocaleString()}`);
-                    if(ingest_records_per_sec) perfHtml += createDetailItem('Ingest Rate', `${ingest_records_per_sec.toLocaleString()} records/sec`);
-                }
-                perfHtml += '</dl>';
-
-                let modulesHtml = p.modules ? createDetailItem('Supported Modules', Object.keys(p.modules).filter(m => p.modules[m])) : '';
-                
-                let formFactorHtml = '';
-                if(p.form_factor) formFactorHtml = `<dl class="divide-y divide-gray-200">${createDetailItem('Rack Units', p.form_factor.rack_units)}${createDetailItem('Power (Watts)', p.form_factor.power_watts)}</dl>`;
-                
-                let deploymentHtml = '';
-                if(p.deployments) deploymentHtml = `<dl class="divide-y divide-gray-200">${createDetailItem('Hypervisors', p.deployments.hypervisors)}${createDetailItem('Clouds', p.deployments.clouds)}</dl>`;
-
-                let storageHtml = '';
-                if(p.storage?.continuous_pcap) {
-                    const { disk_qty, disk_size_tb, capacity_tb, raid_level, usable_tb, extended_pcap } = p.storage.continuous_pcap;
-                    let pcapDetails = `<dl class="divide-y divide-gray-200">
-                        ${disk_qty ? createDetailItem('Disk Quantity', disk_qty) : ''}
-                        ${disk_size_tb ? createDetailItem('Disk Size', `${disk_size_tb} TB`) : ''}
-                        ${capacity_tb ? createDetailItem('Total Capacity', `${capacity_tb} TB`) : ''}
-                        ${raid_level ? createDetailItem('RAID Level', raid_level) : ''}
-                        ${usable_tb ? createDetailItem('Usable Capacity', `${usable_tb} TB`) : ''}
-                    </dl>`;
-                    if(extended_pcap?.rules) {
-                        pcapDetails += renderScalingInfo(extended_pcap.rules);
+                let detailsHtml = '<dl class="divide-y divide-gray-200">';
+                detailsHtml += createDetailItem('Category', formatString(product.category));
+                detailsHtml += createDetailItem('Sale Status', formatString(product.saleStatus));
+                if (product.isPhysical) {
+                    detailsHtml += createDetailItem('Rack Units', product.rackUnits);
+                    detailsHtml += createDetailItem('Power (Watts)', product.powerWatts);
+                    if(product.diskQty && product.diskSizeTB) {
+                        detailsHtml += createDetailItem('Disk Config', `${product.diskQty} x ${product.diskSizeTB}TB`);
                     }
-                    storageHtml = pcapDetails;
                 }
-                
+                 if (product.category === 'extended_storage') {
+                    detailsHtml += createDetailItem('Capacity', `${product.capacityTB}TB`);
+                    if(product.diskQty && product.diskSizeTB) {
+                        detailsHtml += createDetailItem('Disk Config', `${product.diskQty} x ${product.diskSizeTB}TB`);
+                    }
+                    detailsHtml += createDetailItem('Compatible With', product.compatibleWith);
+                    detailsHtml += createDetailItem('Max per ETA', product.maxPerETA);
+                    if (product.cannotMixWith) {
+                        detailsHtml += createDetailItem('Cannot Mix With', product.cannotMixWith);
+                    }
+                }
+                if (product.category === 'recordstore' && product.ingestRecordsPerSec) {
+                    detailsHtml += createDetailItem('Ingest Rate', `${product.ingestRecordsPerSec.toLocaleString()} records/sec`);
+                }
+                if (product.category === 'flow_collector') {
+                    if (product.flowsPerSecond) detailsHtml += createDetailItem('Flows Per Second', product.flowsPerSecond.toLocaleString());
+                    if (product.flowsPerMinute) detailsHtml += createDetailItem('Flows Per Minute', product.flowsPerMinute.toLocaleString());
+                    if (product.supportedProtocols) detailsHtml += createDetailItem('Supported Protocols', product.supportedProtocols);
+                }
+                detailsHtml += createDetailItem('Base Throughput', `${(product.baseGbps || 1)} Gbps`);
+                if (product.idsGbps) {
+                    detailsHtml += createDetailItem('IDS Throughput', `${product.idsGbps} Gbps`);
+                }
+                detailsHtml += createDetailItem('Supported Modules', product.supportedModules);
+                if (product.virtualSupport) detailsHtml += createDetailItem('Virtual Support', product.virtualSupport);
+                if (product.cloudSupport) detailsHtml += createDetailItem('Cloud Support', product.cloudSupport);
+                detailsHtml += '</dl>';
+
+                let scalingHtml = '';
+                if (product.scalingRules) {
+                    scalingHtml = renderScalingInfo(product);
+                }
+
+                let chartsHtml = '';
+                const hasPerfChart = (product.baseGbps || product.idsGbps);
+                const hasAnalysisChart = (product.standardAnalysis || product.advancedAnalysis);
+                if (hasPerfChart || hasAnalysisChart) {
+                    chartsHtml += '<div class="grid md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-gray-200">';
+                    if (hasPerfChart) chartsHtml += '<div><h4 class="text-lg font-semibold mb-2 text-center text-gray-600">Performance (Gbps)</h4><canvas id="perfChart"></canvas></div>';
+                    if (hasAnalysisChart) chartsHtml += '<div><h4 class="text-lg font-semibold mb-2 text-center text-gray-600">Analysis Capacity</h4><canvas id="analysisChart"></canvas></div>';
+                    chartsHtml += '</div>';
+                }
+
                 let interfacesHtml = '';
-                if(p.interfaces) {
-                    interfacesHtml += renderInterfacesTable(p.interfaces.management, 'Management Interfaces');
-                    interfacesHtml += renderInterfacesTable(p.interfaces.capture, 'Capture Interfaces');
+                if(product.interfaces) {
+                    interfacesHtml += renderInterfacesTable(product.interfaces.management, 'Management Interfaces');
+                    interfacesHtml += renderInterfacesTable(product.interfaces.capture, 'Capture Interfaces');
                 }
 
-                let notesHtml = p.notes ? `<div class="prose prose-sm max-w-none mt-4"><ul>${p.notes.map(n => `<li>${n}</li>`).join('')}</ul></div>` : '';
+                modalBody.innerHTML = skusHtml + detailsHtml + scalingHtml + chartsHtml + interfacesHtml;
 
-                modalBody.innerHTML = skusHtml + mainDetails 
-                    + createDetailSection('Performance', perfHtml)
-                    + createDetailSection('Modules', modulesHtml)
-                    + createDetailSection('Form Factor', formFactorHtml)
-                    + createDetailSection('Deployment', deploymentHtml)
-                    + createDetailSection('Storage', storageHtml)
-                    + interfacesHtml
-                    + createDetailSection('Notes', notesHtml);
+                if (hasPerfChart) createPerfChart(product);
+                if (hasAnalysisChart) createAnalysisChart(product);
 
                 modal.classList.remove('hidden');
             }
@@ -468,13 +531,25 @@
                 document.body.classList.remove('body-no-scroll');
             }
 
+            function createChart(canvasId, label, labels, data, bgColors) {
+                 const ctx = document.getElementById(canvasId)?.getContext('2d');
+                 if (!ctx) return;
+                 chartInstances[canvasId] = new Chart(ctx, { type: 'bar',
+                    data: { labels, datasets: [{ label, data, backgroundColor: bgColors, borderWidth: 0 }] },
+                    options: { responsive: true, plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, ticks: { color: '#6b7280' }, grid: { color: '#e5e7eb' } },
+                                  x: { ticks: { color: '#4b5563' }, grid: { display: false } } } } });
+            }
+
+            function createPerfChart(product) { createChart('perfChart', 'Gbps', ['Base', 'IDS'], [product.baseGbps || 0, product.idsGbps || 0], ['rgba(0, 170, 239, 0.6)', 'rgba(240, 89, 24, 0.6)']); }
+            function createAnalysisChart(product) { createChart('analysisChart', 'Capacity', ['Standard', 'Advanced'], [product.standardAnalysis || 0, product.advancedAnalysis || 0], ['rgba(218, 227, 67, 0.6)', 'rgba(236, 0, 137, 0.6)']); }
+
             function addFilterListeners() {
                 searchInput.addEventListener('input', renderProducts);
-                platformOptionsContainer.addEventListener('change', renderProducts);
+                categoryOptionsContainer.addEventListener('change', renderProducts);
                 excludeEosToggle.addEventListener('change', renderProducts);
                 deploymentOptionsContainer.addEventListener('change', renderProducts);
                 licenseOptionsContainer.addEventListener('change', renderProducts);
-                moduleOptionsContainer.addEventListener('change', renderProducts);
             }
 
             function resetFilters() {
@@ -495,6 +570,7 @@
                     tempTextarea.select();
                     document.execCommand('copy');
                     document.body.removeChild(tempTextarea);
+                    
                     copyButton.innerHTML = 'Copied!';
                     setTimeout(() => {
                         copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg>`;
