@@ -16,7 +16,6 @@
         "Investigation",
         "Flow Analysis"
       ],
-      
       "saleStatus": "active",
       "rx360Only": true,
       "enterpriseOnly": true,
@@ -402,6 +401,32 @@
         "NPM",
         "IDS",
         "Packet Forensics"
+      ],
+      "scalingRules": [
+        {
+          "esuCount": 1,
+          "esuType": "240TB",
+          "throughputGbps": 10,
+          "packetsPerSecond": 3200000
+        },
+        {
+          "esuCount": "2-3",
+          "esuType": "240TB",
+          "throughputGbps": 10,
+          "packetsPerSecond": 3200000
+        },
+        {
+          "esuCount": 4,
+          "esuType": "240TB",
+          "throughputGbps": 10,
+          "packetsPerSecond": 3200000
+        },
+        {
+          "esuCount": 1,
+          "esuType": "1.2PB",
+          "throughputGbps": 10,
+          "packetsPerSecond": 3200000
+        }
       ],
       "saleStatus": "active",
       "rackUnits": 1,
@@ -939,7 +964,6 @@
         "NDR",
         "NPM"
       ],
-      
       "saleStatus": "end_of_sale",
       "rackUnits": 1,
       "powerWatts": 800,
@@ -1047,7 +1071,6 @@
         "NDR",
         "NPM"
       ],
-      
       "saleStatus": "active",
       "rackUnits": 1,
       "powerWatts": 800,
@@ -1106,7 +1129,6 @@
         "NDR",
         "NPM"
       ],
-      
       "saleStatus": "end_of_sale",
       "performanceOnly": true,
       "maxDevices": 750,
@@ -1144,7 +1166,6 @@
         "NDR",
         "NPM"
       ],
-      
       "saleStatus": "active",
       "maxDevices": 750,
       "criticalAssets": 250,
@@ -1182,7 +1203,6 @@
         "NDR",
         "NPM"
       ],
-      
       "saleStatus": "end_of_sale",
       "performanceOnly": true,
       "maxDevices": 1500,
@@ -1221,7 +1241,6 @@
         "NPM",
         "IDS"
       ],
-      
       "saleStatus": "active",
       "maxDevices": 18000,
       "criticalAssets": 3000,
@@ -1259,7 +1278,6 @@
         "NPM",
         "IDS"
       ],
-      
       "saleStatus": "active",
       "maxDevices": 35000,
       "criticalAssets": 5500,
@@ -1292,7 +1310,6 @@
         "NPM",
         "IDS"
       ],
-      
       "saleStatus": "active",
       "maxDevices": 18000,
       "criticalAssets": 3000,
@@ -1328,7 +1345,6 @@
         "NPM",
         "IDS"
       ],
-      
       "saleStatus": "active",
       "maxDevices": 35000,
       "criticalAssets": 5500,
@@ -1362,7 +1378,6 @@
         "IDS",
         "Packet Forensics"
       ],
-      
       "supportsPacketForensics": true,
       "saleStatus": "active",
       "maxDevices": 18000,
@@ -1397,7 +1412,6 @@
         "IDS",
         "Packet Forensics"
       ],
-      
       "supportsPacketForensics": true,
       "saleStatus": "active",
       "maxDevices": 35000,
