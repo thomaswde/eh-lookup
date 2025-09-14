@@ -70,13 +70,33 @@
             <div>
                 <h3 class="text-sm font-medium text-gray-600 mb-2 border-t border-gray-200 pt-4">Status</h3>
                 <div class="flex items-center justify-between">
-                    <label for="active-only-toggle" class="text-sm text-gray-700">Show Active Products Only</label>
+                    <label for="exclude-eos-toggle" class="text-sm text-gray-700">Exclude End of Sale</label>
                     <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                        <input type="checkbox" name="toggle" id="active-only-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
-                        <label for="active-only-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                        <input type="checkbox" name="toggle" id="exclude-eos-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                        <label for="exclude-eos-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                     </div>
                 </div>
             </div>
+            
+            <!-- License Filter -->
+            <div id="license-filter">
+                <h3 class="text-sm font-medium text-gray-600 mb-2 border-t border-gray-200 pt-4">License</h3>
+                <div id="license-options" class="space-y-2">
+                    <div class="flex items-center">
+                        <input type="radio" id="lic-all" name="license" value="all" class="h-4 w-4 border-gray-300 text-[#00aaef] focus:ring-[#00aaef]" checked>
+                        <label for="lic-all" class="ml-2 text-sm text-gray-700">All</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="lic-rx360" name="license" value="rx360" class="h-4 w-4 border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
+                        <label for="lic-rx360" class="ml-2 text-sm text-gray-700">360</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="lic-enterprise" name="license" value="enterprise" class="h-4 w-4 border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
+                        <label for="lic-enterprise" class="ml-2 text-sm text-gray-700">Enterprise</label>
+                    </div>
+                </div>
+            </div>
+
 
             <!-- Category Filter -->
             <div id="category-filter">
@@ -156,8 +176,9 @@
             const dataSourceStatus = document.getElementById('data-source-status');
 
             // Filter elements
-            const activeOnlyToggle = document.getElementById('active-only-toggle');
+            const excludeEosToggle = document.getElementById('exclude-eos-toggle');
             const deploymentOptionsContainer = document.getElementById('deployment-options');
+            const licenseOptionsContainer = document.getElementById('license-options');
 
             let products = [];
             let chartInstances = {}; 
@@ -194,6 +215,7 @@
             }
 
             function formatString(str) {
+                if (str === 'ids_standalone') return 'Standalone IDS';
                 if (typeof str !== 'string' || !str) return 'N/A';
                 return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
             }
@@ -247,16 +269,22 @@
             function renderProducts() {
                 const searchTerm = searchInput.value.toLowerCase();
                 const selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
-                const showActiveOnly = activeOnlyToggle.checked;
+                const excludeEos = excludeEosToggle.checked;
                 
                 const selectedDeployments = Array.from(document.querySelectorAll('input[name="deployment"]:checked')).map(cb => cb.value);
                 const selectedVirtual = Array.from(document.querySelectorAll('input[name="virtualSupport"]:checked')).map(cb => cb.value);
                 const selectedCloud = Array.from(document.querySelectorAll('input[name="cloudSupport"]:checked')).map(cb => cb.value);
+                
+                const selectedLicense = document.querySelector('input[name="license"]:checked').value;
 
                 const filteredProducts = products.filter(p => {
                     const searchMatch = !searchTerm || JSON.stringify(p).toLowerCase().includes(searchTerm);
                     const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(p.category);
-                    const activeMatch = !showActiveOnly || p.saleStatus === 'active';
+                    const activeMatch = !excludeEos || (p.saleStatus !== 'end_of_sale' && p.saleStatus !== 'end_of_support');
+
+                    const licenseMatch = selectedLicense === 'all' ||
+                        (selectedLicense === 'rx360' && p.skus && p.skus.rx360) ||
+                        (selectedLicense === 'enterprise' && p.skus && p.skus.enterprise);
 
                     const deploymentMatch = selectedDeployments.length === 0 || 
                         (selectedDeployments.includes('physical') && p.isPhysical) ||
@@ -266,7 +294,7 @@
                     const virtualMatch = selectedVirtual.length === 0 || (p.virtualSupport && selectedVirtual.some(v => p.virtualSupport.includes(v)));
                     const cloudMatch = selectedCloud.length === 0 || (p.cloudSupport && selectedCloud.some(c => p.cloudSupport.includes(c)));
 
-                    return searchMatch && categoryMatch && activeMatch && deploymentMatch && virtualMatch && cloudMatch;
+                    return searchMatch && categoryMatch && activeMatch && deploymentMatch && virtualMatch && cloudMatch && licenseMatch;
                 });
 
                 resultsContainer.innerHTML = '';
@@ -310,6 +338,27 @@
                     ? value.map(item => `<span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">${formatString(item)}</span>`).join('')
                     : `<p class="text-gray-800">${value}</p>`;
                 return `<div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4"><dt class="text-sm font-medium text-gray-500">${label}</dt><dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">${displayValue}</dd></div>`;
+            }
+
+            function renderSkus(skus) {
+                if (!skus) return '';
+                let skuHtml = '<div class="mb-4 space-y-3">';
+                const copyIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg>`;
+                
+                if (skus.enterprise) {
+                    skuHtml += `<div class="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+                        <div><span class="font-semibold text-sm text-gray-600">Enterprise SKU:</span> <code class="text-sm text-[#7f2054]">${skus.enterprise}</code></div>
+                        <button class="copy-btn text-gray-400 hover:text-[#00aaef]" data-copy-text="${skus.enterprise}" title="Copy SKU">${copyIcon}</button>
+                    </div>`;
+                }
+                if (skus.rx360) {
+                     skuHtml += `<div class="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+                        <div><span class="font-semibold text-sm text-gray-600">360 SKU:</span> <code class="text-sm text-[#7f2054]">${skus.rx360}</code></div>
+                        <button class="copy-btn text-gray-400 hover:text-[#00aaef]" data-copy-text="${skus.rx360}" title="Copy SKU">${copyIcon}</button>
+                    </div>`;
+                }
+                skuHtml += '</div>';
+                return skuHtml;
             }
 
             function renderInterfacesTable(interfaces, title) {
@@ -383,6 +432,8 @@
                 chartInstances = {};
                 modalTitle.textContent = product.name;
 
+                let skusHtml = renderSkus(product.skus);
+
                 let detailsHtml = '<dl class="divide-y divide-gray-200">';
                 detailsHtml += createDetailItem('Category', formatString(product.category));
                 detailsHtml += createDetailItem('Sale Status', formatString(product.saleStatus));
@@ -429,12 +480,12 @@
                 }
 
                 let interfacesHtml = '';
-                if(product.interfaces) {
+                if(product.isPhysical && product.interfaces) {
                     interfacesHtml += renderInterfacesTable(product.interfaces.management, 'Management Interfaces');
                     interfacesHtml += renderInterfacesTable(product.interfaces.capture, 'Capture Interfaces');
                 }
 
-                modalBody.innerHTML = detailsHtml + scalingHtml + chartsHtml + interfacesHtml;
+                modalBody.innerHTML = skusHtml + detailsHtml + scalingHtml + chartsHtml + interfacesHtml;
 
                 if (hasPerfChart) createPerfChart(product);
                 if (hasAnalysisChart) createAnalysisChart(product);
@@ -458,16 +509,36 @@
             function addFilterListeners() {
                 searchInput.addEventListener('input', renderProducts);
                 categoryOptionsContainer.addEventListener('change', renderProducts);
-                activeOnlyToggle.addEventListener('change', renderProducts);
+                excludeEosToggle.addEventListener('change', renderProducts);
                 deploymentOptionsContainer.addEventListener('change', renderProducts);
+                licenseOptionsContainer.addEventListener('change', renderProducts);
             }
 
             function resetFilters() {
                 searchInput.value = '';
                 document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-                activeOnlyToggle.checked = true;
+                document.querySelector('input[name="license"][value="all"]').checked = true;
+                excludeEosToggle.checked = true;
                 renderProducts();
             }
+
+            modalBody.addEventListener('click', e => {
+                const copyButton = e.target.closest('.copy-btn');
+                if (copyButton) {
+                    const textToCopy = copyButton.dataset.copyText;
+                    const tempTextarea = document.createElement('textarea');
+                    tempTextarea.value = textToCopy;
+                    document.body.appendChild(tempTextarea);
+                    tempTextarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempTextarea);
+                    
+                    copyButton.innerHTML = 'Copied!';
+                    setTimeout(() => {
+                        copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg>`;
+                    }, 1500);
+                }
+            });
 
             resultsContainer.addEventListener('click', (e) => e.target.closest('.product-card')?.dataset.productName && showModal(e.target.closest('.product-card').dataset.productName));
             modalCloseButton.addEventListener('click', () => modal.classList.add('hidden'));
