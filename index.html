@@ -14,6 +14,9 @@
             background-color: #ffffff; /* White */
             color: #261f63; /* Sapphire */
         }
+        .body-no-scroll {
+            overflow: hidden;
+        }
         /* Custom scrollbar for light theme */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -312,11 +315,10 @@
 
                     card.innerHTML = `
                         <div class="flex-grow">
-                             <div class="flex justify-between items-start">
+                             <div class="flex justify-between items-start mb-2">
                                 <h3 class="text-xl font-bold text-[#261f63]">${product.name}</h3>
-                                <span class="text-xs font-semibold px-2 py-1 ${statusColor} rounded-full">${formatString(product.saleStatus)}</span>
+                                <span class="text-xs font-semibold px-2 py-1 ${statusColor} rounded-full">${formatString(product.category)}</span>
                             </div>
-                            <p class="text-sm text-gray-500 mb-4">${formatString(product.category)}</p>
                             <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm mb-4">
                                 <div class="text-gray-500">Throughput: <span class="font-semibold text-gray-800">${(product.baseGbps || 1)} Gbps</span></div>
                                 <div class="text-gray-500">Form Factor: <span class="font-semibold text-gray-800">${product.isPhysical ? 'Physical' : 'Virtual/Cloud'}</span></div>
@@ -427,6 +429,8 @@
             function showModal(productName) {
                 const product = products.find(p => p.name === productName);
                 if (!product) return;
+                
+                document.body.classList.add('body-no-scroll');
 
                 Object.values(chartInstances).forEach(chart => chart.destroy());
                 chartInstances = {};
@@ -454,6 +458,11 @@
                 }
                 if (product.category === 'recordstore' && product.ingestRecordsPerSec) {
                     detailsHtml += createDetailItem('Ingest Rate', `${product.ingestRecordsPerSec.toLocaleString()} records/sec`);
+                }
+                if (product.category === 'flow_collector') {
+                    if (product.flowsPerSecond) detailsHtml += createDetailItem('Flows Per Second', product.flowsPerSecond.toLocaleString());
+                    if (product.flowsPerMinute) detailsHtml += createDetailItem('Flows Per Minute', product.flowsPerMinute.toLocaleString());
+                    if (product.supportedProtocols) detailsHtml += createDetailItem('Supported Protocols', product.supportedProtocols);
                 }
                 detailsHtml += createDetailItem('Base Throughput', `${(product.baseGbps || 1)} Gbps`);
                 if (product.idsGbps) {
@@ -491,6 +500,11 @@
                 if (hasAnalysisChart) createAnalysisChart(product);
 
                 modal.classList.remove('hidden');
+            }
+            
+            function closeModal() {
+                modal.classList.add('hidden');
+                document.body.classList.remove('body-no-scroll');
             }
 
             function createChart(canvasId, label, labels, data, bgColors) {
@@ -541,8 +555,8 @@
             });
 
             resultsContainer.addEventListener('click', (e) => e.target.closest('.product-card')?.dataset.productName && showModal(e.target.closest('.product-card').dataset.productName));
-            modalCloseButton.addEventListener('click', () => modal.classList.add('hidden'));
-            modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
+            modalCloseButton.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
             resetFiltersButton.addEventListener('click', resetFilters);
             loadDataBtn.addEventListener('click', loadProducts);
             loadProducts();

@@ -16,7 +16,7 @@
         "Investigation",
         "Flow Analysis"
       ],
-      "supportsIDS": true,
+      
       "saleStatus": "active",
       "rx360Only": true,
       "enterpriseOnly": true,
@@ -939,7 +939,7 @@
         "NDR",
         "NPM"
       ],
-      "supportsIDS": false,
+      
       "saleStatus": "end_of_sale",
       "rackUnits": 1,
       "powerWatts": 800,
@@ -1047,7 +1047,7 @@
         "NDR",
         "NPM"
       ],
-      "supportsIDS": false,
+      
       "saleStatus": "active",
       "rackUnits": 1,
       "powerWatts": 800,
@@ -1106,7 +1106,7 @@
         "NDR",
         "NPM"
       ],
-      "supportsIDS": false,
+      
       "saleStatus": "end_of_sale",
       "performanceOnly": true,
       "maxDevices": 750,
@@ -1144,7 +1144,7 @@
         "NDR",
         "NPM"
       ],
-      "supportsIDS": false,
+      
       "saleStatus": "active",
       "maxDevices": 750,
       "criticalAssets": 250,
@@ -1156,7 +1156,7 @@
         "gcp"
       ],
       "skus": {
-        "enterprise": null,
+        "enterprise": "REVX-ENT-EDA1100V",
         "rx360": "REVX-360-EDA1100V"
       },
       "virtualSupport": [
@@ -1182,7 +1182,7 @@
         "NDR",
         "NPM"
       ],
-      "supportsIDS": false,
+      
       "saleStatus": "end_of_sale",
       "performanceOnly": true,
       "maxDevices": 1500,
@@ -1221,7 +1221,7 @@
         "NPM",
         "IDS"
       ],
-      "supportsIDS": true,
+      
       "saleStatus": "active",
       "maxDevices": 18000,
       "criticalAssets": 3000,
@@ -1259,7 +1259,7 @@
         "NPM",
         "IDS"
       ],
-      "supportsIDS": true,
+      
       "saleStatus": "active",
       "maxDevices": 35000,
       "criticalAssets": 5500,
@@ -1292,7 +1292,7 @@
         "NPM",
         "IDS"
       ],
-      "supportsIDS": true,
+      
       "saleStatus": "active",
       "maxDevices": 18000,
       "criticalAssets": 3000,
@@ -1328,7 +1328,7 @@
         "NPM",
         "IDS"
       ],
-      "supportsIDS": true,
+      
       "saleStatus": "active",
       "maxDevices": 35000,
       "criticalAssets": 5500,
@@ -1362,7 +1362,7 @@
         "IDS",
         "Packet Forensics"
       ],
-      "supportsIDS": true,
+      
       "supportsPacketForensics": true,
       "saleStatus": "active",
       "maxDevices": 18000,
@@ -1397,7 +1397,7 @@
         "IDS",
         "Packet Forensics"
       ],
-      "supportsIDS": true,
+      
       "supportsPacketForensics": true,
       "saleStatus": "active",
       "maxDevices": 35000,
@@ -1658,9 +1658,8 @@
         "vmware"
       ],
       "cloudSupport": [],
-      "basePacketrate": 140000,
-      "advancedAnalysis": 250,
-      "standardAnalysis": 750
+      "advancedAnalysis": 3000,
+      "standardAnalysis": 18000
     },
     {
       "name": "ETA9350",
@@ -2019,9 +2018,6 @@
         "ETA9350"
       ],
       "maxPerETA": 1,
-      "cannotMixWith": [
-        "240TB ESU"
-      ],
       "rx360Only": false,
       "enterpriseOnly": false,
       "skus": {
