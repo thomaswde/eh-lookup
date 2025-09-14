@@ -7,8 +7,8 @@
     <link rel="icon" href="favicon.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -199,7 +199,7 @@
             const moduleOptionsContainer = document.getElementById('module-options');
 
             let products = [];
-            let chartInstances = {}; 
+            let currentProduct = null;
 
             async function loadProducts() {
                 const filename = filenameInput.value.trim();
@@ -472,52 +472,173 @@
             }
 
             function showModal(productName) {
-                const product = products.find(p => p.name === productName);
-                if (!product) return;
+                currentProduct = products.find(p => p.name === productName);
+                if (!currentProduct) return;
                 
                 document.body.classList.add('body-no-scroll');
-                modalTitle.textContent = product.name;
-                modalBody.innerHTML = buildModalHtml(product);
+                modalTitle.textContent = currentProduct.name;
+                modalBody.innerHTML = buildModalHtml(currentProduct);
                 modal.classList.remove('hidden');
             }
             
             function closeModal() {
                 modal.classList.add('hidden');
                 document.body.classList.remove('body-no-scroll');
+                currentProduct = null;
             }
             
             async function exportToPdf() {
+                if (!currentProduct) return;
                 const { jsPDF } = window.jspdf;
-                const modalContent = document.getElementById('modal-body');
-                const productTitle = document.getElementById('modal-title').textContent;
+                const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+                let yPos = 20;
+                const leftMargin = 15;
+                const rightMargin = 195; // A4 width is 210mm
+                const lineSpacing = 7;
 
-                const tempTitle = document.createElement('h1');
-                tempTitle.className = 'text-3xl font-bold text-center mb-6 text-[#261f63]';
-                tempTitle.textContent = `${productTitle} Datasheet`;
-                modalContent.prepend(tempTitle);
+                // --- Helper Functions for PDF Generation ---
+                const addSection = (title, contentFunc) => {
+                    if (yPos > 260) doc.addPage();
+                    doc.setLineWidth(0.5);
+                    doc.line(leftMargin, yPos, rightMargin, yPos);
+                    yPos += lineSpacing * 1.5;
+                    doc.setFont('Inter', 'bold');
+                    doc.setFontSize(14);
+                    doc.text(title, leftMargin, yPos);
+                    yPos += lineSpacing;
+                    contentFunc();
+                };
 
-                await html2canvas(modalContent, { scale: 2, useCORS: true }).then(canvas => {
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const imgProps= pdf.getImageProperties(imgData);
-                    const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                    let heightLeft = imgHeight;
-                    let position = 0;
+                const addDetailItem = (label, value) => {
+                    if (!value || (Array.isArray(value) && value.length === 0)) return;
+                    if (yPos > 270) { doc.addPage(); yPos = 20; }
+                    doc.setFont('Inter', 'bold');
+                    doc.setFontSize(10);
+                    doc.text(`${label}:`, leftMargin, yPos);
+                    
+                    doc.setFont('Inter', 'normal');
+                    const valueText = Array.isArray(value) ? value.map(formatString).join(', ') : value;
+                    const splitText = doc.splitTextToSize(valueText, rightMargin - leftMargin - 45); // 45 is approx label width
+                    doc.text(splitText, leftMargin + 45, yPos);
+                    yPos += (splitText.length * 4) + (lineSpacing / 2);
+                };
 
-                    pdf.addImage(imgData, 'PNG', 10, position, pdfWidth - 20, imgHeight);
-                    heightLeft -= pdf.internal.pageSize.getHeight();
+                // --- PDF Content ---
+                doc.setFont('Inter', 'bold');
+                doc.setFontSize(22);
+                doc.text(`${currentProduct.name} Datasheet`, doc.internal.pageSize.getWidth() / 2, 15, { align: 'center' });
 
-                    while (heightLeft >= 0) {
-                      position = heightLeft - imgHeight;
-                      pdf.addPage();
-                      pdf.addImage(imgData, 'PNG', 10, position, pdfWidth - 20, imgHeight);
-                      heightLeft -= pdf.internal.pageSize.getHeight();
-                    }
-                    pdf.save(`${productTitle}-Datasheet.pdf`);
+                // SKUs
+                if(currentProduct.skus) {
+                    if(currentProduct.skus.enterprise) addDetailItem('Enterprise SKU', currentProduct.skus.enterprise);
+                    if(currentProduct.skus.rx360) addDetailItem('360 SKU', currentProduct.skus.rx360);
+                }
+
+                // Main Details
+                addSection('Overview', () => {
+                    addDetailItem('Platform', formatString(currentProduct.platform));
+                    addDetailItem('Sale Status', formatString(currentProduct.sale_status));
+                    if (currentProduct.sale_end_date) addDetailItem('End of Sale', currentProduct.sale_end_date);
+                    if (currentProduct.firmware_end_date) addDetailItem('End of Firmware', currentProduct.firmware_end_date);
+                    if (currentProduct.support_end_date) addDetailItem('End of Support', currentProduct.support_end_date);
                 });
 
-                modalContent.removeChild(tempTitle);
+                // Performance
+                if(currentProduct.performance) {
+                    addSection('Performance', () => {
+                        const { base_gbps, ids_gbps, base_packetrate, flows_per_second, ingest_records_per_sec } = currentProduct.performance;
+                        addDetailItem('Base Throughput', `${(base_gbps || 1)} Gbps`);
+                        if(ids_gbps) addDetailItem('IDS Throughput', `${ids_gbps} Gbps`);
+                        if(base_packetrate) addDetailItem('Packet Rate', `${base_packetrate.toLocaleString()} pps`);
+                        if(flows_per_second) addDetailItem('Flows Per Second', `${flows_per_second.toLocaleString()}`);
+                        if(ingest_records_per_sec) addDetailItem('Ingest Rate', `${ingest_records_per_sec.toLocaleString()} records/sec`);
+                    });
+                }
+                
+                // Modules and Deployment
+                if (currentProduct.modules) addSection('Modules', () => addDetailItem('Supported Modules', Object.keys(currentProduct.modules).filter(m => currentProduct.modules[m])));
+                if (currentProduct.deployments) addSection('Deployment', () => {
+                    addDetailItem('Hypervisors', currentProduct.deployments.hypervisors);
+                    addDetailItem('Clouds', currentProduct.deployments.clouds);
+                });
+                if (currentProduct.ingest?.supported_protocols) addSection('Ingest', () => addDetailItem('Supported Protocols', currentProduct.ingest.supported_protocols));
+                
+                // Storage
+                 if(currentProduct.storage?.continuous_pcap) {
+                    addSection('Storage', () => {
+                        const { disk_qty, disk_size_tb, capacity_tb, raid_level, usable_tb, extended_pcap } = currentProduct.storage.continuous_pcap;
+                        if(disk_qty) addDetailItem('Disk Quantity', disk_qty.toString());
+                        if(disk_size_tb) addDetailItem('Disk Size', `${disk_size_tb} TB`);
+                        if(capacity_tb) addDetailItem('Total Capacity', `${capacity_tb} TB`);
+                        if(raid_level) addDetailItem('RAID Level', raid_level);
+                        if(usable_tb) addDetailItem('Usable Capacity', `${usable_tb} TB`);
+                        
+                        if(extended_pcap?.rules) {
+                             yPos += lineSpacing;
+                             doc.setFont('Inter', 'bold');
+                             doc.setFontSize(12);
+                             doc.text('Performance Tiers', leftMargin, yPos);
+                             yPos += 2;
+                             const head = [['ESU Config', 'Raw Capacity', 'Throughput', 'Packet Rate']];
+                             const body = extended_pcap.rules.map(rule => {
+                                let esuProduct = products.find(p => p.name === rule.esu_type || p.name.startsWith(rule.esu_type.split(' ')[0]));
+                                let capacityText = 'N/A';
+                                if (esuProduct?.storage?.continuous_pcap) {
+                                    const pcap = esuProduct.storage.continuous_pcap;
+                                    let rawCapPerUnit = (pcap.disk_qty && pcap.disk_size_tb) ? pcap.disk_qty * pcap.disk_size_tb : pcap.capacity_tb || 0;
+                                    if(rawCapPerUnit > 0) {
+                                        const count = parseInt(rule.esu_count, 10);
+                                        const totalTb = count * rawCapPerUnit;
+                                        capacityText = totalTb >= 1000 ? `${(totalTb/1000).toFixed(2)} PB` : `${totalTb} TB`;
+                                    }
+                                }
+                                return [`${rule.esu_count} \u00D7 ${rule.esu_type}`, capacityText, `${rule.throughput_gbps} Gbps`, `${(rule.packets_per_second / 1000000).toFixed(1)} Mpps`];
+                             });
+                             doc.autoTable({ head, body, startY: yPos + 5, theme: 'grid' });
+                             yPos = doc.lastAutoTable.finalY + 10;
+                        }
+                    });
+                }
+
+                // Interfaces
+                if(currentProduct.interfaces) {
+                    if(currentProduct.interfaces.management?.length > 0) {
+                        doc.autoTable({
+                            startY: yPos > 250 ? (doc.addPage(), 20) : yPos + 5,
+                            head: [['Management Interfaces']],
+                            body: [],
+                            theme: 'plain',
+                            styles: { font: 'Inter', fontStyle: 'bold', fontSize: 14 }
+                        });
+                        yPos = doc.lastAutoTable.finalY;
+                        doc.autoTable({
+                            startY: yPos,
+                            head: [['ID', 'Roles', 'Speeds (Gb)', 'Transceiver']],
+                            body: currentProduct.interfaces.management.map(i => [i.id, i.roles.map(formatString).join(', '), i.supported_speeds_gb.join(', '), `${i.transceiver_type} ${i.transceiver_included ? '(Included)' : ''}`]),
+                            theme: 'striped'
+                        });
+                        yPos = doc.lastAutoTable.finalY + 10;
+                    }
+                     if(currentProduct.interfaces.capture?.length > 0) {
+                        doc.autoTable({
+                            startY: yPos > 250 ? (doc.addPage(), 20) : yPos,
+                            head: [['Capture Interfaces']],
+                            body: [],
+                            theme: 'plain',
+                            styles: { font: 'Inter', fontStyle: 'bold', fontSize: 14 }
+                        });
+                        yPos = doc.lastAutoTable.finalY;
+                        doc.autoTable({
+                            startY: yPos,
+                            head: [['ID', 'Roles', 'Speeds (Gb)', 'Transceiver']],
+                            body: currentProduct.interfaces.capture.map(i => [i.id, i.roles.map(formatString).join(', '), i.supported_speeds_gb.join(', '), `${i.transceiver_type} ${i.transceiver_included ? '(Included)' : ''}`]),
+                            theme: 'striped'
+                        });
+                        yPos = doc.lastAutoTable.finalY + 10;
+                    }
+                }
+                
+                doc.save(`${currentProduct.name}-Datasheet.pdf`);
             }
 
             function addFilterListeners() {
