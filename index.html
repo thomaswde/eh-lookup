@@ -13,71 +13,102 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-card: #ffffff;
+            --bg-input: #ffffff;
+            --bg-hover: #f3f4f6;
+            --text-primary: #261f63;
+            --text-secondary: #4b5563;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        .dark-theme {
+            --bg-primary: #1f1f1f;
+            --bg-secondary: #313131;
+            --bg-card: #424242;
+            --bg-input: #424242;
+            --bg-hover: #535353;
+            --text-primary: #f3f4f6;
+            --text-secondary: #d1d5db;
+            --text-muted: #9ca3af;
+            --border-color: #4b5563;
+        }
+
         body {
             font-family: 'Source Sans 3', sans-serif;
-            background-color: #ffffff; /* White */
-            color: #261f63; /* Sapphire */
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
         }
         .body-no-scroll {
             overflow: hidden;
         }
-        /* Custom scrollbar for light theme */
+        /* Custom scrollbar */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
         
+        /* Themed elements */
+        aside { background-color: var(--bg-secondary); border-color: var(--border-color); }
+        main h2, aside h1 { color: var(--text-primary); }
+        .product-card { background-color: var(--bg-card); border-color: var(--border-color); }
+        .modal-content, .modal-content .sticky { background-color: var(--bg-card); border-color: var(--border-color); }
+        input[type="text"], input[type="radio"], input[type="checkbox"] { background-color: var(--bg-input); border-color: var(--border-color); color: var(--text-primary); }
+        input[type="radio"]:checked, input[type="checkbox"]:checked { background-color: #00aaef; }
+        label { color: var(--text-secondary); }
+        h3, h4, h5 { color: var(--text-secondary); }
+        p, code, dt, dd { color: var(--text-muted); }
+        .product-card h3 { color: var(--text-primary); }
+        .product-card .text-gray-500 { color: var(--text-muted); }
+        .product-card .font-semibold { color: var(--text-secondary); }
+
         /* Toggle Switch Styles */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #00aaef; /* Cyan */
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #00aaef; /* Cyan */
-        }
-        /* Basic transition for card hover */
-        .product-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .modal-content {
-            animation: slide-up 0.3s ease-out;
-        }
-        @keyframes slide-up {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        .toggle-checkbox:checked { right: 0; border-color: #00aaef; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #00aaef; }
+        
+        /* Card hover effect */
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .dark-theme .product-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2); }
+
+        .modal-content { animation: slide-up 0.3s ease-out; }
+        @keyframes slide-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body class="text-gray-800">
 
     <div class="flex flex-col lg:flex-row min-h-screen">
         <!-- Left Pane: Filters -->
-        <aside class="w-full lg:w-80 bg-gray-50 border-r border-gray-200 p-6 space-y-6 lg:fixed lg:h-full lg:overflow-y-auto">
+        <aside class="w-full lg:w-80 border-r p-6 space-y-6 lg:fixed lg:h-full lg:overflow-y-auto">
             <!-- Logo -->
             <div>
                 <img src="eh_logo.png" alt="Company Logo" class="w-full h-auto">
             </div>
 
             <div class="flex items-center justify-between">
-                 <h1 class="text-2xl font-bold text-[#261f63]">Product Filters</h1>
-                 <button id="reset-filters" class="text-sm text-[#00aaef] hover:text-[#0098d7]">Reset</button>
+                 <h1 class="text-2xl font-bold">Product Filters</h1>
+                 <div class="flex items-center">
+                    <button id="theme-toggle" class="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00aaef]" title="Toggle theme">
+                        <svg id="theme-icon-light" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 14.95a1 1 0 010-1.414l.707-.707a1 1 0 011.414 1.414l-.707.707a1 1 0 01-1.414 0zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path></svg>
+                        <svg id="theme-icon-dark" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    </button>
+                    <button id="reset-filters" class="text-sm text-[#00aaef] hover:text-[#0098d7] ml-2">Reset</button>
+                 </div>
             </div>
 
             <!-- Free Form Search -->
             <div>
-                <label for="search" class="block text-sm font-medium text-gray-600 mb-2">Search</label>
-                <input type="text" id="search" placeholder="Search by name, SKU, etc." class="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#00aaef]">
+                <label for="search" class="block text-sm font-medium mb-2">Search</label>
+                <input type="text" id="search" placeholder="Search by name, SKU, etc." class="w-full rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#00aaef]">
             </div>
 
             <!-- Sale Status Filter -->
             <div>
-                <h3 class="text-sm font-medium text-gray-600 mb-2 border-t border-gray-200 pt-4">Status</h3>
+                <h3 class="text-sm font-medium mb-2 border-t pt-4">Status</h3>
                 <div class="flex items-center justify-between">
-                    <label for="exclude-eos-toggle" class="text-sm text-gray-700">Exclude End of Sale</label>
+                    <label for="exclude-eos-toggle" class="text-sm">Exclude End of Sale</label>
                     <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
                         <input type="checkbox" name="toggle" id="exclude-eos-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
                         <label for="exclude-eos-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
@@ -87,60 +118,44 @@
             
             <!-- License Filter -->
             <div id="license-filter">
-                <h3 class="text-sm font-medium text-gray-600 mb-2 border-t border-gray-200 pt-4">License</h3>
+                <h3 class="text-sm font-medium mb-2 border-t pt-4">License</h3>
                 <div id="license-options" class="space-y-2">
-                    <div class="flex items-center">
-                        <input type="radio" id="lic-all" name="license" value="all" class="h-4 w-4 border-gray-300 text-[#00aaef] focus:ring-[#00aaef]" checked>
-                        <label for="lic-all" class="ml-2 text-sm text-gray-700">All</label>
-                    </div>
-                    <div class="flex items-center">
-                        <input type="radio" id="lic-rx360" name="license" value="rx360" class="h-4 w-4 border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
-                        <label for="lic-rx360" class="ml-2 text-sm text-gray-700">360</label>
-                    </div>
-                    <div class="flex items-center">
-                        <input type="radio" id="lic-enterprise" name="license" value="enterprise" class="h-4 w-4 border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
-                        <label for="lic-enterprise" class="ml-2 text-sm text-gray-700">Enterprise</label>
-                    </div>
+                    <div class="flex items-center"><input type="radio" id="lic-all" name="license" value="all" class="h-4 w-4 border-gray-300 text-[#00aaef] focus:ring-[#00aaef]" checked><label for="lic-all" class="ml-2 text-sm">All</label></div>
+                    <div class="flex items-center"><input type="radio" id="lic-rx360" name="license" value="rx360" class="h-4 w-4 border-gray-300 text-[#00aaef] focus:ring-[#00aaef]"><label for="lic-rx360" class="ml-2 text-sm">360</label></div>
+                    <div class="flex items-center"><input type="radio" id="lic-enterprise" name="license" value="enterprise" class="h-4 w-4 border-gray-300 text-[#00aaef] focus:ring-[#00aaef]"><label for="lic-enterprise" class="ml-2 text-sm">Enterprise</label></div>
                 </div>
             </div>
 
-
             <!-- Platform (Category) Filter -->
             <div id="platform-filter">
-                <h3 class="text-sm font-medium text-gray-600 mb-2 border-t border-gray-200 pt-4">Platform</h3>
-                <div id="platform-options" class="space-y-2">
-                    <!-- Checkboxes will be dynamically inserted here -->
-                </div>
+                <h3 class="text-sm font-medium mb-2 border-t pt-4">Platform</h3>
+                <div id="platform-options" class="space-y-2"></div>
             </div>
 
             <!-- Modules Filter -->
             <div id="module-filter">
-                <h3 class="text-sm font-medium text-gray-600 mb-2 border-t border-gray-200 pt-4">Modules</h3>
-                <div id="module-options" class="space-y-2">
-                    <!-- Module checkboxes inserted here -->
-                </div>
+                <h3 class="text-sm font-medium mb-2 border-t pt-4">Modules</h3>
+                <div id="module-options" class="space-y-2"></div>
             </div>
 
             <!-- Deployment Type Filter -->
             <div id="deployment-type-filter">
-                <h3 class="text-sm font-medium text-gray-600 mb-2 border-t border-gray-200 pt-4">Deployment Type</h3>
-                <div id="deployment-options" class="space-y-2">
-                    <!-- Deployment checkboxes inserted here -->
-                </div>
+                <h3 class="text-sm font-medium mb-2 border-t pt-4">Deployment Type</h3>
+                <div id="deployment-options" class="space-y-2"></div>
             </div>
 
             <!-- Data Source -->
             <div>
-                <h3 class="text-sm font-medium text-gray-600 mb-2 border-t border-gray-200 pt-4">Data Source</h3>
+                <h3 class="text-sm font-medium mb-2 border-t pt-4">Data Source</h3>
                 <div class="space-y-2">
                     <div>
-                        <label for="filename-input" class="block text-xs font-medium text-gray-500">Filename</label>
+                        <label for="filename-input" class="block text-xs font-medium">Filename</label>
                         <div class="flex items-center space-x-2 mt-1">
-                             <input type="text" id="filename-input" value="catalog.eh.json" class="flex-grow bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#00aaef] text-sm">
+                             <input type="text" id="filename-input" value="catalog.eh.json" class="flex-grow rounded-md py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00aaef]">
                              <button id="load-data-btn" class="bg-[#00aaef] hover:bg-[#0098d7] text-white font-bold py-2 px-3 rounded-md text-sm">Load</button>
                         </div>
                     </div>
-                    <p id="data-source-status" class="text-xs text-gray-500">Not loaded yet.</p>
+                    <p id="data-source-status" class="text-xs">Not loaded yet.</p>
                 </div>
             </div>
         </aside>
@@ -148,31 +163,27 @@
         <!-- Right Pane: Results -->
         <main class="w-full lg:ml-80 p-6 lg:p-10">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-3xl font-bold text-[#261f63]">Products</h2>
-                <p id="product-count" class="text-gray-500">Loading products...</p>
+                <h2 class="text-3xl font-bold">Products</h2>
+                <p id="product-count">Loading products...</p>
             </div>
-            <div id="results" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-                <!-- Product cards will be dynamically inserted here -->
-            </div>
+            <div id="results" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6"></div>
              <div id="no-results" class="hidden text-center py-20">
-                <p class="text-gray-500 text-lg">No products match your criteria.</p>
+                <p class="text-lg">No products match your criteria.</p>
             </div>
         </main>
     </div>
 
     <!-- Modal for Product Details -->
     <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
-        <div id="modal-content" class="modal-content bg-white rounded-lg shadow-xl w-full max-w-5xl max-h-[90vh] overflow-y-auto relative">
-            <div class="sticky top-0 bg-white px-6 py-4 border-b border-gray-200 flex justify-between items-center z-10">
-                <h2 id="modal-title" class="text-2xl font-bold text-[#261f63]"></h2>
+        <div id="modal-content" class="modal-content rounded-lg shadow-xl w-full max-w-5xl max-h-[90vh] overflow-y-auto relative">
+            <div class="sticky top-0 px-6 py-4 border-b flex justify-between items-center z-10">
+                <h2 id="modal-title" class="text-2xl font-bold"></h2>
                 <div class="flex items-center">
                     <button id="export-pdf-btn" class="text-sm bg-[#00aaef] hover:bg-[#0098d7] text-white font-bold py-2 px-3 rounded-md mr-4">Export PDF</button>
-                    <button id="modal-close" class="text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+                    <button id="modal-close" class="text-3xl">&times;</button>
                 </div>
             </div>
-            <div id="modal-body" class="p-6 text-gray-700">
-                <!-- Details will be injected here -->
-            </div>
+            <div id="modal-body" class="p-6"></div>
         </div>
     </div>
 
