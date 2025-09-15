@@ -1336,8 +1336,6 @@
     },
     "performance": {
       "base_gbps": 1,
-      "ids_gbps": 0,
-      "ids_reduction_percent": 0,
       "base_packetrate": 140000,
       "advanced_analysis": 250,
       "standard_analysis": 750
@@ -2552,7 +2550,11 @@
       "version": 2
     },
     "firmware_end_date": "2031-08-31",
-    "support_end_date": "2032-08-31"
+    "support_end_date": "2032-08-31",
+    "notes": [
+      "https://www.dell.com/support/home/en-us/product-support/product/poweredge-r7615/overview",
+      "https://docs.extrahop.com/current/deploy-exa-5300/"
+    ]
   },
   {
     "name": "EXA5300v",

@@ -243,6 +243,12 @@
                 if (typeof str !== 'string' || !str) return 'N/A';
                 return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
             }
+
+            function linkify(text) {
+                if (typeof text !== 'string') return text;
+                const urlRegex = /(https?:\/\/[^\s"'<>()]+)/g;
+                return text.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">${url}</a>`);
+            }
             
             function createCheckbox(id, name, value, label) {
                 return `
@@ -460,7 +466,7 @@
                     interfacesHtml += renderInterfacesTable(p.interfaces.capture, 'Capture Interfaces');
                 }
 
-                let notesHtml = p.notes ? `<div class="prose prose-sm max-w-none mt-4"><ul>${p.notes.map(n => `<li>${n}</li>`).join('')}</ul></div>` : '';
+                let notesHtml = p.notes ? `<div class="prose prose-sm max-w-none mt-4"><ul>${p.notes.map(n => `<li>${linkify(n)}</li>`).join('')}</ul></div>` : '';
 
                 return skusHtml + mainDetails 
                     + createDetailSection('Performance', perfHtml)
