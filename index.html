@@ -31,14 +31,14 @@
         .dark-theme {
             --bg-primary: #1f1f1f;
             --bg-secondary: #313131;
-            --bg-card: #424242;
+            --bg-card: #313131; /* Reverted card background */
             --bg-input: #424242;
             --bg-hover: #535353;
             --bg-subtle: #424242;
             --text-primary: #f3f4f6;
             --text-secondary: #d1d5db;
             --text-muted: #9ca3af;
-            --border-color: #374151; /* Darker border */
+            --border-color: #4b5563; /* Better contrast border */
             --toggle-bg: #4b5563;
             --toggle-fg: #313131;
         }
@@ -59,7 +59,7 @@
         
         /* Themed elements */
         aside { background-color: var(--bg-secondary); border-color: var(--border-color); }
-        .border-t, .divide-y > :not([hidden]) ~ :not([hidden]) { border-color: var(--border-color) !important; }
+        .border-t, .divide-y > :not([hidden]) ~ :not([hidden]), .interfaces-table tr { border-color: var(--border-color) !important; }
         main h2, aside h1 { color: var(--text-primary); }
         .product-card { background-color: var(--bg-card); border-color: var(--border-color); }
         .dark-theme .modal-content, .dark-theme .modal-content .sticky { background-color: var(--bg-primary); border-color: var(--border-color); }
