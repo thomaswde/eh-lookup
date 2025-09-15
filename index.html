@@ -636,6 +636,23 @@
                         yPos = doc.lastAutoTable.finalY + 10;
                     }
                 }
+
+                // Notes
+                if (currentProduct.notes) {
+                    addSection('Notes', () => {
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(10);
+                        currentProduct.notes.forEach(note => {
+                            const splitText = doc.splitTextToSize(`• ${note}`, rightMargin - leftMargin);
+                            if (yPos + (splitText.length * 5) > 280) {
+                                doc.addPage();
+                                yPos = 20;
+                            }
+                            doc.text(splitText, leftMargin, yPos);
+                            yPos += (splitText.length * 5) + 3;
+                        });
+                    });
+                }
                 
                 doc.save(`${currentProduct.name}-Datasheet.pdf`);
             }
