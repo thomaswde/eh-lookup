@@ -6,7 +6,7 @@
     "is_physical": false,
     "sale_status": "active",
     "skus": {
-      "enterprise": "ECA"
+      "enterprise": "REVX-ENT-ECA-APPL"
     },
     "modules": {
       "ndr": true,
