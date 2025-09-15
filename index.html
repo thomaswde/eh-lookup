@@ -64,6 +64,7 @@
         .product-card h3 { color: var(--text-primary); }
         .product-card .text-gray-500 { color: var(--text-muted); }
         .product-card .font-semibold { color: var(--text-secondary); }
+        #modal-close, #export-pdf-btn { color: var(--text-primary); }
 
         /* Toggle Switch Styles */
         .toggle-checkbox:checked { right: 0; border-color: #00aaef; }
@@ -77,7 +78,7 @@
         @keyframes slide-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
-<body class="text-gray-800">
+<body>
 
     <div class="flex flex-col lg:flex-row min-h-screen">
         <!-- Left Pane: Filters -->
@@ -210,9 +211,47 @@
             const deploymentOptionsContainer = document.getElementById('deployment-options');
             const licenseOptionsContainer = document.getElementById('license-options');
             const moduleOptionsContainer = document.getElementById('module-options');
+            
+            // Theme Toggle elements
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const themeIconLight = document.getElementById('theme-icon-light');
+            const themeIconDark = document.getElementById('theme-icon-dark');
 
             let products = [];
             let currentProduct = null;
+            
+            // --- Theme Logic ---
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark-theme');
+                    themeIconLight.classList.add('hidden');
+                    themeIconDark.classList.remove('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark-theme');
+                    themeIconLight.classList.remove('hidden');
+                    themeIconDark.classList.add('hidden');
+                }
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else if (prefersDark) {
+                applyTheme('dark');
+            } else {
+                applyTheme('light');
+            }
+
+            themeToggleBtn.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.contains('dark-theme');
+                const newTheme = isDark ? 'light' : 'dark';
+                localStorage.setItem('theme', newTheme);
+                applyTheme(newTheme);
+            });
+            // --- End Theme Logic ---
+
 
             async function loadProducts() {
                 const filename = filenameInput.value.trim();
@@ -265,7 +304,7 @@
                 return `
                 <div class="flex items-center">
                     <input type="checkbox" id="${id}" name="${name}" value="${value}" class="h-4 w-4 rounded border-gray-300 text-[#00aaef] focus:ring-[#00aaef]">
-                    <label for="${id}" class="ml-2 text-sm text-gray-700">${label}</label>
+                    <label for="${id}" class="ml-2 text-sm">${label}</label>
                 </div>`;
             }
 
@@ -322,7 +361,7 @@
 
                 filteredProducts.forEach(product => {
                     const card = document.createElement('div');
-                    card.className = 'product-card bg-white rounded-lg shadow-md p-5 flex flex-col cursor-pointer border border-gray-200';
+                    card.className = 'product-card rounded-lg shadow-md p-5 flex flex-col cursor-pointer border';
                     card.dataset.productName = product.name;
 
                     const statusColor = product.sale_status === 'active' ? 'bg-[#dae343] text-black' : 'bg-[#f05918] text-white';
@@ -331,15 +370,15 @@
                     card.innerHTML = `
                         <div class="flex-grow">
                              <div class="flex justify-between items-start mb-2">
-                                <h3 class="text-xl font-bold text-[#261f63]">${product.name}</h3>
+                                <h3 class="text-xl font-bold">${product.name}</h3>
                                 <span class="text-xs font-semibold px-2 py-1 ${statusColor} rounded-full">${formatString(product.platform)}</span>
                             </div>
                             <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm mb-4">
-                                <div class="text-gray-500">Throughput: <span class="font-semibold text-gray-800">${(product.performance?.base_gbps || 1)} Gbps</span></div>
-                                <div class="text-gray-500">Form Factor: <span class="font-semibold text-gray-800">${product.is_physical ? 'Physical' : 'Virtual/Cloud'}</span></div>
+                                <div class="text-gray-500">Throughput: <span class="font-semibold">${(product.performance?.base_gbps || 1)} Gbps</span></div>
+                                <div class="text-gray-500">Form Factor: <span class="font-semibold">${product.is_physical ? 'Physical' : 'Virtual/Cloud'}</span></div>
                             </div>
                         </div>
-                        <div class="border-t border-gray-200 pt-3 text-xs text-gray-400">
+                        <div class="border-t pt-3 text-xs">
                            Modules: ${modules.map(formatString).join(', ') || 'N/A'}
                         </div>`;
                     resultsContainer.appendChild(card);
@@ -349,7 +388,7 @@
 
             function createDetailSection(title, content) {
                 if (!content) return '';
-                return `<div class="mt-6 pt-6 border-t border-gray-200"><h4 class="text-lg font-semibold mb-2 text-gray-700">${title}</h4>${content}</div>`;
+                return `<div class="mt-6 pt-6 border-t"><h4 class="text-lg font-semibold mb-2">${title}</h4>${content}</div>`;
             }
             
             function createDetailItem(label, value) {
@@ -358,8 +397,8 @@
                     ? value ? `<span class="px-2 py-1 text-xs rounded-full bg-green-200 text-green-800">Yes</span>` : `<span class="px-2 py-1 text-xs rounded-full bg-red-200 text-red-800">No</span>`
                     : Array.isArray(value)
                     ? value.map(item => `<span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">${formatString(item)}</span>`).join('')
-                    : `<p class="text-gray-800">${value}</p>`;
-                return `<div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4"><dt class="text-sm font-medium text-gray-500">${label}</dt><dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">${displayValue}</dd></div>`;
+                    : `<p>${value}</p>`;
+                return `<div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4"><dt class="text-sm font-medium">${label}</dt><dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">${displayValue}</dd></div>`;
             }
 
             function renderSkus(skus) {
@@ -367,10 +406,10 @@
                 let skuHtml = '<div class="mb-4 space-y-3">';
                 const copyIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg>`;
                 if (skus.enterprise) {
-                    skuHtml += `<div class="flex items-center justify-between bg-gray-100 p-2 rounded-md"><div><span class="font-semibold text-sm text-gray-600">Enterprise SKU:</span> <code class="text-sm text-[#7f2054]">${skus.enterprise}</code></div><button class="copy-btn text-gray-400 hover:text-[#00aaef]" data-copy-text="${skus.enterprise}" title="Copy SKU">${copyIcon}</button></div>`;
+                    skuHtml += `<div class="flex items-center justify-between bg-gray-100 p-2 rounded-md"><div><span class="font-semibold text-sm">Enterprise SKU:</span> <code class="text-sm text-[#7f2054]">${skus.enterprise}</code></div><button class="copy-btn text-gray-400 hover:text-[#00aaef]" data-copy-text="${skus.enterprise}" title="Copy SKU">${copyIcon}</button></div>`;
                 }
                 if (skus.rx360) {
-                     skuHtml += `<div class="flex items-center justify-between bg-gray-100 p-2 rounded-md"><div><span class="font-semibold text-sm text-gray-600">360 SKU:</span> <code class="text-sm text-[#7f2054]">${skus.rx360}</code></div><button class="copy-btn text-gray-400 hover:text-[#00aaef]" data-copy-text="${skus.rx360}" title="Copy SKU">${copyIcon}</button></div>`;
+                     skuHtml += `<div class="flex items-center justify-between bg-gray-100 p-2 rounded-md"><div><span class="font-semibold text-sm">360 SKU:</span> <code class="text-sm text-[#7f2054]">${skus.rx360}</code></div><button class="copy-btn text-gray-400 hover:text-[#00aaef]" data-copy-text="${skus.rx360}" title="Copy SKU">${copyIcon}</button></div>`;
                 }
                 skuHtml += '</div>';
                 return skuHtml;
@@ -378,9 +417,9 @@
 
             function renderInterfacesTable(interfaces, title) {
                 if (!interfaces || interfaces.length === 0) return '';
-                let tableHtml = `<div class="overflow-x-auto"><table class="min-w-full text-sm text-left text-gray-600"><thead class="text-xs text-gray-500 uppercase bg-gray-100"><tr><th scope="col" class="px-4 py-2">ID</th><th scope="col" class="px-4 py-2">Roles</th><th scope="col" class="px-4 py-2">Speeds (Gb)</th><th scope="col" class="px-4 py-2">Transceiver</th></tr></thead><tbody>`;
+                let tableHtml = `<div class="overflow-x-auto"><table class="min-w-full text-sm text-left"><thead class="text-xs uppercase bg-gray-100"><tr><th scope="col" class="px-4 py-2">ID</th><th scope="col" class="px-4 py-2">Roles</th><th scope="col" class="px-4 py-2">Speeds (Gb)</th><th scope="col" class="px-4 py-2">Transceiver</th></tr></thead><tbody>`;
                 interfaces.forEach(iface => {
-                    tableHtml += `<tr class="border-b border-gray-200"><td class="px-4 py-2">${iface.id}</td><td class="px-4 py-2">${iface.roles.map(formatString).join(', ')}</td><td class="px-4 py-2">${iface.supported_speeds_gb.join(', ')}</td><td class="px-4 py-2">${iface.transceiver_type} ${iface.transceiver_included ? '(Included)' : ''}</td></tr>`;
+                    tableHtml += `<tr class="border-b"><td class="px-4 py-2">${iface.id}</td><td class="px-4 py-2">${iface.roles.map(formatString).join(', ')}</td><td class="px-4 py-2">${iface.supported_speeds_gb.join(', ')}</td><td class="px-4 py-2">${iface.transceiver_type} ${iface.transceiver_included ? '(Included)' : ''}</td></tr>`;
                 });
                 tableHtml += '</tbody></table></div>';
                 return createDetailSection(title, tableHtml);
@@ -388,11 +427,11 @@
             
             function renderScalingInfo(rules) {
                  if (!rules) return '';
-                 let scalingHtml = `<h5 class="text-md font-semibold mb-3 text-gray-600">Performance Tiers</h5><div class="space-y-3">`;
+                 let scalingHtml = `<h5 class="text-md font-semibold mb-3">Performance Tiers</h5><div class="space-y-3">`;
                  rules.forEach(rule => {
                     let esuProduct = products.find(p => p.name === rule.esu_type);
                     if (!esuProduct) { esuProduct = products.find(p => p.platform === 'extended_storage' && p.name.startsWith(rule.esu_type.split(' ')[0]));}
-                    let capacityHtml = `<div class="border-l border-gray-300"><p class="font-bold text-lg text-gray-400">N/A</p><p class="text-xs text-gray-500">Raw Capacity</p></div>`;
+                    let capacityHtml = `<div class="border-l"><p class="font-bold text-lg text-gray-400">N/A</p><p class="text-xs">Raw Capacity</p></div>`;
                     
                     if (esuProduct?.storage?.continuous_pcap) {
                         const pcap = esuProduct.storage.continuous_pcap;
@@ -414,15 +453,15 @@
                                 const rawCapacityTB = count * rawCapacityPerUnit;
                                 capacityDisplay = rawCapacityTB >= 1000 ? `${(rawCapacityTB / 1000).toFixed(2)} PB` : `${rawCapacityTB.toLocaleString()} TB`;
                              }
-                            capacityHtml = `<div class="border-l border-gray-300"><p class="font-bold text-lg text-[#00aaef]">${capacityDisplay}</p><p class="text-xs text-gray-500">Raw Capacity</p></div>`;
+                            capacityHtml = `<div class="border-l"><p class="font-bold text-lg text-[#00aaef]">${capacityDisplay}</p><p class="text-xs">Raw Capacity</p></div>`;
                         }
                     }
 
                     scalingHtml += `<div class="grid grid-cols-4 items-center gap-2 bg-gray-100 rounded-lg p-3 text-center">
-                        <div><p class="font-bold text-[#261f63]">${rule.esu_count} &times; ${rule.esu_type}</p><p class="text-xs text-gray-500">ESU Config</p></div>
+                        <div><p class="font-bold">${rule.esu_count} &times; ${rule.esu_type}</p><p class="text-xs">ESU Config</p></div>
                         ${capacityHtml}
-                        <div class="border-l border-gray-300"><p class="font-bold text-lg text-[#00aaef]">${rule.throughput_gbps} Gbps</p><p class="text-xs text-gray-500">Throughput</p></div>
-                        <div class="border-l border-gray-300"><p class="font-bold text-lg text-[#00aaef]">${(rule.packets_per_second / 1000000).toFixed(1)} Mpps</p><p class="text-xs text-gray-500">Packet Rate</p></div>
+                        <div class="border-l"><p class="font-bold text-lg text-[#00aaef]">${rule.throughput_gbps} Gbps</p><p class="text-xs">Throughput</p></div>
+                        <div class="border-l"><p class="font-bold text-lg text-[#00aaef]">${(rule.packets_per_second / 1000000).toFixed(1)} Mpps</p><p class="text-xs">Packet Rate</p></div>
                     </div>`;
                 });
                 scalingHtml += '</div>';
@@ -431,14 +470,7 @@
 
             function buildModalHtml(p) {
                 let skusHtml = renderSkus(p.skus);
-                let mainDetails = `<dl class="divide-y divide-gray-200">
-                    ${createDetailItem('Platform', formatString(p.platform))}
-                    ${createDetailItem('Sale Status', formatString(p.sale_status))}
-                    ${p.sale_end_date ? createDetailItem('End of Sale', p.sale_end_date) : ''}
-                    ${p.firmware_end_date ? createDetailItem('End of Firmware', p.firmware_end_date) : ''}
-                    ${p.support_end_date ? createDetailItem('End of Support', p.support_end_date) : ''}
-                </dl>`;
-
+                let mainDetails = `<dl class="divide-y">${createDetailItem('Platform', formatString(p.platform))}${createDetailItem('Sale Status', formatString(p.sale_status))}${p.sale_end_date ? createDetailItem('End of Sale', p.sale_end_date) : ''}${p.firmware_end_date ? createDetailItem('End of Firmware', p.firmware_end_date) : ''}${p.support_end_date ? createDetailItem('End of Support', p.support_end_date) : ''}</dl>`;
                 let perfHtml = '';
                 if(p.performance) {
                     const { base_gbps, ids_gbps, base_packetrate, flows_per_second, ingest_records_per_sec } = p.performance;
@@ -447,18 +479,18 @@
                     if(base_packetrate) content += createDetailItem('Packet Rate', `${base_packetrate.toLocaleString()} pps`);
                     if(flows_per_second) content += createDetailItem('Flows Per Second', `${flows_per_second.toLocaleString()}`);
                     if(ingest_records_per_sec) content += createDetailItem('Ingest Rate', `${ingest_records_per_sec.toLocaleString()} records/sec`);
-                    perfHtml = `<dl class="divide-y divide-gray-200">${content}</dl>`;
+                    perfHtml = `<dl class="divide-y">${content}</dl>`;
                 }
                 
                 let ingestHtml = p.ingest?.supported_protocols ? createDetailItem('Supported Protocols', p.ingest.supported_protocols) : '';
                 let modulesHtml = p.modules ? createDetailItem('Supported Modules', Object.keys(p.modules).filter(m => p.modules[m])) : '';
-                let formFactorHtml = p.form_factor ? `<dl class="divide-y divide-gray-200">${createDetailItem('Rack Units', p.form_factor.rack_units)}${createDetailItem('Power (Watts)', p.form_factor.power_watts)}</dl>` : '';
-                let deploymentHtml = p.deployments ? `<dl class="divide-y divide-gray-200">${createDetailItem('Hypervisors', p.deployments.hypervisors)}${createDetailItem('Clouds', p.deployments.clouds)}</dl>` : '';
+                let formFactorHtml = p.form_factor ? `<dl class="divide-y">${createDetailItem('Rack Units', p.form_factor.rack_units)}${createDetailItem('Power (Watts)', p.form_factor.power_watts)}</dl>` : '';
+                let deploymentHtml = p.deployments ? `<dl class="divide-y">${createDetailItem('Hypervisors', p.deployments.hypervisors)}${createDetailItem('Clouds', p.deployments.clouds)}</dl>` : '';
 
                 let storageHtml = '';
                 if(p.storage?.continuous_pcap) {
                     const { disk_qty, disk_size_tb, capacity_tb, raid_level, usable_tb, extended_pcap } = p.storage.continuous_pcap;
-                    let pcapDetails = `<dl class="divide-y divide-gray-200">
+                    let pcapDetails = `<dl class="divide-y">
                         ${disk_qty ? createDetailItem('Disk Quantity', disk_qty) : ''}
                         ${disk_size_tb ? createDetailItem('Disk Size', `${disk_size_tb} TB`) : ''}
                         ${capacity_tb ? createDetailItem('Total Capacity', `${capacity_tb} TB`) : ''}
@@ -519,7 +551,7 @@
 
                 // --- Helper Functions for PDF Generation ---
                 const addSection = (title, contentFunc) => {
-                    if (!contentFunc) return;
+                    if (!contentFunc || (typeof contentFunc === 'function' && !contentFunc())) return;
                     if (yPos > 260) { doc.addPage(); yPos = 20; }
                     doc.setLineWidth(0.5);
                     doc.line(leftMargin, yPos, rightMargin, yPos);
@@ -534,7 +566,7 @@
                 };
 
                 const addDetailItem = (label, value) => {
-                    if (!value || (Array.isArray(value) && value.length === 0)) return;
+                    if (!value || (Array.isArray(value) && value.length === 0)) return false;
                     if (yPos > 270) { doc.addPage(); yPos = 20; }
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(10);
@@ -545,6 +577,7 @@
                     const splitText = doc.splitTextToSize(valueText.toString(), rightMargin - leftMargin - 45);
                     doc.text(splitText, leftMargin + 45, yPos);
                     yPos += (splitText.length * 4) + (lineSpacing / 2);
+                    return true;
                 };
 
                 // --- PDF Content ---
@@ -568,25 +601,29 @@
                     if (currentProduct.sale_end_date) addDetailItem('End of Sale', currentProduct.sale_end_date);
                     if (currentProduct.firmware_end_date) addDetailItem('End of Firmware', currentProduct.firmware_end_date);
                     if (currentProduct.support_end_date) addDetailItem('End of Support', currentProduct.support_end_date);
+                    return true;
                 });
 
                 // Performance
                 if(currentProduct.performance) {
                     addSection('Performance', () => {
                         const { base_gbps, ids_gbps, base_packetrate, flows_per_second, ingest_records_per_sec } = currentProduct.performance;
-                        addDetailItem('Base Throughput', `${(base_gbps || 1)} Gbps`);
-                        if(ids_gbps) addDetailItem('IDS Throughput', `${ids_gbps} Gbps`);
-                        if(base_packetrate) addDetailItem('Packet Rate', `${base_packetrate.toLocaleString()} pps`);
-                        if(flows_per_second) addDetailItem('Flows Per Second', `${flows_per_second.toLocaleString()}`);
-                        if(ingest_records_per_sec) addDetailItem('Ingest Rate', `${ingest_records_per_sec.toLocaleString()} records/sec`);
+                        let contentExists = false;
+                        if(addDetailItem('Base Throughput', `${(base_gbps || 1)} Gbps`)) contentExists = true;
+                        if(ids_gbps && addDetailItem('IDS Throughput', `${ids_gbps} Gbps`)) contentExists = true;
+                        if(base_packetrate && addDetailItem('Packet Rate', `${base_packetrate.toLocaleString()} pps`)) contentExists = true;
+                        if(flows_per_second && addDetailItem('Flows Per Second', `${flows_per_second.toLocaleString()}`)) contentExists = true;
+                        if(ingest_records_per_sec && addDetailItem('Ingest Rate', `${ingest_records_per_sec.toLocaleString()} records/sec`)) contentExists = true;
+                        return contentExists;
                     });
                 }
                 
                 // Modules and Deployment
                 if (currentProduct.modules) addSection('Modules', () => addDetailItem('Supported Modules', Object.keys(currentProduct.modules).filter(m => currentProduct.modules[m])));
                 if (currentProduct.deployments) addSection('Deployment', () => {
-                    addDetailItem('Hypervisors', currentProduct.deployments.hypervisors);
-                    addDetailItem('Clouds', currentProduct.deployments.clouds);
+                    let c1 = addDetailItem('Hypervisors', currentProduct.deployments.hypervisors);
+                    let c2 = addDetailItem('Clouds', currentProduct.deployments.clouds);
+                    return c1 || c2;
                 });
                 if (currentProduct.ingest?.supported_protocols) addSection('Ingest', () => addDetailItem('Supported Protocols', currentProduct.ingest.supported_protocols));
                 
@@ -594,11 +631,12 @@
                  if(currentProduct.storage?.continuous_pcap) {
                     addSection('Storage', () => {
                         const { disk_qty, disk_size_tb, capacity_tb, raid_level, usable_tb, extended_pcap } = currentProduct.storage.continuous_pcap;
-                        if(disk_qty) addDetailItem('Disk Quantity', disk_qty.toString());
-                        if(disk_size_tb) addDetailItem('Disk Size', `${disk_size_tb} TB`);
-                        if(capacity_tb) addDetailItem('Total Capacity', `${capacity_tb} TB`);
-                        if(raid_level) addDetailItem('RAID Level', raid_level);
-                        if(usable_tb) addDetailItem('Usable Capacity', `${usable_tb} TB`);
+                        let contentExists = false;
+                        if(addDetailItem('Disk Quantity', disk_qty?.toString())) contentExists = true;
+                        if(addDetailItem('Disk Size', `${disk_size_tb} TB`)) contentExists = true;
+                        if(addDetailItem('Total Capacity', `${capacity_tb} TB`)) contentExists = true;
+                        if(addDetailItem('RAID Level', raid_level)) contentExists = true;
+                        if(addDetailItem('Usable Capacity', `${usable_tb} TB`)) contentExists = true;
                         
                         if(extended_pcap?.rules) {
                              yPos += lineSpacing;
@@ -623,7 +661,9 @@
                              });
                              doc.autoTable({ head, body, startY: yPos + 5, theme: 'grid', styles: { font: 'helvetica' }, headStyles: { fillColor: plum } });
                              yPos = doc.lastAutoTable.finalY + 10;
+                             contentExists = true;
                         }
+                        return contentExists;
                     });
                 }
 
@@ -662,6 +702,7 @@
                             doc.text(splitText, leftMargin, yPos);
                             yPos += (splitText.length * 5) + 3;
                         });
+                        return true;
                     });
                 }
                 
