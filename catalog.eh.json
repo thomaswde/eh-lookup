@@ -181,7 +181,11 @@
       ]
     },
     "firmware_end_date": "2031-08-31",
-    "support_end_date": "2032-08-31"
+    "support_end_date": "2032-08-31",
+    "notes": [
+      "https://www.dell.com/support/home/en-us/product-support/product/poweredge-r7615/overview",
+      "https://docs.extrahop.com/current/dep-eda-10300/"
+    ]
   },
   {
     "name": "EDA9300",
@@ -305,7 +309,11 @@
       ]
     },
     "firmware_end_date": "2031-08-31",
-    "support_end_date": "2032-08-31"
+    "support_end_date": "2032-08-31",
+    "notes": [
+      "https://www.dell.com/support/home/en-us/product-support/product/poweredge-r7615/overview",
+      "https://docs.extrahop.com/current/dep-eda-9300/"
+    ]
   },
   {
     "name": "EDA8320",
@@ -425,7 +433,11 @@
       ]
     },
     "firmware_end_date": "2031-08-31",
-    "support_end_date": "2032-08-31"
+    "support_end_date": "2032-08-31",
+    "notes": [
+      "https://www.dell.com/support/home/en-us/product-support/product/poweredge-r6615/overview",
+      "https://docs.extrahop.com/current/dep-8320/"
+    ]
   },
   {
     "name": "EDA6370",
@@ -580,7 +592,11 @@
           "transceiver_type": "10G SR"
         }
       ]
-    }
+    },
+    "notes": [
+      "https://www.dell.com/support/home/en-us/product-support/product/poweredge-r6615/overview",
+      "https://docs.extrahop.com/current/dep-eda-6370/"
+    ]
   },
   {
     "name": "EDA10200",
@@ -1350,9 +1366,17 @@
     },
     "compatibility": {
       "track_limits": [
-        "rx360_only"
+        "revealx_only"
       ]
-    }
+    },
+    "notes": [
+      "https://docs.extrahop.com/current/deploy-eda-azure/",
+      "https://docs.extrahop.com/current/deploy-eda-aws/",
+      "https://docs.extrahop.com/current/deploy-eda-gcp/",
+      "https://docs.extrahop.com/current/deploy-eda-hyp/",
+      "https://docs.extrahop.com/current/deploy-eda-vmware/",
+      "https://docs.extrahop.com/current/deploy-eda-kvm/"
+    ]
   },
   {
     "name": "EDA2000v",
@@ -1428,8 +1452,6 @@
     },
     "deployments": {
       "hypervisors": [
-        "hyper-v",
-        "kvm",
         "vmware"
       ],
       "clouds": [
@@ -1532,7 +1554,11 @@
           ]
         }
       }
-    }
+    },
+    "notes": [
+      "https://docs.extrahop.com/current/deploy-eda-aws/",
+      "https://docs.extrahop.com/current/deploy-eda-gcp/"
+    ]
   },
   {
     "name": "EDA8320v",
@@ -1611,7 +1637,10 @@
           ]
         }
       }
-    }
+    },
+    "notes": [
+      "https://docs.extrahop.com/current/deploy-eda-azure/"
+    ]
   },
   {
     "name": "EDA8370v",
@@ -1651,7 +1680,10 @@
           ]
         }
       }
-    }
+    },
+    "notes": [
+      "https://docs.extrahop.com/current/deploy-eda-gcp/"
+    ]
   },
   {
     "name": "IDS9380",
@@ -2062,7 +2094,11 @@
       ]
     },
     "firmware_end_date": "2031-08-31",
-    "support_end_date": "2032-08-31"
+    "support_end_date": "2032-08-31",
+    "notes": [
+      "https://www.dell.com/support/home/en-us/product-support/product/poweredge-r6615/overview",
+      "https://docs.extrahop.com/current/deploy-eta-9350/"
+    ]
   },
   {
     "name": "ETA8250",
@@ -2268,6 +2304,11 @@
     },
     "performance": {
       "base_gbps": 10
+    },
+    "deployments": {
+      "hypervisors": [
+        "vmware"
+      ]
     }
   },
   {
@@ -2313,7 +2354,8 @@
       "continuous_pcap": {
         "disk_qty": 12,
         "disk_size_tb": 20,
-        "capacity_tb": 240
+        "capacity_tb": 240,
+        "raid_level": "RAID6"
       }
     },
     "compatibility": {
@@ -2322,7 +2364,11 @@
       ]
     },
     "firmware_end_date": "2031-08-31",
-    "support_end_date": "2032-08-31"
+    "support_end_date": "2032-08-31",
+    "notes": [
+      "https://www.dell.com/support/product-details/en-us/product/storage-md2412/overview",
+      "https://docs.extrahop.com/current/deploy-esu/"
+    ]
   },
   {
     "name": "HD ESU",
@@ -2340,7 +2386,8 @@
       "continuous_pcap": {
         "disk_qty": 60,
         "disk_size_tb": 20,
-        "capacity_tb": 1200
+        "capacity_tb": 1200,
+        "raid_level": "RAID60"
       }
     },
     "compatibility": {
@@ -2349,7 +2396,11 @@
       ]
     },
     "firmware_end_date": "2031-08-31",
-    "support_end_date": "2032-08-31"
+    "support_end_date": "2032-08-31",
+    "notes": [
+      "https://www.dell.com/support/product-details/en-us/product/storage-md2460/overview",
+      "https://docs.extrahop.com/current/deploy-esu/"
+    ]
   },
   {
     "name": "96TB ESU",
@@ -2365,7 +2416,10 @@
     },
     "storage": {
       "continuous_pcap": {
-        "capacity_tb": 96
+        "disk_qty": 12,
+        "disk_size_tb": 8,
+        "capacity_tb": 96,
+        "raid_level": "RAID6"
       }
     },
     "compatibility": {
@@ -2374,7 +2428,10 @@
       ]
     },
     "firmware_end_date": "2027-02-28",
-    "support_end_date": "2028-02-28"
+    "support_end_date": "2028-02-28",
+    "notes": [
+      "https://docs.extrahop.com/current/deploy-esu/"
+    ]
   },
   {
     "name": "72TB ESU",
@@ -2390,14 +2447,20 @@
     },
     "storage": {
       "continuous_pcap": {
-        "capacity_tb": 72
+        "disk_qty": 12,
+        "disk_size_tb": 6,
+        "capacity_tb": 72,
+        "raid_level": "RAID6"
       }
     },
     "compatibility": {
       "allows": [
         "ETA6150"
       ]
-    }
+    },
+    "notes": [
+      "https://docs.extrahop.com/current/deploy-esu/"
+    ]
   },
   {
     "name": "EXA5300",
@@ -2516,6 +2579,11 @@
     "engine": {
       "name": "ClickHouse",
       "version": 2
+    },
+    "deployments": {
+      "hypervisors": [
+        "vmware"
+      ]
     }
   },
   {
@@ -2656,11 +2724,15 @@
       "base_gbps": 0
     },
     "deployments": {
-      "clouds": {
-        "aws": true,
-        "azure": true,
-        "vmware": true
-      }
+      "hypervisors": [
+        "hyper-v",
+        "kvm",
+        "vmware"
+      ],
+      "clouds": [
+        "aws",
+        "azure"
+      ]
     },
     "compatibility": {
       "track_limits": [
