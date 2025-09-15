@@ -12,7 +12,7 @@
       "ndr": true,
       "npm": true,
       "ids": true,
-      "packet_forensics": true,
+      "network_forensics": true,
       "investigation": true,
       "flow_analysis": true
     },
@@ -453,7 +453,7 @@
       "ndr": true,
       "npm": true,
       "ids": true,
-      "packet_forensics": true
+      "network_forensics": true
     },
     "performance": {
       "base_gbps": 10,
@@ -1611,7 +1611,7 @@
       "ndr": true,
       "npm": true,
       "ids": true,
-      "packet_forensics": true
+      "network_forensics": true
     },
     "performance": {
       "base_gbps": 10,
@@ -1654,7 +1654,7 @@
       "ndr": true,
       "npm": true,
       "ids": true,
-      "packet_forensics": true
+      "network_forensics": true
     },
     "performance": {
       "base_gbps": 20,
@@ -1946,7 +1946,7 @@
       "rx360": "REVX-360-ETA9350"
     },
     "modules": {
-      "packet_forensics": true
+      "network_forensics": true
     },
     "form_factor": {
       "rack_units": 2,
@@ -2109,7 +2109,7 @@
       "rx360": "REVX-360-ETA8250"
     },
     "modules": {
-      "packet_forensics": true
+      "network_forensics": true
     },
     "performance": {
       "base_gbps": 10
@@ -2258,7 +2258,7 @@
       "rx360": "REVX-360-ETA6150"
     },
     "modules": {
-      "packet_forensics": true
+      "network_forensics": true
     },
     "performance": {
       "base_gbps": 10
@@ -2298,7 +2298,7 @@
       "rx360": "REVX-360-ETA6150V"
     },
     "modules": {
-      "packet_forensics": true
+      "network_forensics": true
     },
     "performance": {
       "base_gbps": 10
@@ -2320,7 +2320,7 @@
       "rx360": "REVX-360-1150V"
     },
     "modules": {
-      "packet_forensics": true
+      "network_forensics": true
     },
     "performance": {
       "base_gbps": 1
@@ -2486,9 +2486,7 @@
         {
           "id": 1,
           "roles": [
-            "mgmt",
-            "ERSPAN",
-            "RPCAP"
+            "mgmt"
           ],
           "supported_speeds_gb": [
             1
@@ -2499,9 +2497,7 @@
         {
           "id": 2,
           "roles": [
-            "mgmt",
-            "ERSPAN",
-            "RPCAP"
+            "mgmt"
           ],
           "supported_speeds_gb": [
             1
@@ -2512,9 +2508,7 @@
         {
           "id": 3,
           "roles": [
-            "mgmt",
-            "ERSPAN",
-            "RPCAP"
+            "mgmt"
           ],
           "supported_speeds_gb": [
             10,
@@ -2526,9 +2520,7 @@
         {
           "id": 4,
           "roles": [
-            "mgmt",
-            "ERSPAN",
-            "RPCAP"
+            "mgmt"
           ],
           "supported_speeds_gb": [
             10,
@@ -2614,22 +2606,29 @@
         {
           "id": 1,
           "roles": [
-            "mgmt",
-            "ERSPAN",
-            "RPCAP"
+            "mgmt"
           ],
           "supported_speeds_gb": [
-            1
+            10
           ],
           "transceiver_included": true,
-          "transceiver_type": "onboard"
+          "transceiver_type": "10G SR"
         },
         {
           "id": 2,
           "roles": [
-            "mgmt",
-            "ERSPAN",
-            "RPCAP"
+            "mgmt"
+          ],
+          "supported_speeds_gb": [
+            10
+          ],
+          "transceiver_included": true,
+          "transceiver_type": "10G SR"
+        },
+        {
+          "id": 3,
+          "roles": [
+            "mgmt"
           ],
           "supported_speeds_gb": [
             1
@@ -2638,30 +2637,15 @@
           "transceiver_type": "onboard"
         },
         {
-          "id": 3,
-          "roles": [
-            "mgmt",
-            "ERSPAN",
-            "RPCAP"
-          ],
-          "supported_speeds_gb": [
-            10
-          ],
-          "transceiver_included": true,
-          "transceiver_type": "10G SR"
-        },
-        {
           "id": 4,
           "roles": [
-            "mgmt",
-            "ERSPAN",
-            "RPCAP"
+            "mgmt"
           ],
           "supported_speeds_gb": [
-            10
+            1
           ],
           "transceiver_included": true,
-          "transceiver_type": "10G SR"
+          "transceiver_type": "onboard"
         }
       ],
       "capture": []
