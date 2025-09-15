@@ -59,7 +59,7 @@
         
         /* Themed elements */
         aside { background-color: var(--bg-secondary); border-color: var(--border-color); }
-        .border-t { border-color: var(--border-color) !important; }
+        .border-t, .divide-y > :not([hidden]) ~ :not([hidden]) { border-color: var(--border-color) !important; }
         main h2, aside h1 { color: var(--text-primary); }
         .product-card { background-color: var(--bg-card); border-color: var(--border-color); }
         .dark-theme .modal-content, .dark-theme .modal-content .sticky { background-color: var(--bg-primary); border-color: var(--border-color); }
@@ -69,8 +69,12 @@
         input[type="radio"]:checked, input[type="checkbox"]:checked { background-color: #00aaef; }
         label { color: var(--text-secondary); }
         h3, h4, h5 { color: var(--text-secondary); }
-        p, code, dt, dd { color: var(--text-muted); }
-        dd { font-weight: 600; } /* semi-bold */
+        p, code { color: var(--text-muted); }
+        dt { font-weight: 400; color: var(--text-muted); }
+        .dark-theme dt { color: var(--text-secondary); }
+        dd { font-weight: 600; color: var(--text-secondary); }
+        .dark-theme dd { color: var(--text-primary); }
+
         .product-card h3 { color: var(--text-primary); }
         .product-card .text-gray-500 { color: var(--text-muted); }
         .product-card .font-semibold { color: var(--text-secondary); }
