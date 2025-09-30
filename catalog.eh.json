@@ -2120,7 +2120,10 @@
     },
     "storage": {
       "continuous_pcap": {
-        "capacity_tb": 1200,
+        "disk_qty": 12,
+        "disk_size_tb": 8,
+        "capacity_tb": 96,
+        "raid_level": "RAID6",
         "extended_pcap": {
           "rules": [
             {

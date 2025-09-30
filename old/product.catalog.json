@@ -1674,6 +1674,7 @@
     {
       "name": "ETA9350",
       "category": "packetstore",
+      "capacityTB": 0,
       "generation": 3,
       "productType": 5,
       "subtype": 0,
@@ -1809,7 +1810,7 @@
     {
       "name": "ETA8250",
       "category": "packetstore",
-      "capacityTB": 1200,
+      "capacityTB": 96,
       "generation": 2,
       "productType": 5,
       "subtype": 0,
