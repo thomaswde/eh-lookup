@@ -202,6 +202,16 @@
                 <div id="deployment-options" class="space-y-2"></div>
             </div>
 
+             <!-- Hardware FAQ Link -->
+            <div class="border-t pt-4">
+                <a href="https://docs.extrahop.com/current/app-hw-faq/" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-full bg-[#00aaef] hover:bg-[#0098d7] text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">
+                    <span>Hardware FAQ</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                </a>
+            </div>
+
             <!-- Data Source -->
             <div>
                 <h3 class="text-sm font-medium mb-2 border-t pt-4">Data Source</h3>
@@ -606,10 +616,7 @@
 
                 // --- Helper Functions for PDF Generation ---
                 const addSection = (title, contentFunc) => {
-                    if (!contentFunc) return false;
-                    const contentExists = contentFunc(true); // Pre-check if content exists
-                    if (!contentExists) return false;
-
+                    if (!contentFunc || (typeof contentFunc === 'function' && !contentFunc())) return;
                     if (yPos > 260) { doc.addPage(); yPos = 20; }
                     doc.setLineWidth(0.5);
                     doc.line(leftMargin, yPos, rightMargin, yPos);
@@ -625,7 +632,7 @@
                 };
 
                 const addDetailItem = (label, value, isPreCheck = false) => {
-                    if (!value || (Array.isArray(value) && value.length === 0)) return false;
+                    if (value === undefined || value === null || (Array.isArray(value) && value.length === 0)) return false;
                     if(isPreCheck) return true;
 
                     if (yPos > 270) { doc.addPage(); yPos = 20; }
@@ -693,7 +700,7 @@
                     addSection('Storage', (isPreCheck) => {
                         const { disk_qty, disk_size_tb, capacity_tb, raid_level, usable_tb, extended_pcap } = currentProduct.storage.continuous_pcap;
                         let contentExists = false;
-                        if(addDetailItem('Disk Quantity', disk_qty?.toString(), isPreCheck)) contentExists = true;
+                        if(disk_qty !== undefined && addDetailItem('Disk Quantity', disk_qty?.toString(), isPreCheck)) contentExists = true;
                         if(disk_size_tb !== undefined && addDetailItem('Disk Size', `${disk_size_tb} TB`, isPreCheck)) contentExists = true;
                         if(capacity_tb !== undefined && addDetailItem('Total Capacity', `${capacity_tb} TB`, isPreCheck)) contentExists = true;
                         if(raid_level && addDetailItem('RAID Level', raid_level, isPreCheck)) contentExists = true;
