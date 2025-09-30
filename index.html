@@ -59,7 +59,7 @@
         
         /* Themed elements */
         aside { background-color: var(--bg-secondary); border-color: var(--border-color); }
-        .border-t, .divide-y > :not([hidden]) ~ :not([hidden]), .interfaces-table tr { border-color: var(--border-color) !important; }
+        .border-t, .divide-y > :not([hidden]) ~ :not([hidden]), .interfaces-table tr, .product-card .border-t { border-color: var(--border-color) !important; }
         main h2, aside h1 { color: var(--text-primary); }
         .product-card { background-color: var(--bg-card); border-color: var(--border-color); }
         .dark-theme .modal-content, .dark-theme .modal-content .sticky { background-color: var(--bg-primary); border-color: var(--border-color); }
@@ -606,7 +606,10 @@
 
                 // --- Helper Functions for PDF Generation ---
                 const addSection = (title, contentFunc) => {
-                    if (!contentFunc || (typeof contentFunc === 'function' && !contentFunc())) return;
+                    if (!contentFunc) return false;
+                    const contentExists = contentFunc(true); // Pre-check if content exists
+                    if (!contentExists) return false;
+
                     if (yPos > 260) { doc.addPage(); yPos = 20; }
                     doc.setLineWidth(0.5);
                     doc.line(leftMargin, yPos, rightMargin, yPos);
@@ -617,11 +620,14 @@
                     doc.text(title, leftMargin, yPos);
                     doc.setTextColor(0, 0, 0); // Reset to black
                     yPos += lineSpacing;
-                    contentFunc();
+                    contentFunc(false); // Render content
+                    return true;
                 };
 
-                const addDetailItem = (label, value) => {
+                const addDetailItem = (label, value, isPreCheck = false) => {
                     if (!value || (Array.isArray(value) && value.length === 0)) return false;
+                    if(isPreCheck) return true;
+
                     if (yPos > 270) { doc.addPage(); yPos = 20; }
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(10);
@@ -650,49 +656,51 @@
                 }
 
                 // Main Details
-                addSection('Overview', () => {
-                    addDetailItem('Platform', formatString(currentProduct.platform));
-                    addDetailItem('Sale Status', formatString(currentProduct.sale_status));
-                    if (currentProduct.sale_end_date) addDetailItem('End of Sale', currentProduct.sale_end_date);
-                    if (currentProduct.firmware_end_date) addDetailItem('End of Firmware', currentProduct.firmware_end_date);
-                    if (currentProduct.support_end_date) addDetailItem('End of Support', currentProduct.support_end_date);
-                    return true;
+                addSection('Overview', (isPreCheck) => {
+                    let c1 = addDetailItem('Platform', formatString(currentProduct.platform), isPreCheck);
+                    let c2 = addDetailItem('Sale Status', formatString(currentProduct.sale_status), isPreCheck);
+                    let c3 = currentProduct.sale_end_date ? addDetailItem('End of Sale', currentProduct.sale_end_date, isPreCheck) : false;
+                    let c4 = currentProduct.firmware_end_date ? addDetailItem('End of Firmware', currentProduct.firmware_end_date, isPreCheck) : false;
+                    let c5 = currentProduct.support_end_date ? addDetailItem('End of Support', currentProduct.support_end_date, isPreCheck) : false;
+                    return c1 || c2 || c3 || c4 || c5;
                 });
 
                 // Performance
                 if(currentProduct.performance) {
-                    addSection('Performance', () => {
+                    addSection('Performance', (isPreCheck) => {
                         const { base_gbps, ids_gbps, base_packetrate, flows_per_second, ingest_records_per_sec } = currentProduct.performance;
                         let contentExists = false;
-                        if(addDetailItem('Base Throughput', `${(base_gbps || 1)} Gbps`)) contentExists = true;
-                        if(ids_gbps && addDetailItem('IDS Throughput', `${ids_gbps} Gbps`)) contentExists = true;
-                        if(base_packetrate && addDetailItem('Packet Rate', `${base_packetrate.toLocaleString()} pps`)) contentExists = true;
-                        if(flows_per_second && addDetailItem('Flows Per Second', `${flows_per_second.toLocaleString()}`)) contentExists = true;
-                        if(ingest_records_per_sec && addDetailItem('Ingest Rate', `${ingest_records_per_sec.toLocaleString()} records/sec`)) contentExists = true;
+                        if(addDetailItem('Base Throughput', `${(base_gbps || 1)} Gbps`, isPreCheck)) contentExists = true;
+                        if(ids_gbps && addDetailItem('IDS Throughput', `${ids_gbps} Gbps`, isPreCheck)) contentExists = true;
+                        if(base_packetrate && addDetailItem('Packet Rate', `${base_packetrate.toLocaleString()} pps`, isPreCheck)) contentExists = true;
+                        if(flows_per_second && addDetailItem('Flows Per Second', `${flows_per_second.toLocaleString()}`, isPreCheck)) contentExists = true;
+                        if(ingest_records_per_sec && addDetailItem('Ingest Rate', `${ingest_records_per_sec.toLocaleString()} records/sec`, isPreCheck)) contentExists = true;
                         return contentExists;
                     });
                 }
                 
                 // Modules and Deployment
-                if (currentProduct.modules) addSection('Modules', () => addDetailItem('Supported Modules', Object.keys(currentProduct.modules).filter(m => currentProduct.modules[m])));
-                if (currentProduct.deployments) addSection('Deployment', () => {
-                    let c1 = addDetailItem('Hypervisors', currentProduct.deployments.hypervisors);
-                    let c2 = addDetailItem('Clouds', currentProduct.deployments.clouds);
+                if (currentProduct.modules) addSection('Modules', (isPreCheck) => addDetailItem('Supported Modules', Object.keys(currentProduct.modules).filter(m => currentProduct.modules[m]), isPreCheck));
+                if (currentProduct.deployments) addSection('Deployment', (isPreCheck) => {
+                    let c1 = addDetailItem('Hypervisors', currentProduct.deployments.hypervisors, isPreCheck);
+                    let c2 = addDetailItem('Clouds', currentProduct.deployments.clouds, isPreCheck);
                     return c1 || c2;
                 });
-                if (currentProduct.ingest?.supported_protocols) addSection('Ingest', () => addDetailItem('Supported Protocols', currentProduct.ingest.supported_protocols));
+                if (currentProduct.ingest?.supported_protocols) addSection('Ingest', (isPreCheck) => addDetailItem('Supported Protocols', currentProduct.ingest.supported_protocols, isPreCheck));
                 
                 // Storage
                  if(currentProduct.storage?.continuous_pcap) {
-                    addSection('Storage', () => {
+                    addSection('Storage', (isPreCheck) => {
                         const { disk_qty, disk_size_tb, capacity_tb, raid_level, usable_tb, extended_pcap } = currentProduct.storage.continuous_pcap;
                         let contentExists = false;
-                        if(addDetailItem('Disk Quantity', disk_qty?.toString())) contentExists = true;
-                        if(addDetailItem('Disk Size', `${disk_size_tb} TB`)) contentExists = true;
-                        if(addDetailItem('Total Capacity', `${capacity_tb} TB`)) contentExists = true;
-                        if(addDetailItem('RAID Level', raid_level)) contentExists = true;
-                        if(addDetailItem('Usable Capacity', `${usable_tb} TB`)) contentExists = true;
+                        if(addDetailItem('Disk Quantity', disk_qty?.toString(), isPreCheck)) contentExists = true;
+                        if(disk_size_tb !== undefined && addDetailItem('Disk Size', `${disk_size_tb} TB`, isPreCheck)) contentExists = true;
+                        if(capacity_tb !== undefined && addDetailItem('Total Capacity', `${capacity_tb} TB`, isPreCheck)) contentExists = true;
+                        if(raid_level && addDetailItem('RAID Level', raid_level, isPreCheck)) contentExists = true;
+                        if(usable_tb !== undefined && addDetailItem('Usable Capacity', `${usable_tb} TB`, isPreCheck)) contentExists = true;
                         
+                        if(isPreCheck) return contentExists || !!extended_pcap?.rules;
+
                         if(extended_pcap?.rules) {
                              yPos += lineSpacing;
                              doc.setFont('helvetica', 'bold');
@@ -745,7 +753,8 @@
 
                 // Notes
                 if (currentProduct.notes) {
-                    addSection('Notes', () => {
+                    addSection('Notes', (isPreCheck) => {
+                        if (isPreCheck) return true;
                         doc.setFont('helvetica', 'normal');
                         doc.setFontSize(10);
                         currentProduct.notes.forEach(note => {
