@@ -31,14 +31,14 @@
         .dark-theme {
             --bg-primary: #1f1f1f;
             --bg-secondary: #313131;
-            --bg-card: #313131; /* Reverted card background */
+            --bg-card: #424242; 
             --bg-input: #424242;
             --bg-hover: #535353;
             --bg-subtle: #424242;
             --text-primary: #f3f4f6;
             --text-secondary: #d1d5db;
             --text-muted: #9ca3af;
-            --border-color: #4b5563; /* Better contrast border */
+            --border-color: #4b5563; 
             --toggle-bg: #4b5563;
             --toggle-fg: #313131;
         }
@@ -59,7 +59,10 @@
         
         /* Themed elements */
         aside { background-color: var(--bg-secondary); border-color: var(--border-color); }
-        .border-t, .divide-y > :not([hidden]) ~ :not([hidden]), .interfaces-table tr, .product-card .border-t { border-color: var(--border-color) !important; }
+        .border-t, .product-card .border-t { border-color: var(--border-color) !important; }
+        .modal-content .divide-y > :not([hidden]) ~ :not([hidden]), .modal-content .interfaces-table tr, .modal-content .border-t { border-color: var(--border-color) !important; }
+        .dark-theme .modal-content .divide-y > :not([hidden]) ~ :not([hidden]) { border-color: #424242 !important; }
+        
         main h2, aside h1 { color: var(--text-primary); }
         .product-card { background-color: var(--bg-card); border-color: var(--border-color); }
         .dark-theme .modal-content, .dark-theme .modal-content .sticky { background-color: var(--bg-primary); border-color: var(--border-color); }
@@ -616,7 +619,6 @@
 
                 // --- Helper Functions for PDF Generation ---
                 const addSection = (title, renderContent) => {
-                    if (!renderContent) return;
                     if (yPos > 260) { doc.addPage(); yPos = 20; }
                     doc.setLineWidth(0.5);
                     doc.line(leftMargin, yPos, rightMargin, yPos);
@@ -748,7 +750,7 @@
                 // Notes
                 if (currentProduct.notes) {
                     addSection('Notes', (isPreCheck) => {
-                        if (isPreCheck) return true;
+                        if(isPreCheck) return true;
                         doc.setFont('helvetica', 'normal');
                         doc.setFontSize(10);
                         currentProduct.notes.forEach(note => {
