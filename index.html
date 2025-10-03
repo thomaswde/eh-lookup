@@ -615,8 +615,8 @@
                 const plum = [127, 40, 84];
 
                 // --- Helper Functions for PDF Generation ---
-                const addSection = (title, contentFunc) => {
-                    if (!contentFunc || (typeof contentFunc === 'function' && !contentFunc())) return;
+                const addSection = (title, renderContent) => {
+                    if (!renderContent) return;
                     if (yPos > 260) { doc.addPage(); yPos = 20; }
                     doc.setLineWidth(0.5);
                     doc.line(leftMargin, yPos, rightMargin, yPos);
@@ -627,14 +627,11 @@
                     doc.text(title, leftMargin, yPos);
                     doc.setTextColor(0, 0, 0); // Reset to black
                     yPos += lineSpacing;
-                    contentFunc(false); // Render content
-                    return true;
+                    renderContent();
                 };
 
-                const addDetailItem = (label, value, isPreCheck = false) => {
-                    if (value === undefined || value === null || (Array.isArray(value) && value.length === 0)) return false;
-                    if(isPreCheck) return true;
-
+                const addDetailItem = (label, value) => {
+                    if (value === undefined || value === null || (Array.isArray(value) && value.length === 0)) return;
                     if (yPos > 270) { doc.addPage(); yPos = 20; }
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(10);
@@ -645,7 +642,6 @@
                     const splitText = doc.splitTextToSize(valueText.toString(), rightMargin - leftMargin - 45);
                     doc.text(splitText, leftMargin + 45, yPos);
                     yPos += (splitText.length * 4) + (lineSpacing / 2);
-                    return true;
                 };
 
                 // --- PDF Content ---
@@ -663,51 +659,44 @@
                 }
 
                 // Main Details
-                addSection('Overview', (isPreCheck) => {
-                    let c1 = addDetailItem('Platform', formatString(currentProduct.platform), isPreCheck);
-                    let c2 = addDetailItem('Sale Status', formatString(currentProduct.sale_status), isPreCheck);
-                    let c3 = currentProduct.sale_end_date ? addDetailItem('End of Sale', currentProduct.sale_end_date, isPreCheck) : false;
-                    let c4 = currentProduct.firmware_end_date ? addDetailItem('End of Firmware', currentProduct.firmware_end_date, isPreCheck) : false;
-                    let c5 = currentProduct.support_end_date ? addDetailItem('End of Support', currentProduct.support_end_date, isPreCheck) : false;
-                    return c1 || c2 || c3 || c4 || c5;
+                addSection('Overview', () => {
+                    addDetailItem('Platform', formatString(currentProduct.platform));
+                    addDetailItem('Sale Status', formatString(currentProduct.sale_status));
+                    addDetailItem('End of Sale', currentProduct.sale_end_date);
+                    addDetailItem('End of Firmware', currentProduct.firmware_end_date);
+                    addDetailItem('End of Support', currentProduct.support_end_date);
                 });
 
                 // Performance
                 if(currentProduct.performance) {
-                    addSection('Performance', (isPreCheck) => {
+                    addSection('Performance', () => {
                         const { base_gbps, ids_gbps, base_packetrate, flows_per_second, ingest_records_per_sec } = currentProduct.performance;
-                        let contentExists = false;
-                        if(addDetailItem('Base Throughput', `${(base_gbps || 1)} Gbps`, isPreCheck)) contentExists = true;
-                        if(ids_gbps && addDetailItem('IDS Throughput', `${ids_gbps} Gbps`, isPreCheck)) contentExists = true;
-                        if(base_packetrate && addDetailItem('Packet Rate', `${base_packetrate.toLocaleString()} pps`, isPreCheck)) contentExists = true;
-                        if(flows_per_second && addDetailItem('Flows Per Second', `${flows_per_second.toLocaleString()}`, isPreCheck)) contentExists = true;
-                        if(ingest_records_per_sec && addDetailItem('Ingest Rate', `${ingest_records_per_sec.toLocaleString()} records/sec`, isPreCheck)) contentExists = true;
-                        return contentExists;
+                        addDetailItem('Base Throughput', `${(base_gbps || 1)} Gbps`);
+                        addDetailItem('IDS Throughput', ids_gbps ? `${ids_gbps} Gbps` : undefined);
+                        addDetailItem('Packet Rate', base_packetrate?.toLocaleString() + ' pps');
+                        addDetailItem('Flows Per Second', flows_per_second?.toLocaleString());
+                        addDetailItem('Ingest Rate', ingest_records_per_sec?.toLocaleString() + ' records/sec');
                     });
                 }
                 
                 // Modules and Deployment
-                if (currentProduct.modules) addSection('Modules', (isPreCheck) => addDetailItem('Supported Modules', Object.keys(currentProduct.modules).filter(m => currentProduct.modules[m]), isPreCheck));
-                if (currentProduct.deployments) addSection('Deployment', (isPreCheck) => {
-                    let c1 = addDetailItem('Hypervisors', currentProduct.deployments.hypervisors, isPreCheck);
-                    let c2 = addDetailItem('Clouds', currentProduct.deployments.clouds, isPreCheck);
-                    return c1 || c2;
+                if (currentProduct.modules) addSection('Modules', () => addDetailItem('Supported Modules', Object.keys(currentProduct.modules).filter(m => currentProduct.modules[m])));
+                if (currentProduct.deployments) addSection('Deployment', () => {
+                    addDetailItem('Hypervisors', currentProduct.deployments.hypervisors);
+                    addDetailItem('Clouds', currentProduct.deployments.clouds);
                 });
-                if (currentProduct.ingest?.supported_protocols) addSection('Ingest', (isPreCheck) => addDetailItem('Supported Protocols', currentProduct.ingest.supported_protocols, isPreCheck));
+                if (currentProduct.ingest?.supported_protocols) addSection('Ingest', () => addDetailItem('Supported Protocols', currentProduct.ingest.supported_protocols));
                 
                 // Storage
                  if(currentProduct.storage?.continuous_pcap) {
-                    addSection('Storage', (isPreCheck) => {
+                    addSection('Storage', () => {
                         const { disk_qty, disk_size_tb, capacity_tb, raid_level, usable_tb, extended_pcap } = currentProduct.storage.continuous_pcap;
-                        let contentExists = false;
-                        if(disk_qty !== undefined && addDetailItem('Disk Quantity', disk_qty?.toString(), isPreCheck)) contentExists = true;
-                        if(disk_size_tb !== undefined && addDetailItem('Disk Size', `${disk_size_tb} TB`, isPreCheck)) contentExists = true;
-                        if(capacity_tb !== undefined && addDetailItem('Total Capacity', `${capacity_tb} TB`, isPreCheck)) contentExists = true;
-                        if(raid_level && addDetailItem('RAID Level', raid_level, isPreCheck)) contentExists = true;
-                        if(usable_tb !== undefined && addDetailItem('Usable Capacity', `${usable_tb} TB`, isPreCheck)) contentExists = true;
+                        addDetailItem('Disk Quantity', disk_qty?.toString());
+                        addDetailItem('Disk Size', disk_size_tb !== undefined ? `${disk_size_tb} TB` : undefined);
+                        addDetailItem('Total Capacity', capacity_tb !== undefined ? `${capacity_tb} TB` : undefined);
+                        addDetailItem('RAID Level', raid_level);
+                        addDetailItem('Usable Capacity', usable_tb !== undefined ? `${usable_tb} TB` : undefined);
                         
-                        if(isPreCheck) return contentExists || !!extended_pcap?.rules;
-
                         if(extended_pcap?.rules) {
                              yPos += lineSpacing;
                              doc.setFont('helvetica', 'bold');
@@ -731,9 +720,7 @@
                              });
                              doc.autoTable({ head, body, startY: yPos + 5, theme: 'grid', styles: { font: 'helvetica' }, headStyles: { fillColor: plum } });
                              yPos = doc.lastAutoTable.finalY + 10;
-                             contentExists = true;
                         }
-                        return contentExists;
                     });
                 }
 
@@ -825,3 +812,4 @@
     </script>
 </body>
 </html>
+
