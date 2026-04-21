@@ -2729,27 +2729,15 @@ function computeCompatibilityWarnings() {
     warns.push('Mixed track limits: stack contains <strong>Enterprise-only</strong> and <strong>Reveal(x) 360-only</strong> components. These cannot coexist in a single deployment.');
   }
 
-  // ESU attachment checks — a host is an ETA in .allows, or an AIO EDA that accepts ESU attachments
-  const esuItems = items.filter(x => x.platform === 'extended_storage');
-  for (const esu of esuItems) {
-    const allowed = new Set(esu.compatibility?.allows || []);
-    const hasExplicitHost = [...allowed].some(target => items.some(x => x.name === target));
-    const hasAioHost = items.some(x => x.platform === 'all_in_one' && acceptsEsu(x, esu.name));
-    if (!hasExplicitHost && !hasAioHost) {
-      warns.push(`<strong>${esu.name}</strong> has no host in the stack. It attaches to: ${[...allowed].join(', ') || '—'}.`);
-    }
-  }
-
-  // Packet-store / AIO attachment limits
-  const hosts = items.filter(x => acceptsAnyEsu(x));
-  for (const host of hosts) {
-    const attLimits = host.compatibility?.accepts_attachments?.[0]?.models || [];
-    for (const mdl of attLimits) {
-      const attached = items.filter(x => x.name === mdl.model).reduce((n, x) => n + x.__qty, 0);
-      if (attached > mdl.limit) {
-        warns.push(`<strong>${host.name}</strong> can accept at most ${mdl.limit}× ${mdl.model}; stack has ${attached}.`);
-      }
-    }
+  // ESU attachment checks — verify against actual per-instance topology allocation
+  const topology = planTopology(items);
+  const orphanedEsus = topology.esuAssignments.filter(x => x.host.type === 'orphan');
+  if (orphanedEsus.length) {
+    const counts = new Map();
+    orphanedEsus.forEach(({ esu }) => counts.set(esu.name, (counts.get(esu.name) || 0) + 1));
+    counts.forEach((count, esuName) => {
+      warns.push(`<strong>${esuName}</strong> has ${count} unattached unit${count !== 1 ? 's' : ''}. Add compatible ETA/AIO capacity or reduce ESU quantity.`);
+    });
   }
 
   // EOL warnings
@@ -2777,6 +2765,81 @@ function acceptsAnyEsu(item) {
   const atts = item?.compatibility?.accepts_attachments;
   if (!atts) return false;
   return atts.some(a => a.type === 'ESU');
+}
+
+function getEsuAttachmentLimit(hostItem, esuName) {
+  const atts = hostItem?.compatibility?.accepts_attachments;
+  if (!atts) return 0;
+  for (const a of atts) {
+    if (a.type !== 'ESU') continue;
+    for (const m of (a.models || [])) {
+      if (m.model === esuName) return m.limit || 0;
+    }
+  }
+  return 0;
+}
+
+function formatTopologyInstanceName(inst) {
+  if (!inst) return '';
+  const qty = inst.item?.__qty || 1;
+  return qty > 1 ? `${inst.name} #${inst.idx + 1}` : inst.name;
+}
+
+function renderStorageAttachmentMap(plan) {
+  if (!plan.esuAssignments.length) return '';
+
+  const rows = [];
+  const grouped = new Map();
+  plan.esuAssignments.forEach(({ esu, host }) => {
+    const key = host.type === 'orphan'
+      ? 'orphan'
+      : `${host.type}:${formatTopologyInstanceName(host.ref)}`;
+    if (!grouped.has(key)) grouped.set(key, { host, esus: [] });
+    grouped.get(key).esus.push(formatTopologyInstanceName(esu));
+  });
+
+  plan.etas.forEach(eta => {
+    const key = `eta:${formatTopologyInstanceName(eta)}`;
+    const bucket = grouped.get(key);
+    rows.push(`
+      <li>
+        <div class="xl-left">${formatTopologyInstanceName(eta)}</div>
+        <div class="xl-right">${bucket?.esus.length ? bucket.esus.join(', ') : 'No ESUs attached'}</div>
+      </li>
+    `);
+  });
+
+  if (plan.sensor?.item.platform === 'all_in_one') {
+    const key = `aio:${formatTopologyInstanceName(plan.sensor)}`;
+    const bucket = grouped.get(key);
+    if (bucket?.esus.length) {
+      rows.push(`
+        <li>
+          <div class="xl-left">${formatTopologyInstanceName(plan.sensor)}</div>
+          <div class="xl-right">${bucket.esus.join(', ')}</div>
+        </li>
+      `);
+    }
+  }
+
+  const orphanBucket = grouped.get('orphan');
+  if (orphanBucket?.esus.length) {
+    rows.push(`
+      <li style="--plt-color:${colorForPlatform('extended_storage')}">
+        <div class="xl-left">Unattached ESUs</div>
+        <div class="xl-right">${orphanBucket.esus.join(', ')}</div>
+      </li>
+    `);
+  }
+
+  return `
+    <div class="export-section">
+      <h2>Storage Attachment Map</h2>
+      <ul class="export-list">
+        ${rows.join('')}
+      </ul>
+    </div>
+  `;
 }
 
 function renderStack() {
@@ -2919,6 +2982,7 @@ $('#stack-panel').addEventListener('drop', (e) => {
 function buildExportContent() {
   const t = computeStackTotals();
   const items = state.stack.map(s => ({ ...itemOf(s.id), __qty: s.qty })).filter(Boolean);
+  const topology = planTopology(items);
   const name = state.stackName?.trim() || 'ExtraHop Reference Solution';
   const dateStr = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -2938,6 +3002,7 @@ function buildExportContent() {
 
   // Topology SVG — simple reference diagram grouped by role
   const svg = renderTopologyDiagram(items);
+  const storageAttachmentMap = renderStorageAttachmentMap(topology);
 
   const body = `
     <div class="export-root" id="export-root">
@@ -2973,6 +3038,8 @@ function buildExportContent() {
         <h2>Reference Topology</h2>
         ${svg}
       </div>
+
+      ${storageAttachmentMap}
 
       ${orderedGroups.map(([groupName, arr]) => {
         const accent = PLATFORM_META[arr[0].platform]?.accent || 'var(--eh-sapphire)';
@@ -3049,34 +3116,59 @@ function planTopology(items) {
   const sensor = sensors[0] || null; // enforced: 1 EDA per stack
   const aioHost = sensor && sensor.item.platform === 'all_in_one' ? sensor : null;
 
-  // Distribute ESUs: explicit allows first, then round-robin across ETAs, else AIO host
+  // Distribute ESUs per host-instance capacity so identical ETA models share load evenly.
   const esuAssignments = []; // {esu, host: {type:'eta'|'aio'|'orphan', ref}}
-  const etaLoad = new Map(etas.map(e => [e, 0]));
+  const hostLoad = new Map();
+  etas.forEach(eta => hostLoad.set(eta, 0));
+  if (aioHost) hostLoad.set(aioHost, 0);
+
   for (const esu of esus) {
     const allowed = new Set(esu.item.compatibility?.allows || []);
+    const candidates = [];
 
-    // 1. Prefer an ETA whose name is in `allows`
-    let host = null;
     for (const eta of etas) {
-      if (allowed.has(eta.name)) { host = { type: 'eta', ref: eta }; break; }
+      const limit = getEsuAttachmentLimit(eta.item, esu.name);
+      const load = hostLoad.get(eta) || 0;
+      if (!limit || load >= limit) continue;
+      candidates.push({
+        type: 'eta',
+        ref: eta,
+        limit,
+        load,
+        priority: allowed.has(eta.name) ? 0 : 1,
+      });
     }
 
-    // 2. Fall back to AIO EDA that accepts this ESU model
-    if (!host && aioHost && acceptsEsu(aioHost.item, esu.name)) {
-      host = { type: 'aio', ref: aioHost };
-    }
-
-    // 3. Round-robin any ETA that accepts ESU attachments
-    if (!host && etas.length) {
-      const candidates = etas.filter(e => acceptsAnyEsu(e.item));
-      if (candidates.length) {
-        candidates.sort((a, b) => (etaLoad.get(a) || 0) - (etaLoad.get(b) || 0));
-        host = { type: 'eta', ref: candidates[0] };
+    if (aioHost) {
+      const limit = getEsuAttachmentLimit(aioHost.item, esu.name);
+      const load = hostLoad.get(aioHost) || 0;
+      if (limit && load < limit) {
+        candidates.push({
+          type: 'aio',
+          ref: aioHost,
+          limit,
+          load,
+          priority: 2,
+        });
       }
     }
 
-    if (host?.type === 'eta') etaLoad.set(host.ref, (etaLoad.get(host.ref) || 0) + 1);
-    esuAssignments.push({ esu, host: host || { type: 'orphan', ref: null } });
+    candidates.sort((a, b) => {
+      if (a.priority !== b.priority) return a.priority - b.priority;
+      const aRatio = a.load / a.limit;
+      const bRatio = b.load / b.limit;
+      if (aRatio !== bRatio) return aRatio - bRatio;
+      if (a.load !== b.load) return a.load - b.load;
+      return a.ref.idx - b.ref.idx;
+    });
+
+    const chosen = candidates[0] || null;
+    if (chosen) {
+      hostLoad.set(chosen.ref, chosen.load + 1);
+      esuAssignments.push({ esu, host: { type: chosen.type, ref: chosen.ref } });
+    } else {
+      esuAssignments.push({ esu, host: { type: 'orphan', ref: null } });
+    }
   }
 
   return { sensor, ids, efc, etas, esus, esuAssignments };
@@ -3279,7 +3371,7 @@ function renderTopologyDiagram(items) {
       if (kind === 'Physical' && it.form_factor?.rack_units) sub.push(`${it.form_factor.rack_units}U`);
       if (kind !== 'Physical') sub.push(kind);
       svg += renderAppNode(x, etaRowY, nodeW, nodeH, {
-        title: it.name,
+        title: formatTopologyInstanceName(eta),
         subtitle: sub.join(' · '),
         accent: colorForPlatform('packetstore'),
         ribbon: 'ETA',
@@ -3316,7 +3408,7 @@ function renderTopologyDiagram(items) {
       const cap = computeStorageCapacityTb(it);
       const sub = cap ? `${cap} TB` : '';
       svg += renderAppNode(x, y, nodeW, nodeH, {
-        title: it.name,
+        title: formatTopologyInstanceName(esu),
         subtitle: sub || (host.type === 'orphan' ? 'Unattached' : ''),
         accent: colorForPlatform('extended_storage'),
         ribbon: 'ESU',
