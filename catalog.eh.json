@@ -2071,7 +2071,7 @@
       "network_forensics": true
     },
     "form_factor": {
-      "rack_units": 2,
+      "rack_units": 1,
       "power_watts": 800
     },
     "storage": {
