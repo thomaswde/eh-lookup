@@ -3,6 +3,7 @@
     "name": "ECA",
     "platform": "command",
     "generation": 1,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-ECA-APPL"
@@ -27,7 +28,8 @@
     },
     "compatibility": {
       "track_limits": [
-        "enterprise_only"
+        "enterprise_only",
+        "rx360_only"
       ]
     }
   },
@@ -35,6 +37,7 @@
     "name": "EDA10300",
     "platform": "packet_sensor",
     "generation": 3,
+    "is_physical": true,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EDA10300",
@@ -51,8 +54,7 @@
       "ids_reduction_percent": 50,
       "base_packetrate": 10000000,
       "advanced_analysis": 16000,
-      "standard_analysis": 100000,
-      "ti_observable": 1152000
+      "standard_analysis": 100000
     },
     "form_factor": {
       "rack_units": 2,
@@ -189,6 +191,7 @@
     "name": "EDA9300",
     "platform": "packet_sensor",
     "generation": 3,
+    "is_physical": true,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EDA9300",
@@ -205,8 +208,7 @@
       "ids_reduction_percent": 50,
       "base_packetrate": 5000000,
       "advanced_analysis": 8000,
-      "standard_analysis": 50000,
-      "ti_observable": 576000
+      "standard_analysis": 50000
     },
     "form_factor": {
       "rack_units": 2,
@@ -317,6 +319,7 @@
     "name": "EDA8320",
     "platform": "multifunction_sensor",
     "generation": 3,
+    "is_physical": true,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EDA8320",
@@ -333,8 +336,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 2500000,
       "advanced_analysis": 5500,
-      "standard_analysis": 35000,
-      "ti_observable": 384000
+      "standard_analysis": 35000
     },
     "form_factor": {
       "rack_units": 1,
@@ -441,6 +443,7 @@
     "name": "EDA6370",
     "platform": "all_in_one",
     "generation": 3,
+    "is_physical": true,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EDA6370",
@@ -458,8 +461,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 1000000,
       "advanced_analysis": 3000,
-      "standard_analysis": 18000,
-      "ti_observable": 192000
+      "standard_analysis": 18000
     },
     "form_factor": {
       "rack_units": 1,
@@ -594,29 +596,13 @@
     "notes": [
       "https://www.dell.com/support/home/en-us/product-support/product/poweredge-r6615/overview",
       "https://docs.extrahop.com/current/dep-eda-6370/"
-    ],
-    "compatibility": {
-      "accepts_attachments": [
-        {
-          "type": "ESU",
-          "models": [
-            {
-              "model": "240TB ESU",
-              "limit": 4
-            },
-            {
-              "model": "HD ESU",
-              "limit": 1
-            }
-          ]
-        }
-      ]
-    }
+    ]
   },
   {
     "name": "EDA10200",
     "platform": "packet_sensor",
     "generation": 2,
+    "is_physical": true,
     "sale_status": "end_of_sale",
     "skus": {
       "enterprise": "REVX-ENT-EDA10200",
@@ -633,8 +619,7 @@
       "ids_reduction_percent": 60,
       "base_packetrate": 10000000,
       "advanced_analysis": 16000,
-      "standard_analysis": 100000,
-      "ti_observable": 1152000
+      "standard_analysis": 100000
     },
     "form_factor": {
       "rack_units": 2,
@@ -737,6 +722,7 @@
     "name": "EDA9200",
     "platform": "packet_sensor",
     "generation": 2,
+    "is_physical": true,
     "sale_status": "end_of_sale",
     "skus": {
       "enterprise": "REVX-ENT-EDA9200",
@@ -753,8 +739,7 @@
       "ids_reduction_percent": 60,
       "base_packetrate": 5000000,
       "advanced_analysis": 8000,
-      "standard_analysis": 50000,
-      "ti_observable": 576000
+      "standard_analysis": 50000
     },
     "form_factor": {
       "rack_units": 2,
@@ -853,6 +838,7 @@
     "name": "EDA8200",
     "platform": "packet_sensor",
     "generation": 2,
+    "is_physical": true,
     "sale_status": "end_of_sale",
     "skus": {
       "enterprise": "REVX-ENT-EDA8200",
@@ -869,8 +855,7 @@
       "ids_reduction_percent": 60,
       "base_packetrate": 2500000,
       "advanced_analysis": 5500,
-      "standard_analysis": 35000,
-      "ti_observable": 384000
+      "standard_analysis": 35000
     },
     "form_factor": {
       "rack_units": 1,
@@ -973,6 +958,7 @@
     "name": "EDA6200",
     "platform": "packet_sensor",
     "generation": 2,
+    "is_physical": true,
     "sale_status": "end_of_sale",
     "skus": {
       "enterprise": "REVX-ENT-EDA6200",
@@ -989,8 +975,7 @@
       "ids_reduction_percent": 60,
       "base_packetrate": 1000000,
       "advanced_analysis": 3000,
-      "standard_analysis": 18000,
-      "ti_observable": 192000
+      "standard_analysis": 18000
     },
     "form_factor": {
       "rack_units": 1,
@@ -1093,6 +1078,7 @@
     "name": "EDA4200",
     "platform": "packet_sensor",
     "generation": 2,
+    "is_physical": true,
     "sale_status": "end_of_sale",
     "skus": {
       "enterprise": null,
@@ -1108,8 +1094,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 500000,
       "advanced_analysis": 1500,
-      "standard_analysis": 9000,
-      "ti_observable": 96000
+      "standard_analysis": 9000
     },
     "form_factor": {
       "rack_units": 1,
@@ -1217,6 +1202,7 @@
     "name": "EDA1200",
     "platform": "packet_sensor",
     "generation": 2,
+    "is_physical": true,
     "sale_status": "active",
     "skus": {
       "enterprise": null,
@@ -1232,12 +1218,11 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 140000,
       "advanced_analysis": 250,
-      "standard_analysis": 750,
-      "ti_observable": 24000
+      "standard_analysis": 750
     },
     "form_factor": {
       "rack_units": 1,
-      "power_watts": 90
+      "power_watts": 800
     },
     "storage": {
       "datastore": {
@@ -1256,8 +1241,7 @@
           "roles": [
             "mgmt",
             "ERSPAN",
-            "RPCAP",
-            "capture"
+            "RPCAP"
           ],
           "supported_speeds_gb": [
             1
@@ -1270,8 +1254,7 @@
           "roles": [
             "mgmt",
             "ERSPAN",
-            "RPCAP",
-            "capture"
+            "RPCAP"
           ],
           "supported_speeds_gb": [
             1
@@ -1289,80 +1272,10 @@
     }
   },
   {
-    "name": "EDA1370",
-    "platform": "all_in_one",
-    "generation": 3,
-    "sale_status": "active",
-    "skus": {
-      "enterprise": "REVX-ENT-EDA1370",
-      "rx360": "REVX-360-EDA1370"
-    },
-    "modules": {
-      "ndr": true,
-      "npm": true,
-      "ids": true,
-      "network_forensics": true
-    },
-    "performance": {
-      "base_gbps": 1,
-      "ids_gbps": 1,
-      "ids_reduction_percent": 0,
-      "base_packetrate": 140000,
-      "advanced_analysis": 250,
-      "standard_analysis": 750,
-      "ti_observable": 24000
-    },
-    "form_factor": {
-      "rack_units": 0,
-      "power_watts": 330
-    },
-    "storage": {
-      "continuous_pcap": {
-        "onboard": {
-          "disk_qty": 1,
-          "disk_size_tb": 20,
-          "rpm": 7200
-        }
-      }
-    },
-    "interfaces": {
-      "management": [
-        {
-          "id": 1,
-          "roles": [
-            "mgmt",
-            "ERSPAN",
-            "RPCAP",
-            "capture"
-          ],
-          "supported_speeds_gb": [
-            1
-          ],
-          "transceiver_included": true,
-          "transceiver_type": "onboard"
-        },
-        {
-          "id": 2,
-          "roles": [
-            "mgmt",
-            "ERSPAN",
-            "RPCAP",
-            "capture"
-          ],
-          "supported_speeds_gb": [
-            1
-          ],
-          "transceiver_included": true,
-          "transceiver_type": "onboard"
-        }
-      ],
-      "capture": []
-    }
-  },
-  {
     "name": "EDA1000v",
     "platform": "packet_sensor",
     "generation": 0,
+    "is_physical": false,
     "sale_status": "end_of_sale",
     "skus": {
       "enterprise": "REVX-ENT-EDA1000V",
@@ -1378,8 +1291,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 140000,
       "advanced_analysis": 250,
-      "standard_analysis": 750,
-      "ti_observable": 24000
+      "standard_analysis": 750
     },
     "deployments": {
       "hypervisors": [
@@ -1412,6 +1324,7 @@
     "name": "EDA1100v",
     "platform": "packet_sensor",
     "generation": 1,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EDA1100V",
@@ -1425,8 +1338,7 @@
       "base_gbps": 1,
       "base_packetrate": 140000,
       "advanced_analysis": 250,
-      "standard_analysis": 750,
-      "ti_observable": 24000
+      "standard_analysis": 750
     },
     "deployments": {
       "hypervisors": [
@@ -1468,6 +1380,7 @@
     "name": "EDA2000v",
     "platform": "packet_sensor",
     "generation": 0,
+    "is_physical": false,
     "sale_status": "end_of_sale",
     "skus": {
       "enterprise": "REVX-ENT-EDA2000V",
@@ -1516,6 +1429,7 @@
     "name": "EDA6100v",
     "platform": "packet_sensor",
     "generation": 1,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EDA6100V",
@@ -1532,8 +1446,7 @@
       "ids_reduction_percent": 50,
       "base_packetrate": 1000000,
       "advanced_analysis": 3000,
-      "standard_analysis": 18000,
-      "ti_observable": 192000
+      "standard_analysis": 18000
     },
     "deployments": {
       "hypervisors": [
@@ -1559,6 +1472,7 @@
     "name": "EDA8200v",
     "platform": "packet_sensor",
     "generation": 2,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": null,
@@ -1574,8 +1488,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 2500000,
       "advanced_analysis": 5500,
-      "standard_analysis": 35000,
-      "ti_observable": 384000
+      "standard_analysis": 35000
     },
     "deployments": {
       "clouds": [
@@ -1602,6 +1515,7 @@
     "name": "EDA6320v",
     "platform": "multifunction_sensor",
     "generation": 3,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EDA6320V",
@@ -1618,8 +1532,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 1000000,
       "advanced_analysis": 3000,
-      "standard_analysis": 18000,
-      "ti_observable": 192000
+      "standard_analysis": 18000
     },
     "deployments": {
       "hypervisors": [
@@ -1649,6 +1562,7 @@
     "name": "EDA8320v",
     "platform": "multifunction_sensor",
     "generation": 3,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EDA8320V",
@@ -1665,8 +1579,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 2000000,
       "advanced_analysis": 5500,
-      "standard_analysis": 35000,
-      "ti_observable": 384000
+      "standard_analysis": 35000
     },
     "deployments": {
       "hypervisors": [
@@ -1688,6 +1601,7 @@
     "name": "EDA6370v",
     "platform": "all_in_one",
     "generation": 3,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EDA6370V",
@@ -1705,8 +1619,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 1000000,
       "advanced_analysis": 3000,
-      "standard_analysis": 18000,
-      "ti_observable": 192000
+      "standard_analysis": 18000
     },
     "deployments": {
       "clouds": [
@@ -1714,12 +1627,6 @@
       ]
     },
     "storage": {
-      "continuous_pcap": {
-        "virtual_disk": {
-          "disk_qty": 4,
-          "disk_size_tb": 8
-        }
-      },
       "datastore": {
         "exds": {
           "protocols": [
@@ -1737,6 +1644,7 @@
     "name": "EDA8370v",
     "platform": "all_in_one",
     "generation": 3,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EDA8370V",
@@ -1754,8 +1662,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 2000000,
       "advanced_analysis": 5500,
-      "standard_analysis": 35000,
-      "ti_observable": 384000
+      "standard_analysis": 35000
     },
     "deployments": {
       "clouds": [
@@ -1777,48 +1684,11 @@
     ]
   },
   {
-    "name": "EDA1370v",
-    "platform": "all_in_one",
-    "generation": 3,
-    "sale_status": "active",
-    "skus": {
-      "enterprise": "REVX-ENT-EDA1370V",
-      "rx360": "REVX-360-EDA1370V"
-    },
-    "modules": {
-      "ndr": true,
-      "npm": true,
-      "ids": true,
-      "network_forensics": true
-    },
-    "performance": {
-      "base_gbps": 1,
-      "ids_gbps": 1,
-      "ids_reduction_percent": 0,
-      "base_packetrate": 140000,
-      "advanced_analysis": 250,
-      "standard_analysis": 750,
-      "ti_observable": 24000
-    },
-    "deployments": {
-      "hypervisors": [
-        "vmware"
-      ]
-    },
-    "storage": {
-      "continuous_pcap": {
-        "virtual_disk": {
-          "disk_qty": 1,
-          "max_disk_size_tb": 20
-        }
-      }
-    }
-  },
-  {
     "name": "IDS9380",
     "platform": "ids_standalone",
     "generation": 3,
-    "sale_status": "end_of_sale",
+    "is_physical": true,
+    "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-IDS9380",
       "rx360": "REVX-360-IDS9380"
@@ -1843,6 +1713,7 @@
     "name": "IDS8280",
     "platform": "ids_standalone",
     "generation": 2,
+    "is_physical": true,
     "sale_status": "end_of_sale",
     "skus": {
       "enterprise": "REVX-ENT-IDS8280",
@@ -1870,7 +1741,8 @@
     "name": "IDS1280v",
     "platform": "ids_standalone",
     "generation": 2,
-    "sale_status": "end_of_sale",
+    "is_physical": false,
+    "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-IDS1280V",
       "rx360": "REVX-360-IDS1280V"
@@ -1896,7 +1768,8 @@
     "name": "IDS6280v",
     "platform": "ids_standalone",
     "generation": 2,
-    "sale_status": "end_of_sale",
+    "is_physical": false,
+    "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-IDS6280V",
       "rx360": "REVX-360-IDS6280V"
@@ -1922,6 +1795,7 @@
     "name": "EFC1290v",
     "platform": "flow_collector",
     "generation": 2,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": null,
@@ -1960,6 +1834,7 @@
     "name": "EFC1291v",
     "platform": "flow_collector",
     "generation": 2,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": null,
@@ -1996,6 +1871,7 @@
     "name": "EFC1292v",
     "platform": "flow_collector",
     "generation": 2,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EFC1292V",
@@ -2030,6 +1906,7 @@
     "name": "EFC6392v",
     "platform": "flow_collector",
     "generation": 3,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EFC6392V",
@@ -2062,6 +1939,7 @@
     "name": "ETA9350",
     "platform": "packetstore",
     "generation": 3,
+    "is_physical": true,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-ETA9350",
@@ -2224,6 +2102,7 @@
     "name": "ETA8250",
     "platform": "packetstore",
     "generation": 2,
+    "is_physical": true,
     "sale_status": "end_of_sale",
     "skus": {
       "enterprise": "REVX-ENT-ETA8250",
@@ -2375,6 +2254,7 @@
     "name": "ETA6150",
     "platform": "packetstore",
     "generation": 1,
+    "is_physical": true,
     "sale_status": "end_of_sale",
     "skus": {
       "enterprise": "REVX-ENT-ETA6150",
@@ -2414,6 +2294,7 @@
     "name": "ETA6150v",
     "platform": "packetstore",
     "generation": 1,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-ETA6150V",
@@ -2435,6 +2316,7 @@
     "name": "1150v",
     "platform": "packetstore",
     "generation": 1,
+    "is_physical": false,
     "sale_status": "end_of_sale",
     "skus": {
       "enterprise": "REVX-ENT-1150V",
@@ -2479,8 +2361,7 @@
     },
     "compatibility": {
       "allows": [
-        "ETA9350",
-        "EDA6370"
+        "ETA9350"
       ]
     },
     "firmware_end_date": "2031-08-31",
@@ -2512,8 +2393,7 @@
     },
     "compatibility": {
       "allows": [
-        "ETA9350",
-        "EDA6370"
+        "ETA9350"
       ]
     },
     "firmware_end_date": "2031-08-31",
@@ -2587,6 +2467,7 @@
     "name": "EXA5300",
     "platform": "recordstore",
     "generation": 3,
+    "is_physical": true,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EXA5300",
@@ -2674,6 +2555,7 @@
     "name": "EXA5300v",
     "platform": "recordstore",
     "generation": 3,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EXA5300V",
@@ -2705,6 +2587,7 @@
     "name": "EXA5200",
     "platform": "recordstore",
     "generation": 2,
+    "is_physical": true,
     "sale_status": "end_of_sale",
     "support_end_date": "2027-08-31",
     "skus": {
@@ -2785,6 +2668,7 @@
     "name": "EXA5100",
     "platform": "recordstore",
     "generation": 1,
+    "is_physical": true,
     "sale_status": "end_of_sale",
     "support_end_date": "2022-12-31",
     "skus": {
@@ -2816,6 +2700,7 @@
     "name": "EXA5100v",
     "platform": "recordstore",
     "generation": 1,
+    "is_physical": false,
     "sale_status": "active",
     "skus": {
       "enterprise": "REVX-ENT-EXA5100V",
