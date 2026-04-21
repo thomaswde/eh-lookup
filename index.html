@@ -812,6 +812,41 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
 .stack-name-input::placeholder { color: rgba(255,255,255,0.55); }
 .stack-name-input:focus { outline: none; border-color: white; background: rgba(255,255,255,0.25); }
 
+.stack-notes-disclosure {
+  margin-top: 10px;
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.08);
+}
+.stack-notes-disclosure summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 8px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.stack-notes-disclosure summary::-webkit-details-marker { display: none; }
+.stack-notes-disclosure[open] summary { border-bottom: 1px solid rgba(255,255,255,0.16); }
+.stack-notes-input {
+  display: block;
+  width: calc(100% - 22px);
+  min-height: 84px;
+  margin: 10px 11px 11px;
+  resize: vertical;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.stack-notes-input::placeholder { color: rgba(255,255,255,0.55); }
+.stack-notes-input:focus { outline: none; border-color: white; background: rgba(255,255,255,0.25); }
+
 .stack-body {
   flex: 1;
   overflow-y: auto;
@@ -1699,6 +1734,10 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
         </div>
       </div>
       <input type="text" class="stack-name-input" id="stack-name" placeholder="Name this site (e.g., HQ Core Stack)" />
+      <details class="stack-notes-disclosure">
+        <summary>Notes &amp; Assumptions</summary>
+        <textarea class="stack-notes-input" id="stack-notes" placeholder="Optional: add customer-specific notes, assumptions, caveats, or design context for the export."></textarea>
+      </details>
     </div>
 
     <div class="stack-body" id="stack-body">
@@ -1826,6 +1865,7 @@ const state = {
   sort: 'platform-group',
   stack: [], // { id, qty }
   stackName: '',
+  stackNotes: '',
 };
 
 // Load persisted stack if present
@@ -1835,6 +1875,7 @@ try {
     const parsed = JSON.parse(saved);
     if (Array.isArray(parsed.stack)) state.stack = parsed.stack;
     if (typeof parsed.name === 'string') state.stackName = parsed.name;
+    if (typeof parsed.notes === 'string') state.stackNotes = parsed.notes;
   }
 } catch (e) { /* no-op */ }
 
@@ -2643,7 +2684,7 @@ function toggleDrawer() {
 
 function persistStack() {
   try {
-    localStorage.setItem('eh-stack', JSON.stringify({ stack: state.stack, name: state.stackName }));
+    localStorage.setItem('eh-stack', JSON.stringify({ stack: state.stack, name: state.stackName, notes: state.stackNotes }));
   } catch (e) { /* ignore */ }
 }
 
@@ -2867,6 +2908,7 @@ function renderStorageAttachmentMap(plan) {
 
 function renderStack() {
   $('#stack-name').value = state.stackName || '';
+  $('#stack-notes').value = state.stackNotes || '';
   const body = $('#stack-body');
   body.innerHTML = '';
 
@@ -3008,6 +3050,11 @@ function buildExportContent() {
   const topology = planTopology(items);
   const name = state.stackName?.trim() || 'ExtraHop Reference Solution';
   const dateStr = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+  const notesHtml = (state.stackNotes || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '<br>');
 
   // Group for display
   const groups = {};
@@ -3090,16 +3137,7 @@ function buildExportContent() {
 
       <div class="export-section">
         <h2>Notes &amp; Assumptions</h2>
-        <p style="margin:0;color:var(--eh-ink-soft);font-size:13px;line-height:1.55">
-          A stack is a site-scoped unit: one EDA (packet sensor, multifunction sensor, or all-in-one), the packet stores
-          (ETAs) and extended-storage units (ESUs) fed from that site, and any optional IDS or flow-collector sensors
-          deployed alongside. Console (ECA) and Record Store (EXA) are shared infrastructure that federate across stacks
-          and sit outside this diagram. Throughput and IDS figures reflect a simple additive model — each sensor maintains
-          its own feed and perspective, and ExtraHop sensors do not horizontally scale a single stream. Packet-store
-          capacity reflects onboard and extended-pcap datasets; the packet store takes an independent feed in parallel
-          with the sensor. All-in-one sensors combine EDA and ETA on a single unit and, for EDA6370, accept ESU attachments
-          directly.
-        </p>
+        <p style="margin:0;color:var(--eh-ink-soft);font-size:13px;line-height:1.55;min-height:1.55em">${notesHtml}</p>
       </div>
 
       <div class="export-foot">
@@ -3636,6 +3674,7 @@ $('#save-stack').addEventListener('click', () => {
 });
 $('#export-stack').addEventListener('click', openExport);
 $('#stack-name').addEventListener('input', (e) => { state.stackName = e.target.value; persistStack(); });
+$('#stack-notes').addEventListener('input', (e) => { state.stackNotes = e.target.value; persistStack(); });
 
 // Drawer (narrow viewports)
 $('#stack-fab')?.addEventListener('click', toggleDrawer);
