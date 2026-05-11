@@ -987,21 +987,21 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
 .stack-totals {
   background: linear-gradient(180deg, var(--eh-surface-alt), white);
   border-top: 1px solid var(--eh-border);
-  padding: 16px 22px;
+  padding: 10px 14px;
   flex-shrink: 0;
 }
 
 .stack-totals-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
 }
 
 .total-metric {
   background: white;
   border: 1px solid var(--eh-border);
-  padding: 10px 12px;
-  border-radius: var(--radius-md);
+  padding: 6px 7px 6px 9px;
+  border-radius: var(--radius-sm);
   position: relative;
   overflow: hidden;
 }
@@ -1013,27 +1013,28 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
   background: var(--metric-accent, var(--eh-sapphire));
 }
 .total-metric .tm-label {
-  font-size: 10px;
+  font-size: 8.5px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--eh-muted);
   font-weight: 600;
+  line-height: 1.05;
 }
 .total-metric .tm-value {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 800;
   color: var(--eh-ink);
   line-height: 1;
-  margin-top: 3px;
+  margin-top: 2px;
   transition: color 0.3s ease, transform 0.3s ease;
 }
 .total-metric .tm-value .unit {
-  font-size: 11px;
+  font-size: 8.5px;
   color: var(--eh-muted);
   font-weight: 500;
-  margin-left: 3px;
+  margin-left: 2px;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
 }
 .total-metric.pulse .tm-value { color: var(--eh-magenta); transform: scale(1.06); }
 
@@ -1538,6 +1539,27 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
 }
 .diagram-svg { width: 100%; height: auto; }
 
+.export-options {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-right: auto;
+  color: var(--eh-ink-soft);
+  font-size: 13px;
+}
+.export-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.export-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--eh-sapphire);
+}
+
 .scroll-fade {
   -webkit-mask-image: linear-gradient(180deg, black 92%, transparent 100%);
           mask-image: linear-gradient(180deg, black 92%, transparent 100%);
@@ -1723,7 +1745,6 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
       <div class="stack-header-inner">
         <div>
           <h2 class="stack-title">Stack Builder</h2>
-          <div class="stack-subtitle">One EDA · ETAs · ESUs · Optional IDS/EFC</div>
         </div>
         <div style="display:flex;gap:6px">
           <button class="btn btn-ghost-white" id="clear-stack" style="padding:6px 12px;font-size:12px">
@@ -1743,7 +1764,7 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
     <div class="stack-body" id="stack-body">
       <div class="drop-zone" id="drop-zone">
         <strong>Drop appliances here</strong>
-        Start with one EDA — add ETAs, ESUs, IDS, or EFC as needed
+        Start with one EDA or ECA — add EXA, ETAs, ESUs, IDS, or EFC as needed
       </div>
     </div>
 
@@ -1797,6 +1818,12 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
       <div id="export-content"></div>
     </div>
     <div class="modal-footer no-print">
+      <div class="export-options">
+        <label class="export-check" title="Label appliance-to-appliance ports and direction in the exported topology">
+          <input type="checkbox" id="export-show-connections" />
+          Show connections
+        </label>
+      </div>
       <button class="btn btn-ghost" id="export-close-btn">Close</button>
       <button class="btn btn-ghost" id="export-download-btn">
         <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -1810,10 +1837,6 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
   </div>
 </div>
 
-<!-- Catalog is fetched at runtime from catalog.eh.json. The inline block below is retained only as a fallback if the fetch fails. -->
-<script id="catalog-json" type="application/json">
-[{"name":"ECA","platform":"command","generation":1,"sale_status":"active","skus":{"enterprise":"REVX-ENT-ECA-APPL"},"modules":{"ndr":true,"npm":true,"ids":true,"network_forensics":true,"investigation":true,"flow_analysis":true},"performance":{"base_gbps":1},"deployments":{"hypervisors":["hyper-v","kvm","vmware"]},"compatibility":{"track_limits":["enterprise_only"]}},{"name":"EDA10300","platform":"packet_sensor","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EDA10300","rx360":"REVX-360-EDA10300"},"modules":{"ndr":true,"npm":true,"ids":true},"performance":{"base_gbps":100,"ids_gbps":50,"ids_reduction_percent":50,"base_packetrate":10000000,"advanced_analysis":16000,"standard_analysis":100000,"ti_observable":1152000},"form_factor":{"rack_units":2,"power_watts":800},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"interfaces":{"management":[{"id":1,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":3,"roles":["mgmt","ERSPAN","RPCAP","capture"],"supported_speeds_gb":[10,25],"transceiver_included":true,"transceiver_type":"10G SR"},{"id":4,"roles":["mgmt","ERSPAN","RPCAP","capture"],"supported_speeds_gb":[10,25],"transceiver_included":true,"transceiver_type":"10G SR"}],"capture":[{"id":5,"roles":["capture"],"supported_speeds_gb":[40,100],"transceiver_included":true,"transceiver_type":"100G/40G SR4"},{"id":6,"roles":["capture"],"supported_speeds_gb":[40,100],"transceiver_included":true,"transceiver_type":"100G/40G SR4"},{"id":7,"roles":["capture"],"supported_speeds_gb":[40,100],"transceiver_included":false,"transceiver_type":"100G/40G SR4"},{"id":8,"roles":["capture"],"supported_speeds_gb":[40,100],"transceiver_included":false,"transceiver_type":"100G/40G SR4"}]},"firmware_end_date":"2031-08-31","support_end_date":"2032-08-31","notes":["https://www.dell.com/support/home/en-us/product-support/product/poweredge-r7615/overview","https://docs.extrahop.com/current/dep-eda-10300/"]},{"name":"EDA9300","platform":"packet_sensor","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EDA9300","rx360":"REVX-360-EDA9300"},"modules":{"ndr":true,"npm":true,"ids":true},"performance":{"base_gbps":50,"ids_gbps":25,"ids_reduction_percent":50,"base_packetrate":5000000,"advanced_analysis":8000,"standard_analysis":50000,"ti_observable":576000},"form_factor":{"rack_units":2,"power_watts":800},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"interfaces":{"management":[{"id":1,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":3,"roles":["mgmt","ERSPAN","RPCAP","capture"],"supported_speeds_gb":[10,25],"transceiver_included":true,"transceiver_type":"10G SR"},{"id":4,"roles":["mgmt","ERSPAN","RPCAP","capture"],"supported_speeds_gb":[10,25],"transceiver_included":true,"transceiver_type":"10G SR"}],"capture":[{"id":5,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"},{"id":6,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"}]},"firmware_end_date":"2031-08-31","support_end_date":"2032-08-31","notes":["https://www.dell.com/support/home/en-us/product-support/product/poweredge-r7615/overview","https://docs.extrahop.com/current/dep-eda-9300/"]},{"name":"EDA8320","platform":"multifunction_sensor","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EDA8320","rx360":"REVX-360-EDA8320"},"modules":{"ndr":true,"npm":true,"ids":true},"performance":{"base_gbps":25,"ids_gbps":25,"ids_reduction_percent":0,"base_packetrate":2500000,"advanced_analysis":5500,"standard_analysis":35000,"ti_observable":384000},"form_factor":{"rack_units":1,"power_watts":800},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"interfaces":{"management":[{"id":1,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":3,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":4,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"}],"capture":[{"id":5,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"},{"id":6,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"}]},"firmware_end_date":"2031-08-31","support_end_date":"2032-08-31","notes":["https://www.dell.com/support/home/en-us/product-support/product/poweredge-r6615/overview","https://docs.extrahop.com/current/dep-8320/"]},{"name":"EDA6370","platform":"all_in_one","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EDA6370","rx360":"REVX-360-EDA6370"},"modules":{"ndr":true,"npm":true,"ids":true,"network_forensics":true},"performance":{"base_gbps":10,"ids_gbps":10,"ids_reduction_percent":0,"base_packetrate":1000000,"advanced_analysis":3000,"standard_analysis":18000,"ti_observable":192000},"form_factor":{"rack_units":1,"power_watts":800},"storage":{"continuous_pcap":{"extended_pcap":{"rules":[{"esu_count":1,"esu_type":"240TB","throughput_gbps":10,"packets_per_second":3200000},{"esu_count":2,"esu_type":"240TB","throughput_gbps":10,"packets_per_second":3200000},{"esu_count":3,"esu_type":"240TB","throughput_gbps":10,"packets_per_second":3200000},{"esu_count":4,"esu_type":"240TB","throughput_gbps":10,"packets_per_second":3200000},{"esu_count":1,"esu_type":"HD ESU","throughput_gbps":10,"packets_per_second":3200000}]}},"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"interfaces":{"management":[{"id":1,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":3,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":4,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"}],"capture":[{"id":5,"roles":["capture"],"supported_speeds_gb":[10],"transceiver_included":true,"transceiver_type":"10G SR"},{"id":6,"roles":["capture"],"supported_speeds_gb":[10],"transceiver_included":true,"transceiver_type":"10G SR"}]},"notes":["https://www.dell.com/support/home/en-us/product-support/product/poweredge-r6615/overview","https://docs.extrahop.com/current/dep-eda-6370/"],"compatibility":{"accepts_attachments":[{"type":"ESU","models":[{"model":"240TB ESU","limit":4},{"model":"HD ESU","limit":1}]}]}},{"name":"EDA10200","platform":"packet_sensor","generation":2,"sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-EDA10200","rx360":"REVX-360-EDA10200"},"modules":{"ndr":true,"npm":true,"ids":true},"performance":{"base_gbps":100,"ids_gbps":40,"ids_reduction_percent":60,"base_packetrate":10000000,"advanced_analysis":16000,"standard_analysis":100000,"ti_observable":1152000},"form_factor":{"rack_units":2,"power_watts":800},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"interfaces":{"management":[{"id":1,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"}],"capture":[{"id":3,"roles":["capture"],"supported_speeds_gb":[40,100],"transceiver_included":true,"transceiver_type":"100G/40G SR4"},{"id":4,"roles":["capture"],"supported_speeds_gb":[40,100],"transceiver_included":true,"transceiver_type":"100G/40G SR4"},{"id":5,"roles":["capture"],"supported_speeds_gb":[40,100],"transceiver_included":false,"transceiver_type":"100G/40G SR4"},{"id":6,"roles":["capture"],"supported_speeds_gb":[40,100],"transceiver_included":false,"transceiver_type":"100G/40G SR4"}]},"firmware_end_date":"2026-08-31","support_end_date":"2027-08-31"},{"name":"EDA9200","platform":"packet_sensor","generation":2,"sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-EDA9200","rx360":"REVX-360-EDA9200"},"modules":{"ndr":true,"npm":true,"ids":true},"performance":{"base_gbps":50,"ids_gbps":20,"ids_reduction_percent":60,"base_packetrate":5000000,"advanced_analysis":8000,"standard_analysis":50000,"ti_observable":576000},"form_factor":{"rack_units":2,"power_watts":800},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"interfaces":{"management":[{"id":1,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"}],"capture":[{"id":3,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"},{"id":4,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"},{"id":5,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"},{"id":6,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"}]},"firmware_end_date":"2026-08-31","support_end_date":"2027-08-31"},{"name":"EDA8200","platform":"packet_sensor","generation":2,"sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-EDA8200","rx360":"REVX-360-EDA8200"},"modules":{"ndr":true,"npm":true,"ids":true},"performance":{"base_gbps":25,"ids_gbps":10,"ids_reduction_percent":60,"base_packetrate":2500000,"advanced_analysis":5500,"standard_analysis":35000,"ti_observable":384000},"form_factor":{"rack_units":1,"power_watts":800},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"interfaces":{"management":[{"id":1,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":3,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":4,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"}],"capture":[{"id":5,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"},{"id":6,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"}]},"firmware_end_date":"2026-08-31","support_end_date":"2027-08-31"},{"name":"EDA6200","platform":"packet_sensor","generation":2,"sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-EDA6200","rx360":"REVX-360-EDA6200"},"modules":{"ndr":true,"npm":true,"ids":true},"performance":{"base_gbps":10,"ids_gbps":4,"ids_reduction_percent":60,"base_packetrate":1000000,"advanced_analysis":3000,"standard_analysis":18000,"ti_observable":192000},"form_factor":{"rack_units":1,"power_watts":800},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"interfaces":{"management":[{"id":1,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":3,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":4,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"}],"capture":[{"id":5,"roles":["capture"],"supported_speeds_gb":[10],"transceiver_included":true,"transceiver_type":"10G SR"},{"id":6,"roles":["capture"],"supported_speeds_gb":[10],"transceiver_included":true,"transceiver_type":"10G SR"}]},"firmware_end_date":"2026-08-31","support_end_date":"2027-08-31"},{"name":"EDA4200","platform":"packet_sensor","generation":2,"sale_status":"end_of_sale","skus":{"enterprise":null,"rx360":"REVX-360-EDA4200"},"modules":{"ndr":true,"npm":true},"performance":{"base_gbps":5,"ids_gbps":0,"ids_reduction_percent":0,"base_packetrate":500000,"advanced_analysis":1500,"standard_analysis":9000,"ti_observable":96000},"form_factor":{"rack_units":1,"power_watts":800},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"interfaces":{"management":[{"id":1,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":3,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":4,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"}],"capture":[{"id":5,"roles":["capture"],"supported_speeds_gb":[10],"transceiver_included":true,"transceiver_type":"10G SR"},{"id":6,"roles":["capture"],"supported_speeds_gb":[10],"transceiver_included":true,"transceiver_type":"10G SR"}]},"compatibility":{"track_limits":["rx360_only"]},"firmware_end_date":"2026-08-31","support_end_date":"2027-08-31"},{"name":"EDA1200","platform":"packet_sensor","generation":2,"sale_status":"active","skus":{"enterprise":null,"rx360":"REVX-360-EDA1200"},"modules":{"ndr":true,"npm":true},"performance":{"base_gbps":1,"ids_gbps":0,"ids_reduction_percent":0,"base_packetrate":140000,"advanced_analysis":250,"standard_analysis":750,"ti_observable":24000},"form_factor":{"rack_units":1,"power_watts":90},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"interfaces":{"management":[{"id":1,"roles":["mgmt","ERSPAN","RPCAP","capture"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt","ERSPAN","RPCAP","capture"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"}],"capture":[]},"compatibility":{"track_limits":["rx360_only"]}},{"name":"EDA1370","platform":"all_in_one","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EDA1370","rx360":"REVX-360-EDA1370"},"modules":{"ndr":true,"npm":true,"ids":true,"network_forensics":true},"performance":{"base_gbps":1,"ids_gbps":1,"ids_reduction_percent":0,"base_packetrate":140000,"advanced_analysis":250,"standard_analysis":750,"ti_observable":24000},"form_factor":{"rack_units":0,"power_watts":330},"storage":{"continuous_pcap":{"onboard":{"disk_qty":1,"disk_size_tb":20,"rpm":7200}}},"interfaces":{"management":[{"id":1,"roles":["mgmt","ERSPAN","RPCAP","capture"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt","ERSPAN","RPCAP","capture"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"}],"capture":[]}},{"name":"EDA1000v","platform":"packet_sensor","generation":0,"sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-EDA1000V","rx360":null},"modules":{"ndr":true,"npm":true},"performance":{"base_gbps":1,"ids_gbps":0,"ids_reduction_percent":0,"base_packetrate":140000,"advanced_analysis":250,"standard_analysis":750,"ti_observable":24000},"deployments":{"hypervisors":["hyper-v","kvm","vmware"],"clouds":["aws","azure"]},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"compatibility":{"track_limits":["performance_only"]}},{"name":"EDA1100v","platform":"packet_sensor","generation":1,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EDA1100V","rx360":"REVX-360-EDA1100V"},"modules":{"ndr":true,"npm":true},"performance":{"base_gbps":1,"base_packetrate":140000,"advanced_analysis":250,"standard_analysis":750,"ti_observable":24000},"deployments":{"hypervisors":["hyper-v","kvm","vmware"],"clouds":["aws","azure","gcp"]},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"compatibility":{"track_limits":["revealx_only"]},"notes":["https://docs.extrahop.com/current/deploy-eda-azure/","https://docs.extrahop.com/current/deploy-eda-aws/","https://docs.extrahop.com/current/deploy-eda-gcp/","https://docs.extrahop.com/current/deploy-eda-hyp/","https://docs.extrahop.com/current/deploy-eda-vmware/","https://docs.extrahop.com/current/deploy-eda-kvm/"]},{"name":"EDA2000v","platform":"packet_sensor","generation":0,"sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-EDA2000V","rx360":null},"modules":{"ndr":true,"npm":true},"performance":{"base_gbps":3,"ids_gbps":0,"ids_reduction_percent":0,"base_packetrate":140000,"advanced_analysis":1000,"standard_analysis":1500},"deployments":{"hypervisors":["hyper-v","kvm","vmware"],"clouds":["aws","azure"]},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"compatibility":{"track_limits":["performance_only"]}},{"name":"EDA6100v","platform":"packet_sensor","generation":1,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EDA6100V","rx360":"REVX-360-EDA6100V"},"modules":{"ndr":true,"npm":true,"ids":true},"performance":{"base_gbps":10,"ids_gbps":5,"ids_reduction_percent":50,"base_packetrate":1000000,"advanced_analysis":3000,"standard_analysis":18000,"ti_observable":192000},"deployments":{"hypervisors":["vmware"],"clouds":["aws","azure"]},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}}},{"name":"EDA8200v","platform":"packet_sensor","generation":2,"sale_status":"active","skus":{"enterprise":null,"rx360":"REVX-360-EDA8200V"},"modules":{"ndr":true,"npm":true},"performance":{"base_gbps":25,"ids_gbps":0,"ids_reduction_percent":0,"base_packetrate":2500000,"advanced_analysis":5500,"standard_analysis":35000,"ti_observable":384000},"deployments":{"clouds":["aws"]},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"compatibility":{"track_limits":["rx360_only"]}},{"name":"EDA6320v","platform":"multifunction_sensor","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EDA6320V","rx360":"REVX-360-EDA6320V"},"modules":{"ndr":true,"npm":true,"ids":true},"performance":{"base_gbps":10,"ids_gbps":10,"ids_reduction_percent":0,"base_packetrate":1000000,"advanced_analysis":3000,"standard_analysis":18000,"ti_observable":192000},"deployments":{"hypervisors":["vmware"],"clouds":["aws","gcp"]},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"notes":["https://docs.extrahop.com/current/deploy-eda-aws/","https://docs.extrahop.com/current/deploy-eda-gcp/"]},{"name":"EDA8320v","platform":"multifunction_sensor","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EDA8320V","rx360":"REVX-360-EDA8320V"},"modules":{"ndr":true,"npm":true,"ids":true},"performance":{"base_gbps":20,"ids_gbps":20,"ids_reduction_percent":0,"base_packetrate":2000000,"advanced_analysis":5500,"standard_analysis":35000,"ti_observable":384000},"deployments":{"hypervisors":["vmware"]},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}}},{"name":"EDA6370v","platform":"all_in_one","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EDA6370V","rx360":"REVX-360-EDA6370V"},"modules":{"ndr":true,"npm":true,"ids":true,"network_forensics":true},"performance":{"base_gbps":10,"ids_gbps":10,"ids_reduction_percent":0,"base_packetrate":1000000,"advanced_analysis":3000,"standard_analysis":18000,"ti_observable":192000},"deployments":{"clouds":["azure"]},"storage":{"continuous_pcap":{"virtual_disk":{"disk_qty":4,"disk_size_tb":8}},"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"notes":["https://docs.extrahop.com/current/deploy-eda-azure/"]},{"name":"EDA8370v","platform":"all_in_one","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EDA8370V","rx360":"REVX-360-EDA8370V"},"modules":{"ndr":true,"npm":true,"ids":true,"network_forensics":true},"performance":{"base_gbps":20,"ids_gbps":20,"ids_reduction_percent":0,"base_packetrate":2000000,"advanced_analysis":5500,"standard_analysis":35000,"ti_observable":384000},"deployments":{"clouds":["gcp"]},"storage":{"datastore":{"exds":{"protocols":["nfsv4","smb"]}}},"notes":["https://docs.extrahop.com/current/deploy-eda-gcp/"]},{"name":"EDA1370v","platform":"all_in_one","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EDA1370V","rx360":"REVX-360-EDA1370V"},"modules":{"ndr":true,"npm":true,"ids":true,"network_forensics":true},"performance":{"base_gbps":1,"ids_gbps":1,"ids_reduction_percent":0,"base_packetrate":140000,"advanced_analysis":250,"standard_analysis":750,"ti_observable":24000},"deployments":{"hypervisors":["vmware"]},"storage":{"continuous_pcap":{"virtual_disk":{"disk_qty":1,"max_disk_size_tb":20}}}},{"name":"IDS9380","platform":"ids_standalone","generation":3,"sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-IDS9380","rx360":"REVX-360-IDS9380"},"modules":{"ids":true},"performance":{"base_gbps":50,"ids_gbps":50,"ids_reduction_percent":0,"base_packetrate":5000000,"advanced_analysis":8000,"standard_analysis":50000},"form_factor":{"rack_units":2,"power_watts":800}},{"name":"IDS8280","platform":"ids_standalone","generation":2,"sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-IDS8280","rx360":"REVX-360-IDS8280"},"modules":{"ids":true},"performance":{"base_gbps":20,"ids_gbps":20,"ids_reduction_percent":0,"base_packetrate":2000000,"advanced_analysis":5500,"standard_analysis":35000},"form_factor":{"rack_units":2,"power_watts":800},"firmware_end_date":"2026-08-31","support_end_date":"2027-08-31"},{"name":"IDS1280v","platform":"ids_standalone","generation":2,"sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-IDS1280V","rx360":"REVX-360-IDS1280V"},"modules":{"ids":true},"performance":{"base_gbps":1,"ids_gbps":1,"ids_reduction_percent":0,"base_packetrate":140000,"advanced_analysis":250,"standard_analysis":750},"deployments":{"hypervisors":["vmware"]}},{"name":"IDS6280v","platform":"ids_standalone","generation":2,"sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-IDS6280V","rx360":"REVX-360-IDS6280V"},"modules":{"ids":true},"performance":{"base_gbps":9,"ids_gbps":9,"ids_reduction_percent":0,"base_packetrate":1000000,"advanced_analysis":3000,"standard_analysis":18000},"deployments":{"hypervisors":["vmware"]}},{"name":"EFC1290v","platform":"flow_collector","generation":2,"sale_status":"active","skus":{"enterprise":null,"rx360":"REVX-360-EFC1290V"},"modules":{"flow_analysis":true},"performance":{"base_gbps":0,"base_packetrate":140000,"advanced_analysis":250,"standard_analysis":750,"flows_per_second":10000,"flows_per_minute":600000},"deployments":{"hypervisors":["vmware"]},"ingest":{"supported_protocols":["netflow","sflow","ipfix"]},"compatibility":{"track_limits":["rx360_only"]}},{"name":"EFC1291v","platform":"flow_collector","generation":2,"sale_status":"active","skus":{"enterprise":null,"rx360":"REVX-360-EFC1291V"},"modules":{"flow_analysis":true},"performance":{"base_gbps":0,"base_packetrate":140000,"advanced_analysis":250,"standard_analysis":750,"flows_per_second":10000,"flows_per_minute":600000},"deployments":{"clouds":["aws"]},"ingest":{"supported_protocols":["aws_vpc_flow_logs"]},"compatibility":{"track_limits":["rx360_only"]}},{"name":"EFC1292v","platform":"flow_collector","generation":2,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EFC1292V","rx360":"REVX-360-EFC1292V"},"modules":{"flow_analysis":true},"performance":{"base_gbps":0,"base_packetrate":140000,"advanced_analysis":250,"standard_analysis":750,"flows_per_second":10000,"flows_per_minute":600000},"deployments":{"hypervisors":["kvm","vmware"]},"ingest":{"supported_protocols":["netflow","sflow","ipfix"]}},{"name":"EFC6392v","platform":"flow_collector","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EFC6392V","rx360":"REVX-360-EFC6392V"},"modules":{"flow_analysis":true},"performance":{"base_gbps":0,"advanced_analysis":3000,"standard_analysis":18000,"flows_per_second":100000,"flows_per_minute":6000000},"deployments":{"hypervisors":["vmware"]},"ingest":{"supported_protocols":["netflow","sflow","ipfix"]}},{"name":"ETA9350","platform":"packetstore","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-ETA9350","rx360":"REVX-360-ETA9350"},"modules":{"network_forensics":true},"form_factor":{"rack_units":1,"power_watts":800},"storage":{"continuous_pcap":{"extended_pcap":{"rules":[{"esu_count":1,"esu_type":"240TB","throughput_gbps":10,"packets_per_second":3200000},{"esu_count":2,"esu_type":"240TB","throughput_gbps":25,"packets_per_second":8200000},{"esu_count":3,"esu_type":"240TB","throughput_gbps":25,"packets_per_second":8200000},{"esu_count":4,"esu_type":"240TB","throughput_gbps":50,"packets_per_second":16400000},{"esu_count":1,"esu_type":"HD ESU","throughput_gbps":50,"packets_per_second":16400000}]}}},"interfaces":{"management":[{"id":1,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":3,"roles":["mgmt","ERSPAN","RPCAP","capture"],"supported_speeds_gb":[10,25],"transceiver_included":true,"transceiver_type":"10G SR"},{"id":4,"roles":["mgmt","ERSPAN","RPCAP","capture"],"supported_speeds_gb":[10,25],"transceiver_included":true,"transceiver_type":"10G SR"}],"capture":[{"id":5,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"},{"id":6,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"}]},"compatibility":{"accepts_attachments":[{"type":"ESU","models":[{"model":"240TB ESU","limit":4},{"model":"HD ESU","limit":1}]}]},"firmware_end_date":"2031-08-31","support_end_date":"2032-08-31","notes":["https://www.dell.com/support/home/en-us/product-support/product/poweredge-r6615/overview","https://docs.extrahop.com/current/deploy-eta-9350/"]},{"name":"ETA8250","platform":"packetstore","generation":2,"sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-ETA8250","rx360":"REVX-360-ETA8250"},"modules":{"network_forensics":true},"performance":{"base_gbps":10},"form_factor":{"rack_units":2,"power_watts":800},"storage":{"continuous_pcap":{"disk_qty":12,"disk_size_tb":8,"capacity_tb":96,"raid_level":"RAID6","extended_pcap":{"rules":[{"esu_count":1,"esu_type":"96TB","throughput_gbps":10,"packets_per_second":3200000},{"esu_count":2,"esu_type":"96TB","throughput_gbps":25,"packets_per_second":8200000},{"esu_count":3,"esu_type":"96TB","throughput_gbps":25,"packets_per_second":8200000},{"esu_count":4,"esu_type":"96TB","throughput_gbps":25,"packets_per_second":8200000}]}}},"interfaces":{"management":[{"id":1,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":3,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":4,"roles":["mgmt","ERSPAN","RPCAP"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"}],"capture":[{"id":5,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"},{"id":6,"roles":["capture"],"supported_speeds_gb":[25],"transceiver_included":true,"transceiver_type":"25G/10G SR"}]},"compatibility":{"accepts_attachments":[{"type":"ESU","models":[{"model":"96TB ESU","limit":4}]}]},"firmware_end_date":"2027-02-28","support_end_date":"2028-02-28"},{"name":"ETA6150","platform":"packetstore","generation":1,"sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-ETA6150","rx360":"REVX-360-ETA6150"},"modules":{"network_forensics":true},"performance":{"base_gbps":10},"form_factor":{"rack_units":2,"power_watts":800},"compatibility":{"accepts_attachments":[{"type":"ESU","models":[{"model":"72TB ESU","limit":4},{"model":"96TB ESU","limit":4}]}]},"firmware_end_date":"2022-06-30","support_end_date":"2023-06-30"},{"name":"ETA6150v","platform":"packetstore","generation":1,"sale_status":"active","skus":{"enterprise":"REVX-ENT-ETA6150V","rx360":"REVX-360-ETA6150V"},"modules":{"network_forensics":true},"performance":{"base_gbps":10},"deployments":{"hypervisors":["vmware"]}},{"name":"1150v","platform":"packetstore","generation":1,"sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-1150V","rx360":"REVX-360-1150V"},"modules":{"network_forensics":true},"performance":{"base_gbps":1},"deployments":{"hypervisors":["vmware"],"clouds":["aws","azure","gcp"]}},{"name":"240TB ESU","platform":"extended_storage","sale_status":"active","skus":{"enterprise":"REVX-ENT-ETA9350-ESU","rx360":"REVX-360-ETA9350-ESU"},"form_factor":{"rack_units":2,"power_watts":800},"storage":{"continuous_pcap":{"disk_qty":12,"disk_size_tb":20,"capacity_tb":240,"raid_level":"RAID6"}},"compatibility":{"allows":["ETA9350","EDA6370"]},"firmware_end_date":"2031-08-31","support_end_date":"2032-08-31","notes":["https://www.dell.com/support/product-details/en-us/product/storage-md2412/overview","https://docs.extrahop.com/current/deploy-esu/"]},{"name":"HD ESU","platform":"extended_storage","sale_status":"active","skus":{"enterprise":"REVX-ENT-ETA9350-HD-ESU","rx360":"REVX-360-ETA9350-HD-ESU"},"form_factor":{"rack_units":4,"power_watts":1500},"storage":{"continuous_pcap":{"disk_qty":60,"disk_size_tb":20,"capacity_tb":1200,"raid_level":"RAID60"}},"compatibility":{"allows":["ETA9350","EDA6370"]},"firmware_end_date":"2031-08-31","support_end_date":"2032-08-31","notes":["https://www.dell.com/support/product-details/en-us/product/storage-md2460/overview","https://docs.extrahop.com/current/deploy-esu/"]},{"name":"96TB ESU","platform":"extended_storage","sale_status":"active","skus":{"enterprise":"REVX-ENT-ETA8250-ESU","rx360":"REVX-360-ETA8250-ESU"},"form_factor":{"rack_units":2,"power_watts":800},"storage":{"continuous_pcap":{"disk_qty":12,"disk_size_tb":8,"capacity_tb":96,"raid_level":"RAID6"}},"compatibility":{"allows":["ETA8250"]},"firmware_end_date":"2027-02-28","support_end_date":"2028-02-28","notes":["https://docs.extrahop.com/current/deploy-esu/"]},{"name":"72TB ESU","platform":"extended_storage","sale_status":"end_of_sale","skus":{"enterprise":"REVX-ENT-ETA6150-ESU","rx360":"REVX-360-ETA6150-ESU"},"form_factor":{"rack_units":2,"power_watts":800},"storage":{"continuous_pcap":{"disk_qty":12,"disk_size_tb":6,"capacity_tb":72,"raid_level":"RAID6"}},"compatibility":{"allows":["ETA6150"]},"notes":["https://docs.extrahop.com/current/deploy-esu/"]},{"name":"EXA5300","platform":"recordstore","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EXA5300","rx360":null},"modules":{"investigation":true},"performance":{"base_gbps":0,"ingest_records_per_sec":1000000},"form_factor":{"rack_units":2,"power_watts":800},"interfaces":{"management":[{"id":1,"roles":["mgmt"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":2,"roles":["mgmt"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":3,"roles":["mgmt"],"supported_speeds_gb":[10,25],"transceiver_included":true,"transceiver_type":"10G SR"},{"id":4,"roles":["mgmt"],"supported_speeds_gb":[10,25],"transceiver_included":true,"transceiver_type":"10G SR"}],"capture":[]},"compatibility":{"track_limits":["enterprise_only"]},"engine":{"name":"ClickHouse","version":2},"firmware_end_date":"2031-08-31","support_end_date":"2032-08-31","notes":["https://www.dell.com/support/home/en-us/product-support/product/poweredge-r7615/overview","https://docs.extrahop.com/current/deploy-exa-5300/"]},{"name":"EXA5300v","platform":"recordstore","generation":3,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EXA5300V","rx360":null},"modules":{"investigation":true},"performance":{"base_gbps":0,"ingest_records_per_sec":1000000},"compatibility":{"track_limits":["enterprise_only"]},"engine":{"name":"ClickHouse","version":2},"deployments":{"hypervisors":["vmware"]}},{"name":"EXA5200","platform":"recordstore","generation":2,"sale_status":"end_of_sale","support_end_date":"2027-08-31","skus":{"enterprise":"REVX-ENT-EXA5200","rx360":null},"modules":{"investigation":true},"performance":{"base_gbps":0},"form_factor":{"rack_units":2,"power_watts":800},"interfaces":{"management":[{"id":1,"roles":["mgmt"],"supported_speeds_gb":[10],"transceiver_included":true,"transceiver_type":"10G SR"},{"id":2,"roles":["mgmt"],"supported_speeds_gb":[10],"transceiver_included":true,"transceiver_type":"10G SR"},{"id":3,"roles":["mgmt"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"},{"id":4,"roles":["mgmt"],"supported_speeds_gb":[1],"transceiver_included":true,"transceiver_type":"onboard"}],"capture":[]},"compatibility":{"track_limits":["enterprise_only"]},"engine":{"name":"Elasticsearch","version":1},"firmware_end_date":"2026-08-31"},{"name":"EXA5100","platform":"recordstore","generation":1,"sale_status":"end_of_sale","support_end_date":"2022-12-31","skus":{"enterprise":"REVX-ENT-EXA5100","rx360":null},"modules":{"investigation":true},"performance":{"base_gbps":0},"form_factor":{"rack_units":2,"power_watts":800},"compatibility":{"track_limits":["enterprise_only"]},"engine":{"name":"Elasticsearch","version":1},"firmware_end_date":"2021-12-31"},{"name":"EXA5100v","platform":"recordstore","generation":1,"sale_status":"active","skus":{"enterprise":"REVX-ENT-EXA5100V","rx360":null},"modules":{"investigation":true},"performance":{"base_gbps":0},"deployments":{"hypervisors":["hyper-v","kvm","vmware"],"clouds":["aws","azure"]},"compatibility":{"track_limits":["enterprise_only"]},"engine":{"name":"Elasticsearch","version":1}}]
-</script>
 
 <script>
 /* ============================================================
@@ -1822,7 +1845,6 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
 
 // ---- Data ----
 // CATALOG is populated from catalog.eh.json at runtime (see bootstrapCatalog below).
-// The inline <script id="catalog-json"> block is used as a fallback if fetch fails (e.g., file:// or offline).
 let CATALOG = [];
 
 // Platform metadata — display name, accent color, description, stack group
@@ -1866,6 +1888,7 @@ const state = {
   stack: [], // { id, qty }
   stackName: '',
   stackNotes: '',
+  exportShowConnections: false,
 };
 
 // Load persisted stack if present
@@ -1876,6 +1899,7 @@ try {
     if (Array.isArray(parsed.stack)) state.stack = parsed.stack;
     if (typeof parsed.name === 'string') state.stackName = parsed.name;
     if (typeof parsed.notes === 'string') state.stackNotes = parsed.notes;
+    if (typeof parsed.showConnections === 'boolean') state.exportShowConnections = parsed.showConnections;
   }
 } catch (e) { /* no-op */ }
 
@@ -1886,6 +1910,7 @@ try {
 
 // Stackable / infrastructure classification
 const STACKABLE_PLATFORMS = new Set([
+  'command', 'recordstore',
   'packet_sensor', 'multifunction_sensor', 'all_in_one',
   'packetstore', 'extended_storage',
   'ids_standalone', 'flow_collector',
@@ -1893,7 +1918,7 @@ const STACKABLE_PLATFORMS = new Set([
 const SENSOR_PLATFORMS = new Set([
   'packet_sensor', 'multifunction_sensor', 'all_in_one',
 ]);
-const INFRA_PLATFORMS = new Set([
+const SINGLETON_PLATFORMS = new Set([
   'command', 'recordstore',
 ]);
 
@@ -2321,8 +2346,11 @@ function openDetail(name) {
   `;
 
   $('#modal-body').innerHTML = renderDetailBody(item);
-  $('#modal-add-btn').innerHTML = (state.stack.find(s => s.id === item.name))
-    ? `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Add Another`
+  const alreadyInStack = state.stack.find(s => s.id === item.name);
+  $('#modal-add-btn').innerHTML = alreadyInStack
+    ? (SENSOR_PLATFORMS.has(item.platform) || SINGLETON_PLATFORMS.has(item.platform)
+      ? `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> In Stack`
+      : `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Add Another`)
     : `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add to Stack`;
 
   $('#modal-backdrop').classList.add('open');
@@ -2576,13 +2604,6 @@ function addToStack(name, n = 1) {
   const item = itemOf(name);
   if (!item) return;
 
-  // Infrastructure items (ECA Console, EXA Record Store) federate across stacks
-  // and are not placed inside a stack. Redirect to the detail view instead.
-  if (INFRA_PLATFORMS.has(item.platform)) {
-    toast(`${item.name} is shared infrastructure, not part of a stack.`, 'warn');
-    return;
-  }
-
   // Enforce single EDA per stack (a stack is site-scoped: 1 EDA + ETA(s) + ESU(s))
   if (SENSOR_PLATFORMS.has(item.platform)) {
     const existingSensor = state.stack
@@ -2595,6 +2616,23 @@ function addToStack(name, n = 1) {
     const alreadyHere = state.stack.find(s => s.id === name);
     if (alreadyHere) {
       toast(`A stack holds one EDA — ${name} is already in this stack.`, 'warn');
+      return;
+    }
+  }
+
+  // ECA and EXA are stack-level infrastructure roles and are limited to one each.
+  if (SINGLETON_PLATFORMS.has(item.platform)) {
+    const roleLabel = item.platform === 'command' ? 'ECA' : 'EXA';
+    const existingRole = state.stack
+      .map(s => itemOf(s.id))
+      .find(it => it && it.platform === item.platform && it.name !== name);
+    if (existingRole) {
+      toast(`A stack holds one ${roleLabel}. Remove ${existingRole.name} first.`, 'warn');
+      return;
+    }
+    const alreadyHere = state.stack.find(s => s.id === name);
+    if (alreadyHere) {
+      toast(`A stack holds one ${roleLabel} — ${name} is already in this stack.`, 'warn');
       return;
     }
   }
@@ -2634,9 +2672,13 @@ function changeQty(name, delta) {
   const ex = state.stack.find(s => s.id === name);
   if (!ex) return;
   const item = itemOf(name);
-  // Don't let a sensor go above 1 per stack
+  // Don't let singleton stack roles go above 1 per stack
   if (delta > 0 && item && SENSOR_PLATFORMS.has(item.platform) && ex.qty >= 1) {
     toast('A stack holds one EDA.', 'warn');
+    return;
+  }
+  if (delta > 0 && item && SINGLETON_PLATFORMS.has(item.platform) && ex.qty >= 1) {
+    toast(`A stack holds one ${item.platform === 'command' ? 'ECA' : 'EXA'}.`, 'warn');
     return;
   }
   ex.qty = Math.max(0, ex.qty + delta);
@@ -2684,7 +2726,12 @@ function toggleDrawer() {
 
 function persistStack() {
   try {
-    localStorage.setItem('eh-stack', JSON.stringify({ stack: state.stack, name: state.stackName, notes: state.stackNotes }));
+    localStorage.setItem('eh-stack', JSON.stringify({
+      stack: state.stack,
+      name: state.stackName,
+      notes: state.stackNotes,
+      showConnections: state.exportShowConnections,
+    }));
   } catch (e) { /* ignore */ }
 }
 
@@ -2917,7 +2964,7 @@ function renderStack() {
     const drop = document.createElement('div');
     drop.className = 'drop-zone';
     drop.id = 'drop-zone';
-    drop.innerHTML = `<strong>Drop appliances here</strong>Start with one EDA — add ETAs, ESUs, IDS, or EFC as needed`;
+    drop.innerHTML = `<strong>Drop appliances here</strong>Start with one EDA or ECA — add EXA, ETAs, ESUs, IDS, or EFC as needed`;
     wireDropZone(drop);
     body.appendChild(drop);
   } else {
@@ -3071,7 +3118,7 @@ function buildExportContent() {
   const summary = `${totalUnits} appliance${totalUnits !== 1 ? 's' : ''} · ${t.throughput} Gbps analysis${t.pcapTb ? ' · ' + t.pcapTb + ' TB PCAP' : ''}`;
 
   // Topology SVG — simple reference diagram grouped by role
-  const svg = renderTopologyDiagram(items);
+  const svg = renderTopologyDiagram(items, { showConnections: state.exportShowConnections });
   const storageAttachmentMap = renderStorageAttachmentMap(topology);
 
   const body = `
@@ -3151,11 +3198,13 @@ function buildExportContent() {
 
 /* ============================================================
    Topology — cabled tree view
-   Rows: Console (symbolic) → EDA + optional IDS/EFC → ETA(s) → ESU(s)
+   Rows: optional ECA/EXA services → EDA + optional IDS/EFC sensors → ETA(s) → ESU(s)
    ============================================================ */
 
 function planTopology(items) {
   // Flatten by qty — ESUs and ETAs need individual instances
+  const ecas = [];
+  const exas = [];
   const sensors = [];
   const ids = [];
   const efc = [];
@@ -3166,7 +3215,9 @@ function planTopology(items) {
     const n = it.__qty || 1;
     for (let i = 0; i < n; i++) {
       const inst = { name: it.name, item: it, idx: i };
-      if (SENSOR_PLATFORMS.has(it.platform)) sensors.push(inst);
+      if (it.platform === 'command') ecas.push(inst);
+      else if (it.platform === 'recordstore') exas.push(inst);
+      else if (SENSOR_PLATFORMS.has(it.platform)) sensors.push(inst);
       else if (it.platform === 'ids_standalone') ids.push(inst);
       else if (it.platform === 'flow_collector') efc.push(inst);
       else if (it.platform === 'packetstore') etas.push(inst);
@@ -3174,6 +3225,8 @@ function planTopology(items) {
     }
   }
 
+  const eca = ecas[0] || null; // enforced: 1 ECA per stack
+  const exa = exas[0] || null; // enforced: 1 EXA per stack
   const sensor = sensors[0] || null; // enforced: 1 EDA per stack
   const aioHost = sensor && sensor.item.platform === 'all_in_one' ? sensor : null;
 
@@ -3223,7 +3276,7 @@ function planTopology(items) {
     };
 
     esus.forEach(assignBalanced);
-    return { sensor, ids, efc, etas, esus, esuAssignments };
+    return { eca, exa, sensor, ids, efc, etas, esus, esuAssignments };
   }
 
   groupEntries.sort((a, b) => {
@@ -3278,7 +3331,7 @@ function planTopology(items) {
     }
   }
 
-  return { sensor, ids, efc, etas, esus, esuAssignments };
+  return { eca, exa, sensor, ids, efc, etas, esus, esuAssignments };
 }
 
 function colorForPlatform(platform) {
@@ -3297,28 +3350,53 @@ function colorForPlatform(platform) {
 }
 
 function renderAppNode(x, y, w, h, opts) {
-  // opts: { title, subtitle, accent, ribbon, dim }
+  // opts: { title, subtitle, accent, ribbon, dim, dashed }
   const accent = opts.accent || '#261F63';
   const dim = !!opts.dim;
   const ribbon = opts.ribbon || '';
+  const dashed = !!opts.dashed;
   const title = (opts.title || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
   const subtitle = (opts.subtitle || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  const textLeft = 16;
+  const textLeft = 22;
+  // Text positions adapt to box height so 1U (~38px) boxes don't overflow
+  const hasSub = !!subtitle;
+  const titleY = hasSub ? Math.max(16, h / 2 - 3) : h / 2 + 4;
+  const subY = hasSub ? Math.min(h - 7, titleY + 15) : 0;
   return `
     <g transform="translate(${x}, ${y})" opacity="${dim ? 0.55 : 1}">
       <rect x="0" y="0" width="${w}" height="${h}" rx="10"
-            fill="white" stroke="${accent}" stroke-width="1.6" filter="url(#eh-shadow)"/>
-      <rect x="0" y="0" width="5" height="${h}" rx="2" fill="${accent}"/>
+            fill="white" stroke="${accent}" stroke-width="1.6" ${dashed ? 'stroke-dasharray="6 4"' : ''} filter="url(#eh-shadow)"/>
+      <rect x="7" y="7" width="4" height="${Math.max(0, h - 14)}" rx="2" fill="${accent}"/>
       ${ribbon ? `
         <g transform="translate(${w - 8}, 8)">
           <rect x="-44" y="0" width="44" height="15" rx="7.5" fill="${accent}"/>
           <text x="-22" y="10.5" text-anchor="middle" font-family="Source Sans 3"
                 font-weight="800" font-size="9" fill="white" letter-spacing="0.8">${ribbon}</text>
         </g>` : ''}
-      <text x="${textLeft}" y="24" text-anchor="start" font-family="Source Sans 3"
+      <text x="${textLeft}" y="${titleY}" text-anchor="start" font-family="Source Sans 3"
             font-weight="800" font-size="12.5" fill="#15103A">${title}</text>
-      <text x="${textLeft}" y="42" text-anchor="start" font-family="Source Sans 3"
-            font-size="10.5" fill="#6B6880">${subtitle}</text>
+      ${hasSub ? `<text x="${textLeft}" y="${subY}" text-anchor="start" font-family="Source Sans 3"
+            font-size="10.5" fill="#6B6880">${subtitle}</text>` : ''}
+    </g>
+  `;
+}
+
+function renderConsoleNode(x, y, w, h, opts) {
+  const dim = !!opts.dim;
+  const title = (opts.title || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const subtitle = (opts.subtitle || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const textLeft = 22;
+  const titleY = Math.max(16, h / 2 - 3);
+  const subY = Math.min(h - 7, titleY + 15);
+  return `
+    <g transform="translate(${x}, ${y})" opacity="${dim ? 0.55 : 1}">
+      <rect x="0" y="0" width="${w}" height="${h}" rx="10"
+            fill="url(#eh-grad)" stroke="white" stroke-width="2" stroke-dasharray="6 4" filter="url(#eh-shadow)"/>
+      <rect x="7" y="7" width="4" height="${Math.max(0, h - 14)}" rx="2" fill="rgba(255,255,255,0.88)"/>
+      <text x="${textLeft}" y="${titleY}" text-anchor="start" font-family="Source Sans 3"
+            font-weight="900" font-size="12.5" fill="white" letter-spacing="1">${title}</text>
+      <text x="${textLeft}" y="${subY}" text-anchor="start" font-family="Source Sans 3"
+            font-weight="700" font-size="9.5" fill="rgba(255,255,255,0.84)" letter-spacing="0.8">${subtitle}</text>
     </g>
   `;
 }
@@ -3339,32 +3417,149 @@ function drawCable(from, to, opts = {}) {
   `;
 }
 
-function renderTopologyDiagram(items) {
+function drawConnection(from, to, opts = {}) {
+  const color = opts.color || '#261F63';
+  const dashed = !!opts.dashed;
+  const bidirectional = !!opts.bidirectional;
+  const route = opts.route || null;
+  const markerOffset = opts.markerOffset || 0;
+  const dx = to.x - from.x, dy = to.y - from.y;
+  const laneY = Number.isFinite(opts.laneY) ? opts.laneY : null;
+  const cy1 = laneY ?? (from.y + dy * 0.5);
+  const cy2 = laneY ?? (to.y - dy * 0.5);
+  const path = `M ${from.x} ${from.y} C ${from.x} ${cy1}, ${to.x} ${cy2}, ${to.x} ${to.y}`;
+  const midX = (opts.labelX ?? ((from.x + to.x) / 2)) + markerOffset;
+  const midY = opts.labelY ?? (laneY ? (laneY + to.y) / 2 : (from.y + to.y) / 2);
+  const markerEnd = opts.arrow !== false ? `marker-end="url(#arrow-${opts.markerId || 'sapphire'})"` : '';
+  const markerStart = bidirectional ? `marker-start="url(#arrow-${opts.markerId || 'sapphire'})"` : '';
+  return `
+    <path d="${path}" stroke="${color}" stroke-width="1.7" fill="none"
+          ${dashed ? 'stroke-dasharray="4 3"' : ''} opacity="0.86" ${markerStart} ${markerEnd}/>
+    ${route ? `
+      <g transform="translate(${midX}, ${midY})">
+        <circle cx="0" cy="0" r="10" fill="white" stroke="${color}" stroke-width="1.5"/>
+        <text x="0" y="3.5" text-anchor="middle" font-family="Source Sans 3"
+              font-weight="900" font-size="9.5" fill="#15103A">${route}</text>
+      </g>` : ''}
+  `;
+}
+
+function topologyConnectionLabel(fromPlatform, toPlatform) {
+  const pair = new Set([fromPlatform, toPlatform]);
+  if (pair.has('extended_storage')) return 'SAS';
+  return 'TCP/443';
+}
+
+function colorForConnectionPort(label) {
+  if (label === 'SAS') return '#898A8D';
+  return '#EC0889';
+}
+
+function markerForConnectionPort(label) {
+  if (label === 'SAS') return 'muted';
+  return 'magenta';
+}
+
+function renderConnectionLegend(routes, x, y, width) {
+  // Bottom legend — connection-port key only. Edge-port info lives in the right-side rail.
+  const boxW = Math.min(width, Math.max(250, ...routes.map(route => route.text.length * 5.4 + 68), 250));
+  const routeRows = routes.map((route, i) => {
+    const rowY = 28 + i * 22;
+    return `
+      <g transform="translate(0, ${rowY})">
+        <circle cx="9" cy="-3" r="8" fill="white" stroke="${route.color}" stroke-width="1.5"/>
+        <text x="9" y="0.5" text-anchor="middle" font-family="Source Sans 3" font-weight="900" font-size="8.5" fill="#15103A">${route.id}</text>
+        <text x="26" y="0.5" font-family="Source Sans 3" font-weight="700" font-size="10" fill="#15103A">${route.text}</text>
+      </g>
+    `;
+  }).join('');
+  const h = 32 + routes.length * 22 + 18;
+  return `
+    <g transform="translate(${x}, ${y})">
+      <rect x="0" y="-18" width="${boxW}" height="${h}" rx="10" fill="white" stroke="#E3E1EC"/>
+      <g transform="translate(22, 10)">
+        <text x="0" y="0" font-family="Source Sans 3" font-weight="800" font-size="9.5" fill="#898A8D" letter-spacing="1.2">CONNECTION PORTS</text>
+        ${routeRows}
+      </g>
+    </g>
+  `;
+}
+
+// Right-side rail listing the common edge ports every UI-bearing appliance
+// (ECA / EDA / ETA / EXA / IDS / EFC) needs. STORAGE row is intentionally
+// excluded — ESUs are DAS-only and have no external ports.
+function renderEdgePortsRail(x, y, h) {
+  const w = 210;
+  const firstRowY = 44;
+  const lines = [
+    { dir: 'down', color: '#00AAEF', text: 'TCP/443 UI/API in' },
+    { dir: 'up',   color: '#261F63', text: 'TCP/443 cloud out' },
+    { dir: 'up',   color: '#6B6880', text: 'UDP/53 DNS' },
+    { dir: 'up',   color: '#6B6880', text: 'UDP/123 NTP' },
+  ];
+  const lineRows = lines.map((line, i) => {
+    const rowY = firstRowY + i * 22;
+    const arrow = line.dir === 'up'
+      ? `<path d="M 12 ${rowY + 5} L 12 ${rowY - 6}" stroke="${line.color}" stroke-width="1.7" marker-end="url(#arrow-muted)"/>`
+      : `<path d="M 12 ${rowY - 6} L 12 ${rowY + 5}" stroke="${line.color}" stroke-width="1.7" marker-end="url(#arrow-muted)"/>`;
+    return `${arrow}<text x="34" y="${rowY + 2}" font-family="Source Sans 3" font-weight="700" font-size="10" fill="#15103A">${line.text}</text>`;
+  }).join('');
+  return `
+    <g transform="translate(${x}, ${y})">
+      <rect x="0" y="0" width="${w}" height="${h}" rx="10" fill="white" stroke="#E3E1EC"/>
+      <text x="18" y="19" font-family="Source Sans 3" font-weight="800" font-size="9.5" fill="#898A8D" letter-spacing="1.2">COMMON EDGE PORTS</text>
+      ${lineRows}
+    </g>
+  `;
+}
+
+function nodeHForItem(item) {
+  const ru = item?.form_factor?.rack_units;
+  if (!ru || ru < 1) return 38; // virtual/cloud/unknown — compact size
+  return Math.max(38, 24 + ru * 14); // 1U=38, 2U=52, 3U=66, 4U=80
+}
+
+function renderTopologyDiagram(items, options = {}) {
   if (!items.length) {
     return `<svg viewBox="0 0 800 140" class="diagram-svg"><rect x="0" y="0" width="800" height="140" fill="#FAFAFC" rx="10"/><text x="400" y="76" text-anchor="middle" font-family="Source Sans 3" font-size="14" fill="#898A8D">No components in stack · drag appliances to build one</text></svg>`;
   }
 
   const plan = planTopology(items);
-  const { sensor, ids, efc, etas, esus, esuAssignments } = plan;
+  const { eca, exa, sensor, ids, efc, etas, esus, esuAssignments } = plan;
+  const showConnections = !!options.showConnections;
 
   // Layout constants
-  const nodeW = 140, nodeH = 52;
+  const nodeW = 140;
   const gapX = 22, gapY = 56;
+  const esuStackGap = 6; // tight gap between ESUs in a vertical stack — rack-like
+  const defaultNodeH = 52;
 
-  // Row 0: Console symbolic (ExtraHop Console)
-  const consoleY = 28;
-  const consoleH = 44;
+  // Row 0: services, only when ECA and/or EXA are explicitly included.
+  const serviceY = 28;
+  const ecaH = 44;
+  const serviceNodes = [
+    ...(exa ? [{ inst: exa, kind: 'exa', w: nodeW, h: nodeHForItem(exa.item) }] : []),
+    ...(eca ? [{ inst: eca, kind: 'eca', w: nodeW, h: ecaH }] : []),
+  ];
+  const hasServiceRow = serviceNodes.length > 0;
+  const serviceRowH = serviceNodes.reduce((m, n) => Math.max(m, n.h), defaultNodeH);
+  const serviceContentW = serviceNodes.reduce((sum, n) => sum + n.w, 0)
+    + Math.max(serviceNodes.length - 1, 0) * gapX;
 
-  // Row 1: EDA + optional IDS/EFC shifted to the right
-  const edaRowY = consoleY + consoleH + gapY;
-  const sideNodes = [...ids, ...efc]; // IDS then EFC
-  const edaCount = sensor ? 1 : 0;
-  const row1Count = edaCount + sideNodes.length;
+  // Row 1: EDA + optional IDS/EFC sensor-side services.
+  const edaRowY = hasServiceRow ? serviceY + serviceRowH + gapY : 28;
+  const row1Nodes = [
+    ...(sensor ? [{ inst: sensor, kind: 'sensor' }] : []),
+    ...ids.map(inst => ({ inst, kind: 'ids' })),
+    ...efc.map(inst => ({ inst, kind: 'efc' })),
+  ];
+  const row1Count = row1Nodes.length;
+  // Tallest box in row1 determines where the next row starts
+  const row1MaxH = row1Nodes.reduce((m, n) => Math.max(m, nodeHForItem(n.inst.item)), defaultNodeH);
 
   // Row 2: ETAs
-  const etaRowY = edaRowY + nodeH + gapY;
-  // Row 3: ESUs
-  const esuRowY = etaRowY + nodeH + gapY;
+  const etaRowY = (row1Count ? edaRowY + row1MaxH : (hasServiceRow ? serviceY + serviceRowH : edaRowY)) + gapY;
+  const etaMaxH = etas.reduce((m, eta) => Math.max(m, nodeHForItem(eta.item)), defaultNodeH);
 
   const esusByHost = new Map();
   const orphanEsus = [];
@@ -3378,6 +3573,7 @@ function renderTopologyDiagram(items) {
     esusByHost.get(key).push(assign.esu);
   });
 
+  // Build host columns for the ESU layout — one column per ETA (and AIO/orphan if present)
   const hostColumns = [];
   etas.forEach(eta => {
     hostColumns.push({ key: `eta:${formatTopologyInstanceName(eta)}`, host: eta, type: 'eta' });
@@ -3389,27 +3585,80 @@ function renderTopologyDiagram(items) {
     hostColumns.push({ key: 'orphan', host: null, type: 'orphan' });
   }
 
-  const esuColumnCounts = hostColumns.map(col => {
-    if (col.type === 'orphan') return orphanEsus.length;
-    return (esusByHost.get(col.key) || []).length;
+  // ESU row Y baseline (top edge of each column's first ESU).
+  // Sit directly below the ETA row when present; otherwise hang off the EDA/AIO row.
+  const esuRowY = etas.length
+    ? etaRowY + etaMaxH + gapY
+    : edaRowY + row1MaxH + gapY;
+
+  // Pre-compute each column's ESU stack height so we can size the SVG correctly
+  const columnStackHeights = hostColumns.map(col => {
+    const list = col.type === 'orphan' ? orphanEsus : (esusByHost.get(col.key) || []);
+    if (!list.length) return 0;
+    return list.reduce((sum, esu, i) => sum + nodeHForItem(esu.item) + (i > 0 ? esuStackGap : 0), 0);
   });
+  const tallestStack = columnStackHeights.reduce((m, h) => Math.max(m, h), 0);
 
-  const totalEsuSlots = esuColumnCounts.reduce((sum, count) => sum + Math.max(count, 1), 0);
-  const esuGapBetweenGroups = hostColumns.length > 1 ? (hostColumns.length - 1) * gapX : 0;
-  const row3ContentW = totalEsuSlots > 0
-    ? totalEsuSlots * nodeW + Math.max(totalEsuSlots - hostColumns.length, 0) * gapX + esuGapBetweenGroups
-    : 0;
-
-  const maxPerRow = Math.max(1, row1Count, etas.length);
+  // Width: one column per host (ETAs anchor their stacks). Orphan column added when present.
   const row1ContentW = row1Count * nodeW + Math.max(row1Count - 1, 0) * gapX;
   const row2ContentW = etas.length * nodeW + Math.max(etas.length - 1, 0) * gapX;
-  const contentW = Math.max(row1ContentW, row2ContentW, row3ContentW);
-  const w = Math.max(820, contentW + 80);
+  const row3ContentW = hostColumns.length * nodeW + Math.max(hostColumns.length - 1, 0) * gapX;
+  const contentW = Math.max(serviceContentW, row1ContentW, row2ContentW, row3ContentW);
+  // Reserve space on the right for the edge-ports rail when connections are shown.
+  const leftGutter = 60;
+  const rightGutter = showConnections ? 240 : 40;
+  const w = Math.max(820, leftGutter + contentW + rightGutter);
+  // Center appliances between the left labels and right rail (or right margin)
+  const applianceCenterX = (leftGutter + (w - rightGutter)) / 2;
 
   // Only draw the ESU row if there are ESUs
   const hasEsuRow = esus.length > 0;
   const hasEtaRow = etas.length > 0;
-  const height = (hasEsuRow ? esuRowY : hasEtaRow ? etaRowY : edaRowY) + nodeH + 32;
+  const terminalY = hasEsuRow
+    ? esuRowY
+    : hasEtaRow
+      ? etaRowY
+        : row1Count
+          ? edaRowY
+          : hasServiceRow
+            ? serviceY
+            : edaRowY;
+  const terminalH = (!row1Count && hasServiceRow && !hasEtaRow && !hasEsuRow)
+    ? serviceRowH
+    : hasEsuRow
+      ? tallestStack
+      : hasEtaRow
+        ? etaMaxH
+        : row1MaxH;
+  let height = terminalY + terminalH + 32;
+  const legendH = showConnections ? 132 : 0;
+  if (showConnections) height += legendH;
+
+  const routeMap = new Map();
+  const routeList = [];
+  // In labeled mode, color denotes the connection port rather than appliance role.
+  const routeFor = (text) => {
+    if (!routeMap.has(text)) {
+      const route = {
+        id: routeList.length + 1,
+        text,
+        color: colorForConnectionPort(text),
+        markerId: markerForConnectionPort(text),
+      };
+      routeMap.set(text, route);
+      routeList.push(route);
+    }
+    return routeMap.get(text);
+  };
+  const connectionFor = (label, opts = {}) => {
+    const route = routeFor(label);
+    return {
+      ...opts,
+      color: route.color,
+      route: route.id,
+      markerId: opts.markerId || route.markerId,
+    };
+  };
 
   let svg = `<svg viewBox="0 0 ${w} ${height}" class="diagram-svg" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -3420,156 +3669,288 @@ function renderTopologyDiagram(items) {
       <filter id="eh-shadow" x="-10%" y="-10%" width="120%" height="130%">
         <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#261F63" flood-opacity="0.18"/>
       </filter>
+      <marker id="arrow-sapphire" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#261F63"/>
+      </marker>
+      <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#00AAEF"/>
+      </marker>
+      <marker id="arrow-plum" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#7F2854"/>
+      </marker>
+      <marker id="arrow-magenta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#EC0889"/>
+      </marker>
+      <marker id="arrow-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#6B6880"/>
+      </marker>
     </defs>
     <rect x="0" y="0" width="${w}" height="${height}" fill="#FAFAFC" rx="10"/>
   `;
 
   // Row labels (left gutter)
   const labelX = 18;
-  svg += `<text x="${labelX}" y="${consoleY + 28}" font-family="Source Sans 3" font-weight="800" font-size="9.5" fill="#898A8D" letter-spacing="1.4">INFRA</text>`;
-  svg += `<text x="${labelX}" y="${edaRowY + nodeH/2 + 4}" font-family="Source Sans 3" font-weight="800" font-size="9.5" fill="#898A8D" letter-spacing="1.4">SENSOR</text>`;
-  if (hasEtaRow) svg += `<text x="${labelX}" y="${etaRowY + nodeH/2 + 4}" font-family="Source Sans 3" font-weight="800" font-size="9.5" fill="#898A8D" letter-spacing="1.4">PCAP</text>`;
-  if (hasEsuRow) svg += `<text x="${labelX}" y="${esuRowY + nodeH/2 + 4}" font-family="Source Sans 3" font-weight="800" font-size="9.5" fill="#898A8D" letter-spacing="1.4">STORAGE</text>`;
+  if (hasServiceRow) svg += `<text x="${labelX}" y="${serviceY + serviceRowH/2 + 4}" font-family="Source Sans 3" font-weight="800" font-size="9.5" fill="#898A8D" letter-spacing="1.4">SERVICES</text>`;
+  if (row1Count) svg += `<text x="${labelX}" y="${edaRowY + row1MaxH/2 + 4}" font-family="Source Sans 3" font-weight="800" font-size="9.5" fill="#898A8D" letter-spacing="1.4">SENSORS</text>`;
+  if (hasEtaRow) svg += `<text x="${labelX}" y="${etaRowY + etaMaxH/2 + 4}" font-family="Source Sans 3" font-weight="800" font-size="9.5" fill="#898A8D" letter-spacing="1.4">PCAP</text>`;
+  if (hasEsuRow) svg += `<text x="${labelX}" y="${esuRowY + 14}" font-family="Source Sans 3" font-weight="800" font-size="9.5" fill="#898A8D" letter-spacing="1.4">STORAGE</text>`;
 
-  // Row 0 — Console (symbolic "ExtraHop Console")
-  const consoleW = 200;
-  const consoleX = (w - consoleW) / 2;
-  svg += `
-    <g transform="translate(${consoleX}, ${consoleY})">
-      <rect x="0" y="0" width="${consoleW}" height="${consoleH}" rx="12" fill="url(#eh-grad)" filter="url(#eh-shadow)"/>
-      <text x="${consoleW/2}" y="20" text-anchor="middle" font-family="Source Sans 3" font-weight="900" font-size="12" fill="white" letter-spacing="1.4">EXTRAHOP CONSOLE</text>
-    </g>
-  `;
-  const consoleAnchor = { x: consoleX + consoleW/2, y: consoleY + consoleH };
+  // Row 0 — services, drawn only from added catalog products.
+  const servicePositions = [];
+  const serviceRowStartX = applianceCenterX - serviceContentW / 2;
+  let serviceCursor = serviceRowStartX;
+  let ecaAnchor = null;
+  let exaAnchor = null;
+  for (const node of serviceNodes) {
+    const y = serviceY + (serviceRowH - node.h) / 2;
+    const p = { ...node, x: serviceCursor, y };
+    servicePositions.push(p);
+    serviceCursor += node.w + gapX;
 
-  // Row 1 — EDA + side (IDS/EFC)
-  // Center the EDA; place side nodes shifted right
+    if (node.kind === 'eca') ecaAnchor = { x: p.x + p.w / 2, y: p.y + p.h };
+    else exaAnchor = { x: p.x + p.w / 2, y: p.y + p.h };
+  }
+
+  // Row 1 — EDA + side (IDS/EFC). Items top-align at edaRowY; height varies by rack units.
   const row1Total = row1Count * nodeW + (row1Count - 1) * gapX;
-  const row1StartX = (w - row1Total) / 2;
+  const row1StartX = applianceCenterX - row1Total / 2;
 
-  const row1Positions = []; // {inst, kind: 'sensor'|'ids'|'efc', x, y}
+  const row1Positions = []; // {inst, kind, x, y, h}
   let cursor = row1StartX;
-  if (sensor) {
-    row1Positions.push({ inst: sensor, kind: 'sensor', x: cursor, y: edaRowY });
-    cursor += nodeW + gapX;
-  }
-  for (const idsInst of ids) {
-    row1Positions.push({ inst: idsInst, kind: 'ids', x: cursor, y: edaRowY });
-    cursor += nodeW + gapX;
-  }
-  for (const efcInst of efc) {
-    row1Positions.push({ inst: efcInst, kind: 'efc', x: cursor, y: edaRowY });
+  for (const node of row1Nodes) {
+    row1Positions.push({ ...node, x: cursor, y: edaRowY, h: nodeHForItem(node.inst.item) });
     cursor += nodeW + gapX;
   }
 
-  // Draw Console → row1 cables
-  for (const p of row1Positions) {
+  const etaPositions = new Map();
+  if (hasEtaRow) {
+    const row2Total = etas.length * nodeW + (etas.length - 1) * gapX;
+    const row2StartX = applianceCenterX - row2Total / 2;
+    etas.forEach((eta, i) => {
+      const x = row2StartX + i * (nodeW + gapX);
+      etaPositions.set(eta, { x, y: etaRowY, h: nodeHForItem(eta.item) });
+    });
+  }
+
+  if (ecaAnchor && exaAnchor) {
+    const ecaPos = servicePositions.find(p => p.kind === 'eca');
+    const exaPos = servicePositions.find(p => p.kind === 'exa');
+    if (ecaPos && exaPos) {
+      const exaLeftOfEca = exaPos.x < ecaPos.x;
+      const from = {
+        x: exaLeftOfEca ? ecaPos.x : ecaPos.x + ecaPos.w,
+        y: ecaPos.y + ecaPos.h / 2,
+      };
+      const to = {
+        x: exaLeftOfEca ? exaPos.x + exaPos.w : exaPos.x,
+        y: exaPos.y + exaPos.h / 2,
+      };
+      const label = topologyConnectionLabel('command', 'recordstore');
+      svg += showConnections
+        ? drawConnection(from, to, connectionFor(label, {
+            bidirectional: true,
+          }))
+        : drawCable(from, to, { color: colorForPlatform('recordstore') });
+    }
+  }
+
+  // Draw ECA → row1 cables only when an ECA was explicitly added.
+  if (ecaAnchor) for (const p of row1Positions) {
     const accent = colorForPlatform(p.inst.item.platform);
     const top = { x: p.x + nodeW/2, y: p.y };
-    svg += drawCable(consoleAnchor, top, { color: accent });
+    const label = topologyConnectionLabel('command', p.inst.item.platform);
+    svg += showConnections
+      ? drawConnection(ecaAnchor, top, connectionFor(label, {
+          bidirectional: true,
+          markerOffset: p.kind === 'sensor' ? 0 : p.x < ecaAnchor.x ? -26 : 26,
+        }))
+      : drawCable(ecaAnchor, top, { color: accent });
   }
 
-  // Draw row1 nodes
+  const sensorPos = row1Positions.find(p => p.kind === 'sensor');
+  if (exaAnchor) {
+    const exaTargets = row1Positions.filter(p => p.kind === 'sensor' || p.kind === 'efc');
+    for (const target of exaTargets) {
+      const from = { x: exaAnchor.x, y: exaAnchor.y };
+      const to = { x: target.x + nodeW / 2, y: target.y };
+      const label = topologyConnectionLabel(target.inst.item.platform, 'recordstore');
+      svg += showConnections
+        ? drawConnection(from, to, connectionFor(label, {
+            bidirectional: true,
+            markerOffset: exaAnchor.x < to.x ? -24 : 24,
+          }))
+        : drawCable(from, to, { color: colorForPlatform('recordstore') });
+    }
+  }
+
+  if (showConnections && ecaAnchor && hasEtaRow) {
+    const laneY = row1Count ? edaRowY + row1MaxH / 2 : etaRowY - gapY / 2;
+    etas.forEach((eta, i) => {
+      const pos = etaPositions.get(eta);
+      if (!pos) return;
+      const to = { x: pos.x + nodeW / 2, y: pos.y };
+      const label = topologyConnectionLabel('command', 'packetstore');
+      svg += drawConnection(ecaAnchor, to, connectionFor(label, {
+        bidirectional: true,
+        laneY,
+        labelY: laneY + 1,
+        markerOffset: i % 2 ? 30 : -30,
+      }));
+    });
+  }
+
+  if (sensorPos && hasEtaRow) {
+    etas.forEach((eta, i) => {
+      const pos = etaPositions.get(eta);
+      if (!pos) return;
+      const from = { x: sensorPos.x + nodeW/2, y: sensorPos.y + sensorPos.h };
+      const to = { x: pos.x + nodeW/2, y: pos.y };
+      const label = topologyConnectionLabel(sensor.item.platform, 'packetstore');
+      svg += showConnections
+        ? drawConnection(from, to, connectionFor(label, {
+            bidirectional: true,
+            markerOffset: i % 2 ? 24 : -24,
+          }))
+        : drawCable(from, to, { color: colorForPlatform('packetstore') });
+    });
+  }
+
+  // Repaint service nodes above horizontal service-to-service connectors.
+  for (const p of servicePositions) {
+    if (p.kind === 'eca') {
+      svg += renderConsoleNode(p.x, p.y, p.w, p.h, {
+        title: eca.name,
+        subtitle: 'Console · Virtual',
+      });
+    } else {
+      const it = p.inst.item;
+      const sub = [];
+      const kind = deploymentKind(it);
+      if (kind === 'Physical' && it.form_factor?.rack_units) sub.push(`${it.form_factor.rack_units}U`);
+      if (kind !== 'Physical') sub.push(kind);
+      svg += renderAppNode(p.x, p.y, p.w, p.h, {
+        title: it.name,
+        subtitle: sub.join(' · '),
+        accent: colorForPlatform('recordstore'),
+        dashed: kind === 'Virtual',
+      });
+    }
+  }
+
+  // Draw sensor-row nodes — model name carries the type (EDA/IDS/EFC), no ribbon needed
   for (const p of row1Positions) {
     const it = p.inst.item;
     const accent = colorForPlatform(it.platform);
-    const ribbon =
-      p.kind === 'sensor'
-        ? (it.platform === 'all_in_one' ? 'AIO' : 'EDA')
-        : p.kind === 'ids' ? 'IDS'
-        : 'EFC';
     const sub = [];
     if (it.performance?.base_gbps) sub.push(`${it.performance.base_gbps} Gbps`);
     const kind = deploymentKind(it);
     if (kind === 'Physical' && it.form_factor?.rack_units) sub.push(`${it.form_factor.rack_units}U`);
     if (kind !== 'Physical') sub.push(kind);
-    svg += renderAppNode(p.x, p.y, nodeW, nodeH, {
+    svg += renderAppNode(p.x, p.y, nodeW, p.h, {
       title: it.name,
       subtitle: sub.join(' · '),
-      accent, ribbon,
+      accent,
+      dashed: kind === 'Virtual',
     });
   }
 
-  // Row 2 — ETAs centered under the EDA
-  const etaPositions = new Map();
+  // Row 2 — ETAs centered under the EDA. Each ETA top-aligned at etaRowY; height varies.
   if (hasEtaRow) {
-    const row2Total = etas.length * nodeW + (etas.length - 1) * gapX;
-    const row2StartX = (w - row2Total) / 2;
-    etas.forEach((eta, i) => {
-      const x = row2StartX + i * (nodeW + gapX);
-      etaPositions.set(eta, { x, y: etaRowY });
-
-      // Cable from EDA to ETA
-      if (sensor) {
-        const sensorPos = row1Positions.find(p => p.kind === 'sensor');
-        const from = { x: sensorPos.x + nodeW/2, y: sensorPos.y + nodeH };
-        const to = { x: x + nodeW/2, y: etaRowY };
-        svg += drawCable(from, to, { color: colorForPlatform('packetstore') });
-      }
-
+    etas.forEach((eta) => {
+      const pos = etaPositions.get(eta);
+      if (!pos) return;
       const it = eta.item;
       const sub = [];
       if (it.performance?.base_gbps) sub.push(`${it.performance.base_gbps} Gbps`);
       const kind = deploymentKind(it);
       if (kind === 'Physical' && it.form_factor?.rack_units) sub.push(`${it.form_factor.rack_units}U`);
       if (kind !== 'Physical') sub.push(kind);
-      svg += renderAppNode(x, etaRowY, nodeW, nodeH, {
+      svg += renderAppNode(pos.x, pos.y, nodeW, pos.h, {
         title: formatTopologyInstanceName(eta),
         subtitle: sub.join(' · '),
         accent: colorForPlatform('packetstore'),
-        ribbon: 'ETA',
+        dashed: kind === 'Virtual',
       });
     });
   }
 
-  // Row 3 — ESUs placed under their assigned host to avoid crossing cables
+  // Row 3 — ESUs stacked VERTICALLY directly under their assigned host (ETA or AIO),
+  // one column per host. The visual stack reads like rack-mounted units under the ETA.
   if (hasEsuRow) {
-    const row3StartX = (w - row3ContentW) / 2;
-    let colCursor = row3StartX;
+    const row3Total = hostColumns.length * nodeW + (hostColumns.length - 1) * gapX;
+    const row3StartX = applianceCenterX - row3Total / 2;
 
-    hostColumns.forEach(column => {
+    hostColumns.forEach((column, colIdx) => {
       const columnEsus = column.type === 'orphan'
         ? orphanEsus
         : (esusByHost.get(column.key) || []);
-      const slotCount = Math.max(columnEsus.length, 1);
-      const columnWidth = slotCount * nodeW + Math.max(slotCount - 1, 0) * gapX;
+      if (!columnEsus.length) return;
 
-      columnEsus.forEach((esu, index) => {
-        const x = colCursor + index * (nodeW + gapX);
-        const y = esuRowY;
+      const x = row3StartX + colIdx * (nodeW + gapX);
 
-        let from = null;
-        let dashed = false;
-        let color = colorForPlatform('extended_storage');
+      // Connect host (ETA/AIO bottom) to the top of the column's first ESU
+      let from = null;
+      let dashed = false;
+      let color = colorForPlatform('extended_storage');
+      if (column.type === 'eta') {
+        const pos = etaPositions.get(column.host);
+        if (pos) from = { x: pos.x + nodeW/2, y: pos.y + pos.h };
+      } else if (column.type === 'aio') {
+        const sensorPos = row1Positions.find(p => p.kind === 'sensor');
+        if (sensorPos) from = { x: sensorPos.x + nodeW/2, y: sensorPos.y + sensorPos.h };
+        color = colorForPlatform('all_in_one');
+      } else {
+        dashed = true;
+      }
+      if (from) {
+        const hostPlatform = column.type === 'aio' ? 'all_in_one' : 'packetstore';
+        const label = topologyConnectionLabel(hostPlatform, 'extended_storage');
+        const to = { x: x + nodeW/2, y: esuRowY };
+        svg += showConnections
+          ? drawConnection(from, to, connectionFor(label, {
+              dashed,
+              arrow: false,
+            }))
+          : drawCable(from, to, { color, dashed });
+      }
 
-        if (column.type === 'eta') {
-          const pos = etaPositions.get(column.host);
-          if (pos) from = { x: pos.x + nodeW/2, y: pos.y + nodeH };
-        } else if (column.type === 'aio') {
-          const sensorPos = row1Positions.find(p => p.kind === 'sensor');
-          if (sensorPos) from = { x: sensorPos.x + nodeW/2, y: sensorPos.y + nodeH };
-          color = colorForPlatform('all_in_one');
-        } else {
-          dashed = true;
-        }
-
-        const to = { x: x + nodeW/2, y };
-        if (from) svg += drawCable(from, to, { color, dashed });
-
+      // Draw the ESUs stacked downward at the same X
+      let stackY = esuRowY;
+      columnEsus.forEach(esu => {
         const it = esu.item;
+        const h = nodeHForItem(it);
         const cap = computeStorageCapacityTb(it);
         const sub = cap ? `${cap} TB` : '';
-        svg += renderAppNode(x, y, nodeW, nodeH, {
+        svg += renderAppNode(x, stackY, nodeW, h, {
           title: formatTopologyInstanceName(esu),
           subtitle: sub || (column.type === 'orphan' ? 'Unattached' : ''),
           accent: colorForPlatform('extended_storage'),
-          ribbon: 'ESU',
           dim: column.type === 'orphan',
+          dashed: deploymentKind(it) === 'Virtual',
         });
+        stackY += h + esuStackGap;
       });
-
-      colCursor += columnWidth + gapX;
     });
+  }
+
+  if (showConnections) {
+    // Right-side rail spans only the rows with edge connectivity (SERVICES/SENSORS/PCAP).
+    // It deliberately stops above the STORAGE row to show ESUs don't need edge ports.
+    if (row1Count || hasServiceRow || hasEtaRow) {
+      const railX = w - 220;
+      const railTop = hasServiceRow ? serviceY : edaRowY;
+      const railBottom = hasEtaRow
+        ? etaRowY + etaMaxH
+        : row1Count
+          ? edaRowY + row1MaxH
+          : serviceY + serviceRowH;
+      const railH = Math.max(128, railBottom - railTop);
+      svg += renderEdgePortsRail(railX, railTop, railH);
+    }
+    const legendX = 72;
+    const legendY = terminalY + terminalH + 46;
+    svg += renderConnectionLegend(routeList, legendX, legendY, w - legendX - 34);
+    svg += `<text x="${w - 34}" y="${height - 18}" text-anchor="end" font-family="Source Sans 3" font-size="9.5" fill="#898A8D">Port labels follow the ExtraHop default port specifications; direct/tunneled direction can vary by deployment.</text>`;
   }
 
   svg += `</svg>`;
@@ -3577,6 +3958,8 @@ function renderTopologyDiagram(items) {
 }
 
 function openExport() {
+  const showConnections = $('#export-show-connections');
+  if (showConnections) showConnections.checked = !!state.exportShowConnections;
   $('#export-content').innerHTML = buildExportContent();
   $('#export-backdrop').classList.add('open');
 }
@@ -3717,10 +4100,16 @@ $('#export-backdrop').addEventListener('click', (e) => {
 });
 $('#export-print-btn').addEventListener('click', printExport);
 $('#export-download-btn').addEventListener('click', downloadExport);
+$('#export-show-connections')?.addEventListener('change', (e) => {
+  state.exportShowConnections = !!e.target.checked;
+  persistStack();
+  if ($('#export-backdrop')?.classList.contains('open')) {
+    $('#export-content').innerHTML = buildExportContent();
+  }
+});
 
 // ---- Init ----
 async function bootstrapCatalog() {
-  // Try the external JSON file first so the catalog can be updated without editing the HTML.
   try {
     const res = await fetch('catalog.eh.json', { cache: 'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -3728,11 +4117,12 @@ async function bootstrapCatalog() {
     if (!Array.isArray(data)) throw new Error('catalog.eh.json is not an array');
     CATALOG = data;
   } catch (err) {
-    console.warn('[catalog] fetch of catalog.eh.json failed, falling back to inline data:', err);
-    try {
-      CATALOG = JSON.parse(document.getElementById('catalog-json').textContent);
-    } catch (e2) {
-      console.error('[catalog] inline fallback also failed:', e2);
+    const devCatalog = window.__EH_LOOKUP_DEV_CATALOG__;
+    if (Array.isArray(devCatalog)) {
+      console.warn('[catalog] using generated file-dev catalog because catalog.eh.json could not be fetched:', err);
+      CATALOG = devCatalog;
+    } else {
+      console.error('[catalog] failed to load catalog.eh.json:', err);
       CATALOG = [];
     }
   }

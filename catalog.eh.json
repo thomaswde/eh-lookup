@@ -51,7 +51,7 @@
       "ids_reduction_percent": 50,
       "base_packetrate": 10000000,
       "advanced_analysis": 16000,
-      "standard_analysis": 100000,
+      "standard_analysis": 84000,
       "ti_observable": 1152000
     },
     "form_factor": {
@@ -205,7 +205,7 @@
       "ids_reduction_percent": 50,
       "base_packetrate": 5000000,
       "advanced_analysis": 8000,
-      "standard_analysis": 50000,
+      "standard_analysis": 42000,
       "ti_observable": 576000
     },
     "form_factor": {
@@ -333,7 +333,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 2500000,
       "advanced_analysis": 5500,
-      "standard_analysis": 35000,
+      "standard_analysis": 29500,
       "ti_observable": 384000
     },
     "form_factor": {
@@ -458,7 +458,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 1000000,
       "advanced_analysis": 3000,
-      "standard_analysis": 18000,
+      "standard_analysis": 15000,
       "ti_observable": 192000
     },
     "form_factor": {
@@ -633,7 +633,7 @@
       "ids_reduction_percent": 60,
       "base_packetrate": 10000000,
       "advanced_analysis": 16000,
-      "standard_analysis": 100000,
+      "standard_analysis": 84000,
       "ti_observable": 1152000
     },
     "form_factor": {
@@ -753,7 +753,7 @@
       "ids_reduction_percent": 60,
       "base_packetrate": 5000000,
       "advanced_analysis": 8000,
-      "standard_analysis": 50000,
+      "standard_analysis": 42000,
       "ti_observable": 576000
     },
     "form_factor": {
@@ -869,7 +869,7 @@
       "ids_reduction_percent": 60,
       "base_packetrate": 2500000,
       "advanced_analysis": 5500,
-      "standard_analysis": 35000,
+      "standard_analysis": 29500,
       "ti_observable": 384000
     },
     "form_factor": {
@@ -989,7 +989,7 @@
       "ids_reduction_percent": 60,
       "base_packetrate": 1000000,
       "advanced_analysis": 3000,
-      "standard_analysis": 18000,
+      "standard_analysis": 15000,
       "ti_observable": 192000
     },
     "form_factor": {
@@ -1108,7 +1108,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 500000,
       "advanced_analysis": 1500,
-      "standard_analysis": 9000,
+      "standard_analysis": 7500,
       "ti_observable": 96000
     },
     "form_factor": {
@@ -1232,7 +1232,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 140000,
       "advanced_analysis": 250,
-      "standard_analysis": 750,
+      "standard_analysis": 500,
       "ti_observable": 24000
     },
     "form_factor": {
@@ -1309,7 +1309,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 140000,
       "advanced_analysis": 250,
-      "standard_analysis": 750,
+      "standard_analysis": 500,
       "ti_observable": 24000
     },
     "form_factor": {
@@ -1378,7 +1378,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 140000,
       "advanced_analysis": 250,
-      "standard_analysis": 750,
+      "standard_analysis": 500,
       "ti_observable": 24000
     },
     "deployments": {
@@ -1425,7 +1425,7 @@
       "base_gbps": 1,
       "base_packetrate": 140000,
       "advanced_analysis": 250,
-      "standard_analysis": 750,
+      "standard_analysis": 500,
       "ti_observable": 24000
     },
     "deployments": {
@@ -1483,7 +1483,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 140000,
       "advanced_analysis": 1000,
-      "standard_analysis": 1500
+      "standard_analysis": 500
     },
     "deployments": {
       "hypervisors": [
@@ -1532,7 +1532,7 @@
       "ids_reduction_percent": 50,
       "base_packetrate": 1000000,
       "advanced_analysis": 3000,
-      "standard_analysis": 18000,
+      "standard_analysis": 15000,
       "ti_observable": 192000
     },
     "deployments": {
@@ -1574,7 +1574,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 2500000,
       "advanced_analysis": 5500,
-      "standard_analysis": 35000,
+      "standard_analysis": 29500,
       "ti_observable": 384000
     },
     "deployments": {
@@ -1618,7 +1618,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 1000000,
       "advanced_analysis": 3000,
-      "standard_analysis": 18000,
+      "standard_analysis": 15000,
       "ti_observable": 192000
     },
     "deployments": {
@@ -1665,7 +1665,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 2000000,
       "advanced_analysis": 5500,
-      "standard_analysis": 35000,
+      "standard_analysis": 29500,
       "ti_observable": 384000
     },
     "deployments": {
@@ -1705,7 +1705,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 1000000,
       "advanced_analysis": 3000,
-      "standard_analysis": 18000,
+      "standard_analysis": 15000,
       "ti_observable": 192000
     },
     "deployments": {
@@ -1754,7 +1754,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 2000000,
       "advanced_analysis": 5500,
-      "standard_analysis": 35000,
+      "standard_analysis": 29500,
       "ti_observable": 384000
     },
     "deployments": {
@@ -1797,7 +1797,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 140000,
       "advanced_analysis": 250,
-      "standard_analysis": 750,
+      "standard_analysis": 500,
       "ti_observable": 24000
     },
     "deployments": {
@@ -1832,7 +1832,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 5000000,
       "advanced_analysis": 8000,
-      "standard_analysis": 50000
+      "standard_analysis": 42000
     },
     "form_factor": {
       "rack_units": 2,
@@ -1857,7 +1857,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 2000000,
       "advanced_analysis": 5500,
-      "standard_analysis": 35000
+      "standard_analysis": 29500
     },
     "form_factor": {
       "rack_units": 2,
@@ -1884,7 +1884,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 140000,
       "advanced_analysis": 250,
-      "standard_analysis": 750
+      "standard_analysis": 500
     },
     "deployments": {
       "hypervisors": [
@@ -1910,7 +1910,7 @@
       "ids_reduction_percent": 0,
       "base_packetrate": 1000000,
       "advanced_analysis": 3000,
-      "standard_analysis": 18000
+      "standard_analysis": 15000
     },
     "deployments": {
       "hypervisors": [
@@ -1934,7 +1934,7 @@
       "base_gbps": 0,
       "base_packetrate": 140000,
       "advanced_analysis": 250,
-      "standard_analysis": 750,
+      "standard_analysis": 500,
       "flows_per_second": 10000,
       "flows_per_minute": 600000
     },
@@ -1972,7 +1972,7 @@
       "base_gbps": 0,
       "base_packetrate": 140000,
       "advanced_analysis": 250,
-      "standard_analysis": 750,
+      "standard_analysis": 500,
       "flows_per_second": 10000,
       "flows_per_minute": 600000
     },
@@ -2008,7 +2008,7 @@
       "base_gbps": 0,
       "base_packetrate": 140000,
       "advanced_analysis": 250,
-      "standard_analysis": 750,
+      "standard_analysis": 500,
       "flows_per_second": 10000,
       "flows_per_minute": 600000
     },
@@ -2041,7 +2041,7 @@
     "performance": {
       "base_gbps": 0,
       "advanced_analysis": 3000,
-      "standard_analysis": 18000,
+      "standard_analysis": 15000,
       "flows_per_second": 100000,
       "flows_per_minute": 6000000
     },
