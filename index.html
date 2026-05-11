@@ -1838,6 +1838,7 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
 </div>
 
 
+<script src="./src/domain.js"></script>
 <script>
 /* ============================================================
    ExtraHop Product Catalog — application logic
@@ -1846,6 +1847,23 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
 // ---- Data ----
 // CATALOG is populated from catalog.eh.json at runtime (see bootstrapCatalog below).
 let CATALOG = [];
+
+const {
+  SENSOR_PLATFORMS,
+  SINGLETON_PLATFORMS,
+  getStackItems,
+  addStackItem: addStackItemPure,
+  removeStackItem: removeStackItemPure,
+  changeStackItemQty: changeStackItemQtyPure,
+  computeStackTotals: computeStackTotalsPure,
+  computeCompatibilityWarnings: computeCompatibilityWarningsPure,
+  computeStorageCapacityTb,
+  getEsuAttachmentLimit,
+  getAssignableEsuHosts,
+  formatTopologyInstanceName,
+  reserveHostsForRemainingEsuGroups,
+  planTopology,
+} = window.EHDomain;
 
 // Platform metadata — display name, accent color, description, stack group
 const PLATFORM_META = {
@@ -1908,20 +1926,6 @@ try {
   state.hideEos = localStorage.getItem('eh-hide-eos') === '1';
 } catch (e) { /* no-op */ }
 
-// Stackable / infrastructure classification
-const STACKABLE_PLATFORMS = new Set([
-  'command', 'recordstore',
-  'packet_sensor', 'multifunction_sensor', 'all_in_one',
-  'packetstore', 'extended_storage',
-  'ids_standalone', 'flow_collector',
-]);
-const SENSOR_PLATFORMS = new Set([
-  'packet_sensor', 'multifunction_sensor', 'all_in_one',
-]);
-const SINGLETON_PLATFORMS = new Set([
-  'command', 'recordstore',
-]);
-
 // ---- Utilities ----
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -1945,15 +1949,6 @@ function deploymentKind(item) {
 }
 const isPhysical = item => deploymentKind(item) === 'Physical';
 
-function deploymentKeysFor(item) {
-  const keys = [];
-  if (isPhysical(item)) keys.push('physical');
-  const dep = item.deployments || {};
-  (dep.hypervisors || []).forEach(h => keys.push(h));
-  (dep.clouds || []).forEach(c => keys.push(c));
-  return keys;
-}
-
 function deploymentCategories(item) {
   // Rolls up into Physical / Virtual / Cloud
   const out = new Set();
@@ -1968,13 +1963,6 @@ function moduleKeys(item) {
   return Object.keys(item.modules || {}).filter(k => item.modules[k]);
 }
 
-function fmtGbps(v) {
-  if (v == null) return '—';
-  if (v === 0) return '0';
-  if (v >= 1) return v + '';
-  return v + '';
-}
-
 function fmtNum(v) {
   if (v == null) return '—';
   return v.toLocaleString();
@@ -1984,13 +1972,27 @@ function accentForPlatform(platform) {
   return PLATFORM_META[platform] ? PLATFORM_META[platform].accent : 'var(--eh-sapphire)';
 }
 
-function computeStorageCapacityTb(item) {
-  const cp = item?.storage?.continuous_pcap;
-  if (!cp) return 0;
-  if (cp.capacity_tb) return cp.capacity_tb;
-  if (cp.onboard?.disk_qty && cp.onboard?.disk_size_tb) return cp.onboard.disk_qty * cp.onboard.disk_size_tb;
-  if (cp.virtual_disk?.disk_qty && cp.virtual_disk?.disk_size_tb) return cp.virtual_disk.disk_qty * cp.virtual_disk.disk_size_tb;
-  return 0;
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function escapeAttr(value) {
+  return escapeHtml(value);
+}
+
+function escapeUrl(value) {
+  const raw = String(value ?? '').trim();
+  try {
+    const url = new URL(raw, window.location.href);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+  } catch (e) {
+    return '';
+  }
 }
 
 /* ============================================================
@@ -2005,9 +2007,9 @@ function buildFilterPopovers() {
   $('#pop-platform').innerHTML = platforms.map(p => {
     const meta = PLATFORM_META[p] || { label: p, accent: 'var(--eh-sapphire)' };
     return `<label class="filter-option">
-      <input type="checkbox" value="${p}" data-filter="platform" />
+      <input type="checkbox" value="${escapeAttr(p)}" data-filter="platform" />
       <span class="swatch" style="background:${meta.accent}"></span>
-      <span>${meta.label}</span>
+      <span>${escapeHtml(meta.label)}</span>
     </label>`;
   }).join('');
 
@@ -2016,18 +2018,18 @@ function buildFilterPopovers() {
   $('#pop-modules').innerHTML = mods.map(m => {
     const meta = MODULE_META[m];
     return `<label class="filter-option">
-      <input type="checkbox" value="${m}" data-filter="modules" />
+      <input type="checkbox" value="${escapeAttr(m)}" data-filter="modules" />
       <span class="swatch" style="background:${meta.color}"></span>
-      <span>${meta.label} <small style="color:var(--eh-muted);font-weight:400">— ${meta.description}</small></span>
+      <span>${escapeHtml(meta.label)} <small style="color:var(--eh-muted);font-weight:400">— ${escapeHtml(meta.description)}</small></span>
     </label>`;
   }).join('');
 
   // Deployment categories
   $('#pop-deployment').innerHTML = ['Physical', 'Virtual', 'Cloud'].map(d => `
     <label class="filter-option">
-      <input type="checkbox" value="${d}" data-filter="deployment" />
+      <input type="checkbox" value="${escapeAttr(d)}" data-filter="deployment" />
       <span class="swatch" style="background:${d==='Physical'?'var(--eh-sapphire)':d==='Virtual'?'var(--eh-cyan)':'var(--eh-magenta)'}"></span>
-      <span>${d}</span>
+      <span>${escapeHtml(d)}</span>
     </label>
   `).join('');
 
@@ -2082,10 +2084,10 @@ function renderActiveFilters() {
       const label =
         k === 'platform' ? (PLATFORM_META[v]?.label || v) :
         k === 'modules' ? (MODULE_META[v]?.label || v) : v;
-      chips.push(`<span class="chip" data-k="${k}" data-v="${v}">${label}<button aria-label="remove">×</button></span>`);
+      chips.push(`<span class="chip" data-k="${escapeAttr(k)}" data-v="${escapeAttr(v)}">${escapeHtml(label)}<button aria-label="remove">×</button></span>`);
     }
   }
-  if (state.search) chips.push(`<span class="chip" data-k="search" data-v="">"${state.search}"<button>×</button></span>`);
+  if (state.search) chips.push(`<span class="chip" data-k="search" data-v="">"${escapeHtml(state.search)}"<button>×</button></span>`);
   host.innerHTML = chips.join('');
   host.querySelectorAll('.chip button').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -2255,10 +2257,10 @@ function renderCard(item) {
     <div class="card-body">
       <div class="card-top">
         <div>
-          <h3 class="card-title">${item.name}</h3>
-          <div class="card-subtitle">${platformLabel}${gen ? ' · ' + gen : ''}</div>
+          <h3 class="card-title">${escapeHtml(item.name)}</h3>
+          <div class="card-subtitle">${escapeHtml(platformLabel)}${gen ? ' · ' + escapeHtml(gen) : ''}</div>
         </div>
-        <span class="status-dot ${status}">${prettyStatus(status)}</span>
+        <span class="status-dot ${escapeAttr(status)}">${escapeHtml(prettyStatus(status))}</span>
       </div>
 
       <div class="card-metrics">
@@ -2267,22 +2269,22 @@ function renderCard(item) {
           <div class="metric-value">${tpLabel}${tpUnit ? `<span class="unit">${tpUnit}</span>` : ''}</div>
         </div>
         <div class="metric">
-          <div class="metric-label">${secLabel}</div>
+          <div class="metric-label">${escapeHtml(secLabel)}</div>
           <div class="metric-value">${secValue}${secUnit ? `<span class="unit">${secUnit}</span>` : ''}</div>
         </div>
       </div>
 
       <div class="tag-row">
-        <span class="tag" style="--tag-bg:rgba(137,138,141,0.14);--tag-color:#4a4a4e">${virt}</span>
+        <span class="tag" style="--tag-bg:rgba(137,138,141,0.14);--tag-color:#4a4a4e">${escapeHtml(virt)}</span>
         ${modules.map(m => {
           const mm = MODULE_META[m];
-          return `<span class="tag" style="--tag-bg:${mm.color}1f;--tag-color:${mm.color}">${mm.label}</span>`;
+          return `<span class="tag" style="--tag-bg:${mm.color}1f;--tag-color:${mm.color}">${escapeHtml(mm.label)}</span>`;
         }).join('')}
       </div>
 
       <div class="card-actions">
-        <a class="view-link" data-view="${item.name}">View details →</a>
-        <button class="add-btn ${alreadyStacked ? 'added' : ''}" data-add="${item.name}">
+        <a class="view-link" data-view="${escapeAttr(item.name)}">View details →</a>
+        <button class="add-btn ${alreadyStacked ? 'added' : ''}" data-add="${escapeAttr(item.name)}">
           ${alreadyStacked
             ? `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> In stack (${alreadyStacked.qty})`
             : `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add`}
@@ -2333,12 +2335,12 @@ function openDetail(name) {
   header.innerHTML = `
     <div class="modal-header-inner">
       <div>
-        <div class="modal-lozenge">${platformLabel}${item.generation !== undefined ? ' · Gen ' + item.generation : ''}</div>
-        <div class="modal-title">${item.name}</div>
-        <div class="modal-subtitle">${deploymentBadge(item)} · ${prettyStatus(statusClass)}</div>
+        <div class="modal-lozenge">${escapeHtml(platformLabel)}${item.generation !== undefined ? ' · Gen ' + escapeHtml(item.generation) : ''}</div>
+        <div class="modal-title">${escapeHtml(item.name)}</div>
+        <div class="modal-subtitle">${escapeHtml(deploymentBadge(item))} · ${escapeHtml(prettyStatus(statusClass))}</div>
         <div class="modal-header-tags">
-          ${modules.map(m => `<span class="tag">${MODULE_META[m]?.label || m}</span>`).join('')}
-          ${(item.compatibility?.track_limits || []).map(t => `<span class="tag">${t.replace(/_/g,' ')}</span>`).join('')}
+          ${modules.map(m => `<span class="tag">${escapeHtml(MODULE_META[m]?.label || m)}</span>`).join('')}
+          ${(item.compatibility?.track_limits || []).map(t => `<span class="tag">${escapeHtml(t.replace(/_/g,' '))}</span>`).join('')}
         </div>
       </div>
       <button class="modal-close" id="modal-close-x">×</button>
@@ -2426,10 +2428,10 @@ function renderDetailBody(item) {
         </div>
         <div class="capture-ring">
           ${allPorts.map(p => `
-            <div class="port-slot ${p._kind}">
-              <div class="port-num">${p.id}</div>
-              <div class="port-speed">${(p.supported_speeds_gb || []).map(s => s + 'G').join('/')}</div>
-              <div>${p.transceiver_type || '—'}</div>
+            <div class="port-slot ${escapeAttr(p._kind)}">
+              <div class="port-num">${escapeHtml(p.id)}</div>
+              <div class="port-speed">${escapeHtml((p.supported_speeds_gb || []).map(s => s + 'G').join('/'))}</div>
+              <div>${escapeHtml(p.transceiver_type || '—')}</div>
             </div>
           `).join('')}
         </div>
@@ -2438,10 +2440,10 @@ function renderDetailBody(item) {
           <tbody>
             ${allPorts.map(p => `
               <tr>
-                <td><strong>${p.id}</strong> <span style="color:var(--eh-muted);font-size:11px;text-transform:uppercase;margin-left:4px">${p._kind}</span></td>
-                <td>${(p.roles || []).map(r => `<span class="ifchip ${r.toLowerCase()}">${r}</span>`).join(' ')}</td>
-                <td>${(p.supported_speeds_gb || []).map(s => s + 'G').join(' / ')}</td>
-                <td>${p.transceiver_type || '—'}</td>
+                <td><strong>${escapeHtml(p.id)}</strong> <span style="color:var(--eh-muted);font-size:11px;text-transform:uppercase;margin-left:4px">${escapeHtml(p._kind)}</span></td>
+                <td>${(p.roles || []).map(r => `<span class="ifchip ${escapeAttr(String(r).toLowerCase())}">${escapeHtml(r)}</span>`).join(' ')}</td>
+                <td>${escapeHtml((p.supported_speeds_gb || []).map(s => s + 'G').join(' / '))}</td>
+                <td>${escapeHtml(p.transceiver_type || '—')}</td>
                 <td>${p.transceiver_included ? '✓' : '—'}</td>
               </tr>
             `).join('')}
@@ -2476,7 +2478,7 @@ function renderDetailBody(item) {
               ${cp.extended_pcap.rules.map(r => `
                 <tr>
                   <td><strong>${r.esu_count}×</strong></td>
-                  <td>${r.esu_type}</td>
+                  <td>${escapeHtml(r.esu_type)}</td>
                   <td>${r.throughput_gbps} Gbps</td>
                   <td>${fmtNum(r.packets_per_second)}</td>
                 </tr>
@@ -2491,7 +2493,7 @@ function renderDetailBody(item) {
       <div class="section-block">
         <div class="section-head"><h3>Storage</h3></div>
         <div class="kv-grid">
-          ${rows.map(r => `<div class="kv"><div class="kv-label">${r.l}</div><div class="kv-value">${r.v}</div></div>`).join('')}
+          ${rows.map(r => `<div class="kv"><div class="kv-label">${escapeHtml(r.l)}</div><div class="kv-value">${escapeHtml(r.v)}</div></div>`).join('')}
         </div>
         ${rulesHtml}
       </div>
@@ -2503,14 +2505,14 @@ function renderDetailBody(item) {
   const c = item.compatibility;
   if (c) {
     const parts = [];
-    if (c.track_limits) parts.push(`<div class="kv"><div class="kv-label">Track Limits</div><div class="kv-value">${c.track_limits.map(t=>t.replace(/_/g,' ')).join(' · ')}</div></div>`);
-    if (c.allows) parts.push(`<div class="kv"><div class="kv-label">Attaches To</div><div class="kv-value">${c.allows.join(', ')}</div></div>`);
+    if (c.track_limits) parts.push(`<div class="kv"><div class="kv-label">Track Limits</div><div class="kv-value">${escapeHtml(c.track_limits.map(t=>t.replace(/_/g,' ')).join(' · '))}</div></div>`);
+    if (c.allows) parts.push(`<div class="kv"><div class="kv-label">Attaches To</div><div class="kv-value">${escapeHtml(c.allows.join(', '))}</div></div>`);
     if (c.accepts_attachments) {
       const atts = c.accepts_attachments.map(a => {
         const models = a.models.map(m => `${m.model} (up to ${m.limit})`).join(', ');
         return `${a.type}: ${models}`;
       }).join('; ');
-      parts.push(`<div class="kv"><div class="kv-label">Accepts Attachments</div><div class="kv-value">${atts}</div></div>`);
+      parts.push(`<div class="kv"><div class="kv-label">Accepts Attachments</div><div class="kv-value">${escapeHtml(atts)}</div></div>`);
     }
     compatHtml = `
       <div class="section-block">
@@ -2527,7 +2529,7 @@ function renderDetailBody(item) {
       <div class="section-block">
         <div class="section-head"><h3>Ingest</h3></div>
         <div class="kv-grid">
-          <div class="kv"><div class="kv-label">Supported Protocols</div><div class="kv-value">${(item.ingest.supported_protocols || []).join(', ').toUpperCase()}</div></div>
+          <div class="kv"><div class="kv-label">Supported Protocols</div><div class="kv-value">${escapeHtml((item.ingest.supported_protocols || []).join(', ').toUpperCase())}</div></div>
         </div>
       </div>
     `;
@@ -2540,9 +2542,12 @@ function renderDetailBody(item) {
       <div class="section-block">
         <div class="section-head"><h3>References</h3></div>
         <ul class="notes-list">
-          ${item.notes.map(n => n.startsWith('http')
-            ? `<li><a href="${n}" target="_blank" rel="noopener">${n}</a></li>`
-            : `<li>${n}</li>`).join('')}
+          ${item.notes.map(n => {
+            const href = escapeUrl(n);
+            return href
+              ? `<li><a href="${escapeAttr(href)}" target="_blank" rel="noopener">${escapeHtml(n)}</a></li>`
+              : `<li>${escapeHtml(n)}</li>`;
+          }).join('')}
         </ul>
       </div>
     `;
@@ -2554,10 +2559,10 @@ function renderDetailBody(item) {
     <div class="section-block">
       <div class="section-head">
         <h3>Identifiers</h3>
-        <div class="eyebrow">${item.platform.replace(/_/g,' ')}</div>
+        <div class="eyebrow">${escapeHtml(item.platform.replace(/_/g,' '))}</div>
       </div>
       <div class="kv-grid">
-        ${identRows.map(r => `<div class="kv"><div class="kv-label">${r.l}</div><div class="kv-value ${r.mono?'mono':''}">${r.v || '—'}</div></div>`).join('')}
+        ${identRows.map(r => `<div class="kv"><div class="kv-label">${escapeHtml(r.l)}</div><div class="kv-value ${r.mono?'mono':''}">${escapeHtml(r.v || '—')}</div></div>`).join('')}
       </div>
     </div>
 
@@ -2567,7 +2572,7 @@ function renderDetailBody(item) {
           <div class="tag-row">
             ${moduleKeys(item).map(m => {
               const mm = MODULE_META[m];
-              return `<span class="tag" style="--tag-bg:${mm.color}1f;--tag-color:${mm.color};font-size:11.5px;padding:4px 10px">${mm.label} — ${mm.description}</span>`;
+              return `<span class="tag" style="--tag-bg:${mm.color}1f;--tag-color:${mm.color};font-size:11.5px;padding:4px 10px">${escapeHtml(mm.label)} — ${escapeHtml(mm.description)}</span>`;
             }).join('')}
           </div>
          </div>`
@@ -2590,7 +2595,7 @@ function toast(message, kind = 'info', ms = 2800) {
   if (!host) return;
   const el = document.createElement('div');
   el.className = 'toast ' + (kind === 'warn' ? 'toast-warn' : 'toast-info');
-  el.innerHTML = `<span class="dot"></span><span>${message}</span>`;
+  el.innerHTML = `<span class="dot"></span><span>${escapeHtml(message)}</span>`;
   host.appendChild(el);
   setTimeout(() => {
     el.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
@@ -2601,100 +2606,36 @@ function toast(message, kind = 'info', ms = 2800) {
 }
 
 function addToStack(name, n = 1) {
-  const item = itemOf(name);
-  if (!item) return;
-
-  // Enforce single EDA per stack (a stack is site-scoped: 1 EDA + ETA(s) + ESU(s))
-  if (SENSOR_PLATFORMS.has(item.platform)) {
-    const existingSensor = state.stack
-      .map(s => itemOf(s.id))
-      .find(it => it && SENSOR_PLATFORMS.has(it.platform) && it.name !== name);
-    if (existingSensor) {
-      toast(`A stack holds one EDA. Remove ${existingSensor.name} first.`, 'warn');
-      return;
-    }
-    const alreadyHere = state.stack.find(s => s.id === name);
-    if (alreadyHere) {
-      toast(`A stack holds one EDA — ${name} is already in this stack.`, 'warn');
-      return;
-    }
-  }
-
-  // ECA and EXA are stack-level infrastructure roles and are limited to one each.
-  if (SINGLETON_PLATFORMS.has(item.platform)) {
-    const roleLabel = item.platform === 'command' ? 'ECA' : 'EXA';
-    const existingRole = state.stack
-      .map(s => itemOf(s.id))
-      .find(it => it && it.platform === item.platform && it.name !== name);
-    if (existingRole) {
-      toast(`A stack holds one ${roleLabel}. Remove ${existingRole.name} first.`, 'warn');
-      return;
-    }
-    const alreadyHere = state.stack.find(s => s.id === name);
-    if (alreadyHere) {
-      toast(`A stack holds one ${roleLabel} — ${name} is already in this stack.`, 'warn');
-      return;
-    }
-  }
-
-  // Track-conflict guard (enterprise_only vs rx360_only)
-  const newTracks = new Set(item.compatibility?.track_limits || []);
-  const stackTracks = new Set();
-  for (const s of state.stack) {
-    (itemOf(s.id)?.compatibility?.track_limits || []).forEach(t => stackTracks.add(t));
-  }
-  if ((newTracks.has('enterprise_only') && stackTracks.has('rx360_only')) ||
-      (newTracks.has('rx360_only') && stackTracks.has('enterprise_only'))) {
-    toast(`${item.name} conflicts with the stack's licensing track.`, 'warn');
+  const result = addStackItemPure(state.stack, name, CATALOG, n);
+  if (!result.ok) {
+    toast(result.message, 'warn');
     return;
   }
-
-  const existing = state.stack.find(s => s.id === name);
-  if (existing) existing.qty += n; else state.stack.push({ id: name, qty: n });
-  persistStack();
-  renderStack();
-  // subtly pulse the totals
-  pulseTotals();
-  updateCatalogAddedStates();
-  updateFabCount();
+  commitStackChange(result.stack);
 }
 
 function removeFromStack(name) {
-  state.stack = state.stack.filter(s => s.id !== name);
-  persistStack();
-  renderStack();
-  pulseTotals();
-  updateCatalogAddedStates();
-  updateFabCount();
+  commitStackChange(removeStackItemPure(state.stack, name));
 }
 
 function changeQty(name, delta) {
-  const ex = state.stack.find(s => s.id === name);
-  if (!ex) return;
-  const item = itemOf(name);
-  // Don't let singleton stack roles go above 1 per stack
-  if (delta > 0 && item && SENSOR_PLATFORMS.has(item.platform) && ex.qty >= 1) {
-    toast('A stack holds one EDA.', 'warn');
+  const result = changeStackItemQtyPure(state.stack, name, delta, CATALOG);
+  if (!result.ok) {
+    if (result.message) toast(result.message, 'warn');
     return;
   }
-  if (delta > 0 && item && SINGLETON_PLATFORMS.has(item.platform) && ex.qty >= 1) {
-    toast(`A stack holds one ${item.platform === 'command' ? 'ECA' : 'EXA'}.`, 'warn');
-    return;
-  }
-  ex.qty = Math.max(0, ex.qty + delta);
-  if (ex.qty === 0) removeFromStack(name); else {
-    persistStack();
-    renderStack();
-    pulseTotals();
-    updateCatalogAddedStates();
-    updateFabCount();
-  }
+  commitStackChange(result.stack);
 }
 
 function clearStack() {
-  state.stack = [];
+  commitStackChange([], { pulse: false });
+}
+
+function commitStackChange(nextStack, options = {}) {
+  state.stack = nextStack;
   persistStack();
   renderStack();
+  if (options.pulse !== false) pulseTotals();
   updateCatalogAddedStates();
   updateFabCount();
 }
@@ -2762,167 +2703,6 @@ function updateCatalogAddedStates() {
   });
 }
 
-function computeStackTotals() {
-  let throughput = 0, ids = 0, advanced = 0, standard = 0, tiObservable = 0;
-  let flowsPerSec = 0, ingestRps = 0;
-  let rackU = 0, power = 0, pcapTb = 0;
-  let sensorCount = 0, consoleCount = 0, storeCount = 0, recordCount = 0, flowCount = 0;
-
-  for (const s of state.stack) {
-    const item = itemOf(s.id);
-    if (!item) continue;
-    const p = item.performance || {};
-    const ff = item.form_factor || {};
-    const q = s.qty;
-    // Only sensors contribute to throughput/advanced/standard/ids
-    const sensorPlatforms = ['packet_sensor','multifunction_sensor','all_in_one','ids_standalone'];
-    if (sensorPlatforms.includes(item.platform)) {
-      sensorCount += q;
-      throughput += (p.base_gbps || 0) * q;
-      ids += (p.ids_gbps || 0) * q;
-      advanced += (p.advanced_analysis || 0) * q;
-      standard += (p.standard_analysis || 0) * q;
-      tiObservable += (p.ti_observable || 0) * q;
-    }
-    if (item.platform === 'command') consoleCount += q;
-    if (item.platform === 'packetstore' || item.platform === 'extended_storage') storeCount += q;
-    if (item.platform === 'recordstore') {
-      recordCount += q;
-      ingestRps += (p.ingest_records_per_sec || 0) * q;
-    }
-    if (item.platform === 'flow_collector') {
-      flowCount += q;
-      flowsPerSec += (p.flows_per_second || 0) * q;
-    }
-    if (ff.rack_units) rackU += ff.rack_units * q;
-    if (ff.power_watts) power += ff.power_watts * q;
-    pcapTb += computeStorageCapacityTb(item) * q;
-  }
-
-  return { throughput, ids, advanced, standard, tiObservable, flowsPerSec, ingestRps,
-           rackU, power, pcapTb, sensorCount, consoleCount, storeCount, recordCount, flowCount };
-}
-
-function computeCompatibilityWarnings() {
-  const warns = [];
-  const items = state.stack.map(s => ({ ...itemOf(s.id), __qty: s.qty })).filter(Boolean);
-
-  // Track limits detection
-  const tracks = new Set();
-  for (const it of items) {
-    const limits = it.compatibility?.track_limits || [];
-    for (const t of limits) tracks.add(t);
-  }
-  if (tracks.has('enterprise_only') && tracks.has('rx360_only')) {
-    warns.push('Mixed track limits: stack contains <strong>Enterprise-only</strong> and <strong>Reveal(x) 360-only</strong> components. These cannot coexist in a single deployment.');
-  }
-
-  // ESU attachment checks — verify against actual per-instance topology allocation
-  const topology = planTopology(items);
-  const orphanedEsus = topology.esuAssignments.filter(x => x.host.type === 'orphan');
-  if (orphanedEsus.length) {
-    const counts = new Map();
-    orphanedEsus.forEach(({ esu }) => counts.set(esu.name, (counts.get(esu.name) || 0) + 1));
-    counts.forEach((count, esuName) => {
-      warns.push(`<strong>${esuName}</strong> has ${count} unattached unit${count !== 1 ? 's' : ''}. Add compatible ETA/AIO capacity or reduce ESU quantity.`);
-    });
-  }
-
-  // EOL warnings
-  const eol = items.filter(x => x.sale_status === 'end_of_sale');
-  if (eol.length) {
-    warns.push(`End-of-sale items in stack: ${eol.map(x => x.name).join(', ')}. Plan for lifecycle replacement.`);
-  }
-
-  return warns;
-}
-
-function acceptsEsu(item, esuName) {
-  const atts = item?.compatibility?.accepts_attachments;
-  if (!atts) return false;
-  for (const a of atts) {
-    if (a.type !== 'ESU') continue;
-    for (const m of (a.models || [])) {
-      if (m.model === esuName) return true;
-    }
-  }
-  return false;
-}
-
-function acceptsAnyEsu(item) {
-  const atts = item?.compatibility?.accepts_attachments;
-  if (!atts) return false;
-  return atts.some(a => a.type === 'ESU');
-}
-
-function getEsuAttachmentLimit(hostItem, esuName) {
-  const atts = hostItem?.compatibility?.accepts_attachments;
-  if (!atts) return 0;
-  for (const a of atts) {
-    if (a.type !== 'ESU') continue;
-    for (const m of (a.models || [])) {
-      if (m.model === esuName) return m.limit || 0;
-    }
-  }
-  return 0;
-}
-
-function getAssignableEsuHosts(etas, aioHost, esuName) {
-  const hosts = [];
-
-  for (const eta of etas) {
-    const limit = getEsuAttachmentLimit(eta.item, esuName);
-    if (!limit) continue;
-    hosts.push({ type: 'eta', ref: eta, limit, priority: 0 });
-  }
-
-  if (aioHost) {
-    const limit = getEsuAttachmentLimit(aioHost.item, esuName);
-    if (limit) hosts.push({ type: 'aio', ref: aioHost, limit, priority: 1 });
-  }
-
-  hosts.sort((a, b) => {
-    if (a.priority !== b.priority) return a.priority - b.priority;
-    if (a.ref.idx !== b.ref.idx) return a.ref.idx - b.ref.idx;
-    return a.type.localeCompare(b.type);
-  });
-
-  return hosts;
-}
-
-function formatTopologyInstanceName(inst) {
-  if (!inst) return '';
-  const qty = inst.item?.__qty || 1;
-  return qty > 1 ? `${inst.name} #${inst.idx + 1}` : inst.name;
-}
-
-function reserveHostsForRemainingEsuGroups(groupEntries, startIndex, hostState, etas, aioHost) {
-  const reserved = new Set();
-
-  for (let i = startIndex; i < groupEntries.length; i++) {
-    const [esuName, group] = groupEntries[i];
-    let reservedCapacity = 0;
-    const candidates = getAssignableEsuHosts(etas, aioHost, esuName)
-      .filter(host => {
-        const state = hostState.get(host.ref) || { totalLoad: 0, esuType: null };
-        return state.esuType == null && state.totalLoad < host.limit && !reserved.has(host.ref);
-      })
-      .sort((a, b) => {
-        if (a.priority !== b.priority) return a.priority - b.priority;
-        if (a.ref.idx !== b.ref.idx) return b.ref.idx - a.ref.idx;
-        return a.type.localeCompare(b.type);
-      });
-
-    for (const host of candidates) {
-      reserved.add(host.ref);
-      reservedCapacity += host.limit;
-      if (reservedCapacity >= group.length) break;
-    }
-  }
-
-  return reserved;
-}
-
 function renderStorageAttachmentMap(plan) {
   if (!plan.esuAssignments.length) return '';
 
@@ -2941,8 +2721,8 @@ function renderStorageAttachmentMap(plan) {
     const bucket = grouped.get(key);
     rows.push(`
       <li>
-        <div class="xl-left">${formatTopologyInstanceName(eta)}</div>
-        <div class="xl-right">${bucket?.esus.length ? bucket.esus.join(', ') : 'No ESUs attached'}</div>
+        <div class="xl-left">${escapeHtml(formatTopologyInstanceName(eta))}</div>
+        <div class="xl-right">${bucket?.esus.length ? escapeHtml(bucket.esus.join(', ')) : 'No ESUs attached'}</div>
       </li>
     `);
   });
@@ -2953,8 +2733,8 @@ function renderStorageAttachmentMap(plan) {
     if (bucket?.esus.length) {
       rows.push(`
         <li>
-          <div class="xl-left">${formatTopologyInstanceName(plan.sensor)}</div>
-          <div class="xl-right">${bucket.esus.join(', ')}</div>
+          <div class="xl-left">${escapeHtml(formatTopologyInstanceName(plan.sensor))}</div>
+          <div class="xl-right">${escapeHtml(bucket.esus.join(', '))}</div>
         </li>
       `);
     }
@@ -2965,7 +2745,7 @@ function renderStorageAttachmentMap(plan) {
     rows.push(`
       <li style="--plt-color:${colorForPlatform('extended_storage')}">
         <div class="xl-left">Unattached ESUs</div>
-        <div class="xl-right">${orphanBucket.esus.join(', ')}</div>
+        <div class="xl-right">${escapeHtml(orphanBucket.esus.join(', '))}</div>
       </li>
     `);
   }
@@ -3021,21 +2801,21 @@ function renderStack() {
         if (item.sale_status === 'end_of_sale') bits.push('EOS');
         return `
           <div class="stack-node" style="--plt-color:${accentForPlatform(item.platform)}">
-            <button class="remove-btn" data-rm="${item.name}" aria-label="Remove">×</button>
+            <button class="remove-btn" data-rm="${escapeAttr(item.name)}" aria-label="Remove">×</button>
             <div class="stack-node-info">
-              <div class="stack-node-name" title="${item.name}">${item.name}</div>
-              <div class="stack-node-meta">${bits.map(b => `<span>${b}</span>`).join('<span>·</span>')}</div>
+              <div class="stack-node-name" title="${escapeAttr(item.name)}">${escapeHtml(item.name)}</div>
+              <div class="stack-node-meta">${bits.map(b => `<span>${escapeHtml(b)}</span>`).join('<span>·</span>')}</div>
             </div>
             <div class="stack-node-qty">
-              <button data-dec="${item.name}" aria-label="Decrease">−</button>
+              <button data-dec="${escapeAttr(item.name)}" aria-label="Decrease">−</button>
               <span class="qty-num">${entry.qty}</span>
-              <button data-inc="${item.name}" aria-label="Increase">+</button>
+              <button data-inc="${escapeAttr(item.name)}" aria-label="Increase">+</button>
             </div>
           </div>
         `;
       }).join('');
       section.innerHTML = `
-        <div class="stack-section-title" style="--plt-color:${accent}">${groupName} <span style="color:var(--eh-gray);font-weight:600;margin-left:auto">${arr.reduce((n, x) => n + x.entry.qty, 0)} unit${arr.length > 1 ? 's' : ''}</span></div>
+        <div class="stack-section-title" style="--plt-color:${accent}">${escapeHtml(groupName)} <span style="color:var(--eh-gray);font-weight:600;margin-left:auto">${arr.reduce((n, x) => n + x.entry.qty, 0)} unit${arr.length > 1 ? 's' : ''}</span></div>
         <div class="stack-section-nodes">${nodesHtml}</div>
       `;
       body.appendChild(section);
@@ -3046,7 +2826,7 @@ function renderStack() {
     if (warns.length) {
       const w = document.createElement('div');
       w.className = 'stack-compat-warn';
-      w.innerHTML = `<strong>Compatibility notes</strong><br>${warns.map(x => '• ' + x).join('<br>')}`;
+      w.innerHTML = `<strong>Compatibility notes</strong><br>${warns.map(x => '• ' + escapeHtml(x)).join('<br>')}`;
       body.appendChild(w);
     }
   }
@@ -3120,15 +2900,11 @@ $('#stack-panel').addEventListener('drop', (e) => {
 
 function buildExportContent() {
   const t = computeStackTotals();
-  const items = state.stack.map(s => ({ ...itemOf(s.id), __qty: s.qty })).filter(Boolean);
+  const items = getStackItems(state.stack, CATALOG);
   const topology = planTopology(items);
   const name = state.stackName?.trim() || 'ExtraHop Reference Solution';
   const dateStr = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-  const notesHtml = (state.stackNotes || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/\n/g, '<br>');
+  const notesHtml = escapeHtml(state.stackNotes || '').replace(/\n/g, '<br>');
 
   // Group for display
   const groups = {};
@@ -3162,9 +2938,9 @@ function buildExportContent() {
       </div>
 
       <div class="export-lozenge">
-        <span class="x-name">${name}</span>
+        <span class="x-name">${escapeHtml(name)}</span>
         <span class="x-sep"></span>
-        <span class="x-summary">${summary}</span>
+        <span class="x-summary">${escapeHtml(summary)}</span>
       </div>
 
       <div class="export-stats">
@@ -3189,7 +2965,7 @@ function buildExportContent() {
         const accent = PLATFORM_META[arr[0].platform]?.accent || 'var(--eh-sapphire)';
         return `
           <div class="export-section">
-            <h2>${groupName}</h2>
+            <h2>${escapeHtml(groupName)}</h2>
             <ul class="export-list">
               ${arr.map(it => {
                 const p = it.performance || {};
@@ -3198,10 +2974,10 @@ function buildExportContent() {
                 if (p.flows_per_second) bits.push(`${fmtNum(p.flows_per_second)} flows/s`);
                 if (it.form_factor?.rack_units) bits.push(`${it.form_factor.rack_units}U`);
                 bits.push(deploymentKind(it));
-                const mods = moduleKeys(it).map(m => `<span class="xl-tag">${MODULE_META[m]?.label || m}</span>`).join(' ');
+                const mods = moduleKeys(it).map(m => `<span class="xl-tag">${escapeHtml(MODULE_META[m]?.label || m)}</span>`).join(' ');
                 return `<li style="--plt-color:${accent}">
-                  <div class="xl-left">${it.__qty}× ${it.name} ${mods}</div>
-                  <div class="xl-right">${bits.join(' · ')}</div>
+                  <div class="xl-left">${it.__qty}× ${escapeHtml(it.name)} ${mods}</div>
+                  <div class="xl-right">${escapeHtml(bits.join(' · '))}</div>
                 </li>`;
               }).join('')}
             </ul>
@@ -3223,174 +2999,12 @@ function buildExportContent() {
   return body;
 }
 
-/* ============================================================
-   Topology — cabled tree view
-   Rows: optional ECA/EXA services → EDA + optional IDS/EFC sensors → ETA(s) → ESU(s)
-   ============================================================ */
+function computeStackTotals() {
+  return computeStackTotalsPure(state.stack, CATALOG);
+}
 
-function planTopology(items) {
-  // Flatten by qty — ESUs and ETAs need individual instances
-  const ecas = [];
-  const exas = [];
-  const sensors = [];
-  const ids = [];
-  const efc = [];
-  const etas = [];
-  const esus = [];
-
-  for (const it of items) {
-    const n = it.__qty || 1;
-    for (let i = 0; i < n; i++) {
-      const inst = { name: it.name, item: it, idx: i };
-      if (it.platform === 'command') ecas.push(inst);
-      else if (it.platform === 'recordstore') exas.push(inst);
-      else if (SENSOR_PLATFORMS.has(it.platform)) sensors.push(inst);
-      else if (it.platform === 'ids_standalone') ids.push(inst);
-      else if (it.platform === 'flow_collector') efc.push(inst);
-      else if (it.platform === 'packetstore') etas.push(inst);
-      else if (it.platform === 'extended_storage') esus.push(inst);
-    }
-  }
-
-  const eca = ecas[0] || null; // enforced: 1 ECA per stack
-  const exa = exas[0] || null; // enforced: 1 EXA per stack
-  const sensor = sensors[0] || null; // enforced: 1 EDA per stack
-  const aioHost = sensor && sensor.item.platform === 'all_in_one' ? sensor : null;
-
-  const esuAssignments = []; // {esu, host: {type:'eta'|'aio'|'orphan', ref}}
-  const hostState = new Map();
-  etas.forEach(eta => hostState.set(eta, { totalLoad: 0, esuType: null }));
-  if (aioHost) hostState.set(aioHost, { totalLoad: 0, esuType: null });
-
-  const esuGroups = new Map();
-  esus.forEach(esu => {
-    if (!esuGroups.has(esu.name)) esuGroups.set(esu.name, []);
-    esuGroups.get(esu.name).push(esu);
-  });
-
-  const groupEntries = [...esuGroups.entries()];
-
-  if (groupEntries.length <= 1) {
-    const assignBalanced = (esu) => {
-      const candidates = getAssignableEsuHosts(etas, aioHost, esu.name)
-        .map(host => {
-          const state = hostState.get(host.ref) || { totalLoad: 0, esuType: null };
-          if (state.esuType && state.esuType !== esu.name) return null;
-          if (state.totalLoad >= host.limit) return null;
-          return { ...host, load: state.totalLoad };
-        })
-        .filter(Boolean);
-
-      candidates.sort((a, b) => {
-        const aRatio = a.load / a.limit;
-        const bRatio = b.load / b.limit;
-        if (aRatio !== bRatio) return aRatio - bRatio;
-        if (a.load !== b.load) return a.load - b.load;
-        if (a.priority !== b.priority) return a.priority - b.priority;
-        return a.ref.idx - b.ref.idx;
-      });
-
-      const chosen = candidates[0] || null;
-      if (!chosen) {
-        esuAssignments.push({ esu, host: { type: 'orphan', ref: null } });
-        return;
-      }
-
-      const state = hostState.get(chosen.ref);
-      state.totalLoad += 1;
-      state.esuType = esu.name;
-      esuAssignments.push({ esu, host: { type: chosen.type, ref: chosen.ref } });
-    };
-
-    esus.forEach(assignBalanced);
-    return { eca, exa, sensor, ids, efc, etas, esus, esuAssignments };
-  }
-
-  groupEntries.sort((a, b) => {
-    const [aName, aEsus] = a;
-    const [bName, bEsus] = b;
-    const aHosts = getAssignableEsuHosts(etas, aioHost, aName);
-    const bHosts = getAssignableEsuHosts(etas, aioHost, bName);
-    if (aHosts.length !== bHosts.length) return aHosts.length - bHosts.length;
-    if (aEsus.length !== bEsus.length) return bEsus.length - aEsus.length;
-    return aName.localeCompare(bName);
-  });
-
-  for (let groupIndex = 0; groupIndex < groupEntries.length; groupIndex++) {
-    const [esuName, group] = groupEntries[groupIndex];
-    const reservedForLater = reserveHostsForRemainingEsuGroups(groupEntries, groupIndex + 1, hostState, etas, aioHost);
-    const hostPool = [];
-    let hostPoolCapacity = 0;
-    const candidateHosts = getAssignableEsuHosts(etas, aioHost, esuName)
-      .map(host => {
-        const state = hostState.get(host.ref) || { totalLoad: 0, esuType: null };
-        const sameType = state.esuType === esuName;
-        const empty = state.esuType == null;
-        if (!sameType && !empty) return null;
-        if (state.totalLoad >= host.limit) return null;
-        return {
-          ...host,
-          load: state.totalLoad,
-          sameType,
-          reservedForLater: reservedForLater.has(host.ref),
-        };
-      })
-      .filter(Boolean)
-      .sort((a, b) => {
-        if (a.sameType !== b.sameType) return a.sameType ? -1 : 1;
-        if (a.reservedForLater !== b.reservedForLater) return a.reservedForLater ? 1 : -1;
-        if (a.priority !== b.priority) return a.priority - b.priority;
-        if (a.ref.idx !== b.ref.idx) return a.ref.idx - b.ref.idx;
-        return a.type.localeCompare(b.type);
-      });
-
-    for (const host of candidateHosts) {
-      if (host.reservedForLater && hostPoolCapacity >= group.length) break;
-      hostPool.push(host);
-      hostPoolCapacity += host.limit - host.load;
-    }
-
-    for (const esu of group) {
-      const candidates = hostPool
-        .map(host => {
-          const state = hostState.get(host.ref) || { totalLoad: 0, esuType: null };
-          if (state.totalLoad >= host.limit) return null;
-          const sameType = state.esuType === esuName;
-          const empty = state.esuType == null;
-          if (!sameType && !empty) return null;
-          return {
-            ...host,
-            load: state.totalLoad,
-            sameType,
-            empty,
-          };
-        })
-        .filter(Boolean);
-
-      candidates.sort((a, b) => {
-        const aRatio = a.load / a.limit;
-        const bRatio = b.load / b.limit;
-        if (aRatio !== bRatio) return aRatio - bRatio;
-        if (a.load !== b.load) return a.load - b.load;
-        if (a.empty !== b.empty) return a.empty ? -1 : 1;
-        if (a.priority !== b.priority) return a.priority - b.priority;
-        return a.ref.idx - b.ref.idx;
-      });
-
-      const chosen = candidates[0] || null;
-      if (!chosen) {
-        esuAssignments.push({ esu, host: { type: 'orphan', ref: null } });
-        continue;
-      }
-
-      const state = hostState.get(chosen.ref);
-      state.totalLoad += 1;
-      state.esuType = esuName;
-      esuAssignments.push({ esu, host: { type: chosen.type, ref: chosen.ref } });
-    }
-  }
-
-  return { eca, exa, sensor, ids, efc, etas, esus, esuAssignments };
+function computeCompatibilityWarnings() {
+  return computeCompatibilityWarningsPure(state.stack, CATALOG);
 }
 
 function colorForPlatform(platform) {
@@ -3414,8 +3028,8 @@ function renderAppNode(x, y, w, h, opts) {
   const dim = !!opts.dim;
   const ribbon = opts.ribbon || '';
   const dashed = !!opts.dashed;
-  const title = (opts.title || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  const subtitle = (opts.subtitle || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const title = escapeHtml(opts.title || '');
+  const subtitle = escapeHtml(opts.subtitle || '');
   const textLeft = 22;
   // Text positions adapt to box height so 1U (~38px) boxes don't overflow
   const hasSub = !!subtitle;
@@ -3442,8 +3056,8 @@ function renderAppNode(x, y, w, h, opts) {
 
 function renderConsoleNode(x, y, w, h, opts) {
   const dim = !!opts.dim;
-  const title = (opts.title || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  const subtitle = (opts.subtitle || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const title = escapeHtml(opts.title || '');
+  const subtitle = escapeHtml(opts.subtitle || '');
   const textLeft = 22;
   const titleY = Math.max(16, h / 2 - 3);
   const subY = Math.min(h - 7, titleY + 15);
@@ -3579,13 +3193,27 @@ function nodeHForItem(item) {
 }
 
 function renderTopologyDiagram(items, options = {}) {
+  const plan = planTopology(items);
+  const layout = layoutTopology(plan, { ...options, items });
+  return renderTopologySvg(layout, options);
+}
+
+function layoutTopology(plan, options = {}) {
+  return {
+    plan,
+    items: options.items || [],
+    showConnections: !!options.showConnections,
+  };
+}
+
+function renderTopologySvg(layout, options = {}) {
+  const { items, plan } = layout;
   if (!items.length) {
     return `<svg viewBox="0 0 800 140" class="diagram-svg"><rect x="0" y="0" width="800" height="140" fill="#FAFAFC" rx="10"/><text x="400" y="76" text-anchor="middle" font-family="Source Sans 3" font-size="14" fill="#898A8D">No components in stack · drag appliances to build one</text></svg>`;
   }
 
-  const plan = planTopology(items);
   const { eca, exa, sensor, ids, efc, etas, esus, esuAssignments } = plan;
-  const showConnections = !!options.showConnections;
+  const showConnections = !!layout.showConnections;
 
   // Layout constants
   const nodeW = 140;
@@ -4027,10 +3655,8 @@ function closeExport() {
   $('#export-backdrop').classList.remove('open');
 }
 
-function downloadExport() {
-  const content = $('#export-root').outerHTML;
-  // Inline basic styles for stand-alone doc
-  const styles = `
+function getExportStyles() {
+  return `
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800;900&display=swap');
       body { font-family: 'Source Sans 3', Arial, sans-serif; color: #15103A; background: #FAFAFC; margin: 0; padding: 24px; }
@@ -4062,7 +3688,15 @@ function downloadExport() {
       @media print { body { padding: 0; background: white; } .export-root { border: none; box-shadow: none; padding: 20px 30px; max-width: none; } }
     </style>
   `;
-  const doc = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${state.stackName || 'ExtraHop Stack'} — One-Pager</title>${styles}</head><body>${content}</body></html>`;
+}
+
+function buildExportDocument(content, title, tailScript = '') {
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(title)}</title>${getExportStyles()}</head><body>${content}${tailScript}</body></html>`;
+}
+
+function downloadExport() {
+  const content = $('#export-root').outerHTML;
+  const doc = buildExportDocument(content, `${state.stackName || 'ExtraHop Stack'} - One-Pager`);
   const blob = new Blob([doc], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -4076,16 +3710,10 @@ function downloadExport() {
 }
 
 function printExport() {
-  // Print only the export root
   const content = $('#export-content').innerHTML;
   const w = window.open('', '_blank');
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${state.stackName || 'ExtraHop Stack'}</title><link rel="stylesheet" href="data:text/css," />`);
-  w.document.write(`<style>
-    @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800;900&display=swap');
-    body { font-family: 'Source Sans 3', Arial, sans-serif; color: #15103A; margin: 0; padding: 0; }
-    ${document.querySelector('style').innerHTML}
-    @media print { body { background: white; } .export-root { padding: 0; max-width: none; } }
-  </style></head><body>${content}<script>window.onload=()=>{setTimeout(()=>window.print(),400)}<\/script></body></html>`);
+  const script = '<script>window.onload=()=>{setTimeout(()=>window.print(),400)}<\/script>';
+  w.document.write(buildExportDocument(content, state.stackName || 'ExtraHop Stack', script));
   w.document.close();
 }
 
