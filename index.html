@@ -2896,6 +2896,33 @@ function formatTopologyInstanceName(inst) {
   return qty > 1 ? `${inst.name} #${inst.idx + 1}` : inst.name;
 }
 
+function reserveHostsForRemainingEsuGroups(groupEntries, startIndex, hostState, etas, aioHost) {
+  const reserved = new Set();
+
+  for (let i = startIndex; i < groupEntries.length; i++) {
+    const [esuName, group] = groupEntries[i];
+    let reservedCapacity = 0;
+    const candidates = getAssignableEsuHosts(etas, aioHost, esuName)
+      .filter(host => {
+        const state = hostState.get(host.ref) || { totalLoad: 0, esuType: null };
+        return state.esuType == null && state.totalLoad < host.limit && !reserved.has(host.ref);
+      })
+      .sort((a, b) => {
+        if (a.priority !== b.priority) return a.priority - b.priority;
+        if (a.ref.idx !== b.ref.idx) return b.ref.idx - a.ref.idx;
+        return a.type.localeCompare(b.type);
+      });
+
+    for (const host of candidates) {
+      reserved.add(host.ref);
+      reservedCapacity += host.limit;
+      if (reservedCapacity >= group.length) break;
+    }
+  }
+
+  return reserved;
+}
+
 function renderStorageAttachmentMap(plan) {
   if (!plan.esuAssignments.length) return '';
 
@@ -3289,9 +3316,42 @@ function planTopology(items) {
     return aName.localeCompare(bName);
   });
 
-  for (const [esuName, group] of groupEntries) {
+  for (let groupIndex = 0; groupIndex < groupEntries.length; groupIndex++) {
+    const [esuName, group] = groupEntries[groupIndex];
+    const reservedForLater = reserveHostsForRemainingEsuGroups(groupEntries, groupIndex + 1, hostState, etas, aioHost);
+    const hostPool = [];
+    let hostPoolCapacity = 0;
+    const candidateHosts = getAssignableEsuHosts(etas, aioHost, esuName)
+      .map(host => {
+        const state = hostState.get(host.ref) || { totalLoad: 0, esuType: null };
+        const sameType = state.esuType === esuName;
+        const empty = state.esuType == null;
+        if (!sameType && !empty) return null;
+        if (state.totalLoad >= host.limit) return null;
+        return {
+          ...host,
+          load: state.totalLoad,
+          sameType,
+          reservedForLater: reservedForLater.has(host.ref),
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => {
+        if (a.sameType !== b.sameType) return a.sameType ? -1 : 1;
+        if (a.reservedForLater !== b.reservedForLater) return a.reservedForLater ? 1 : -1;
+        if (a.priority !== b.priority) return a.priority - b.priority;
+        if (a.ref.idx !== b.ref.idx) return a.ref.idx - b.ref.idx;
+        return a.type.localeCompare(b.type);
+      });
+
+    for (const host of candidateHosts) {
+      if (host.reservedForLater && hostPoolCapacity >= group.length) break;
+      hostPool.push(host);
+      hostPoolCapacity += host.limit - host.load;
+    }
+
     for (const esu of group) {
-      const candidates = getAssignableEsuHosts(etas, aioHost, esuName)
+      const candidates = hostPool
         .map(host => {
           const state = hostState.get(host.ref) || { totalLoad: 0, esuType: null };
           if (state.totalLoad >= host.limit) return null;
@@ -3308,13 +3368,12 @@ function planTopology(items) {
         .filter(Boolean);
 
       candidates.sort((a, b) => {
-        if (a.sameType !== b.sameType) return a.sameType ? -1 : 1;
-        if (a.empty !== b.empty) return a.empty ? -1 : 1;
-        const aRemaining = a.limit - a.load;
-        const bRemaining = b.limit - b.load;
-        if (aRemaining !== bRemaining) return bRemaining - aRemaining;
-        if (a.priority !== b.priority) return a.priority - b.priority;
+        const aRatio = a.load / a.limit;
+        const bRatio = b.load / b.limit;
+        if (aRatio !== bRatio) return aRatio - bRatio;
         if (a.load !== b.load) return a.load - b.load;
+        if (a.empty !== b.empty) return a.empty ? -1 : 1;
+        if (a.priority !== b.priority) return a.priority - b.priority;
         return a.ref.idx - b.ref.idx;
       });
 
