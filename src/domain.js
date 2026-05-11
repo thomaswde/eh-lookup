@@ -20,11 +20,47 @@
     return catalog.find(x => x.name === name);
   }
 
+  function normalizeQuantity(value, fallback = 1) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return fallback;
+    return Math.max(0, Math.floor(n));
+  }
+
+  function normalizeStackEntries(stack, catalog) {
+    if (!Array.isArray(stack)) return [];
+    const catalogByName = new Map((Array.isArray(catalog) ? catalog : []).map(item => [item.name, item]));
+    const known = new Set(catalogByName.keys());
+    const byId = new Map();
+    const singletonPlatforms = new Set();
+    let hasSensor = false;
+
+    for (const entry of stack) {
+      if (!entry || typeof entry.id !== 'string') continue;
+      if (known.size && !known.has(entry.id)) continue;
+      const item = catalogByName.get(entry.id);
+      let qty = normalizeQuantity(entry.qty, 0);
+      if (qty <= 0) continue;
+      if (item && SENSOR_PLATFORMS.has(item.platform)) {
+        if (hasSensor) continue;
+        hasSensor = true;
+        qty = 1;
+      }
+      if (item && SINGLETON_PLATFORMS.has(item.platform)) {
+        if (singletonPlatforms.has(item.platform)) continue;
+        singletonPlatforms.add(item.platform);
+        qty = 1;
+      }
+      byId.set(entry.id, (byId.get(entry.id) || 0) + qty);
+    }
+
+    return [...byId.entries()].map(([id, qty]) => ({ id, qty }));
+  }
+
   function getStackItems(stack, catalog) {
-    return stack
+    return normalizeStackEntries(stack, catalog)
       .map(s => {
         const item = itemOf(catalog, s.id);
-        return item ? { ...item, __qty: s.qty || 0 } : null;
+        return item ? { ...item, __qty: s.qty } : null;
       })
       .filter(Boolean);
   }
@@ -53,34 +89,35 @@
 
   function canAddToStack(stack, item, catalog) {
     if (!item) return { ok: false, message: 'That catalog item is not available.' };
+    const normalizedStack = normalizeStackEntries(stack, catalog);
 
     if (SENSOR_PLATFORMS.has(item.platform)) {
-      const existingSensor = stack
+      const existingSensor = normalizedStack
         .map(s => itemOf(catalog, s.id))
         .find(it => it && SENSOR_PLATFORMS.has(it.platform) && it.name !== item.name);
       if (existingSensor) {
         return { ok: false, message: `A stack holds one EDA. Remove ${existingSensor.name} first.` };
       }
-      if (stack.find(s => s.id === item.name)) {
+      if (normalizedStack.find(s => s.id === item.name)) {
         return { ok: false, message: `A stack holds one EDA - ${item.name} is already in this stack.` };
       }
     }
 
     if (SINGLETON_PLATFORMS.has(item.platform)) {
       const roleLabel = item.platform === 'command' ? 'ECA' : 'EXA';
-      const existingRole = stack
+      const existingRole = normalizedStack
         .map(s => itemOf(catalog, s.id))
         .find(it => it && it.platform === item.platform && it.name !== item.name);
       if (existingRole) {
         return { ok: false, message: `A stack holds one ${roleLabel}. Remove ${existingRole.name} first.` };
       }
-      if (stack.find(s => s.id === item.name)) {
+      if (normalizedStack.find(s => s.id === item.name)) {
         return { ok: false, message: `A stack holds one ${roleLabel} - ${item.name} is already in this stack.` };
       }
     }
 
     const newTracks = getTrackSet([item]);
-    const stackTracks = getTrackSet(getStackItems(stack, catalog));
+    const stackTracks = getTrackSet(getStackItems(normalizedStack, catalog));
     if (hasTrackConflict(newTracks, stackTracks)) {
       return { ok: false, message: `${item.name} conflicts with the stack's licensing track.` };
     }
@@ -92,35 +129,42 @@
     const item = itemOf(catalog, itemName);
     const allowed = canAddToStack(stack, item, catalog);
     if (!allowed.ok) return { ...allowed, stack };
+    const addQty = normalizeQuantity(qty, 1);
+    if (addQty <= 0) return { ok: true, stack: normalizeStackEntries(stack, catalog) };
 
-    const nextStack = stack.map(entry => ({ ...entry }));
+    const nextStack = normalizeStackEntries(stack, catalog);
     const existing = nextStack.find(s => s.id === itemName);
-    if (existing) existing.qty += qty;
-    else nextStack.push({ id: itemName, qty });
+    if (existing) existing.qty += addQty;
+    else nextStack.push({ id: itemName, qty: addQty });
     return { ok: true, stack: nextStack };
   }
 
   function removeStackItem(stack, itemName) {
-    return stack.filter(s => s.id !== itemName).map(entry => ({ ...entry }));
+    return (Array.isArray(stack) ? stack : [])
+      .filter(s => s.id !== itemName)
+      .map(entry => ({ ...entry, qty: normalizeQuantity(entry.qty, 0) }))
+      .filter(entry => entry.qty > 0);
   }
 
   function changeStackItemQty(stack, itemName, delta, catalog) {
-    const entry = stack.find(s => s.id === itemName);
-    if (!entry) return { ok: false, stack, message: 'That stack item is not present.' };
+    const normalizedStack = normalizeStackEntries(stack, catalog);
+    const entry = normalizedStack.find(s => s.id === itemName);
+    if (!entry) return { ok: false, stack: normalizedStack, message: 'That stack item is not present.' };
 
     const item = itemOf(catalog, itemName);
-    if (delta > 0 && item && SENSOR_PLATFORMS.has(item.platform) && entry.qty >= 1) {
-      return { ok: false, stack, message: 'A stack holds one EDA.' };
+    const qtyDelta = Number.isFinite(Number(delta)) ? Math.trunc(Number(delta)) : 0;
+    if (qtyDelta > 0 && item && SENSOR_PLATFORMS.has(item.platform) && entry.qty >= 1) {
+      return { ok: false, stack: normalizedStack, message: 'A stack holds one EDA.' };
     }
-    if (delta > 0 && item && SINGLETON_PLATFORMS.has(item.platform) && entry.qty >= 1) {
-      return { ok: false, stack, message: `A stack holds one ${item.platform === 'command' ? 'ECA' : 'EXA'}.` };
+    if (qtyDelta > 0 && item && SINGLETON_PLATFORMS.has(item.platform) && entry.qty >= 1) {
+      return { ok: false, stack: normalizedStack, message: `A stack holds one ${item.platform === 'command' ? 'ECA' : 'EXA'}.` };
     }
 
-    const nextQty = Math.max(0, (entry.qty || 0) + delta);
-    if (nextQty === 0) return { ok: true, stack: removeStackItem(stack, itemName) };
+    const nextQty = Math.max(0, entry.qty + qtyDelta);
+    if (nextQty === 0) return { ok: true, stack: removeStackItem(normalizedStack, itemName) };
     return {
       ok: true,
-      stack: stack.map(s => s.id === itemName ? { ...s, qty: nextQty } : { ...s }),
+      stack: normalizedStack.map(s => s.id === itemName ? { ...s, qty: nextQty } : { ...s }),
     };
   }
 
@@ -130,7 +174,7 @@
     let rackU = 0, power = 0, pcapTb = 0;
     let sensorCount = 0, consoleCount = 0, storeCount = 0, recordCount = 0, flowCount = 0;
 
-    for (const s of stack) {
+    for (const s of normalizeStackEntries(stack, catalog)) {
       const item = itemOf(catalog, s.id);
       if (!item) continue;
       const p = item.performance || {};
@@ -427,6 +471,8 @@
     SENSOR_PLATFORMS,
     SINGLETON_PLATFORMS,
     getStackItems,
+    normalizeQuantity,
+    normalizeStackEntries,
     canAddToStack,
     addStackItem,
     removeStackItem,

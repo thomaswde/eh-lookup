@@ -2,6 +2,9 @@ const assert = require('node:assert/strict');
 const { describe, test } = require('node:test');
 const catalog = require('../catalog.eh.json');
 const domain = require('../src/domain.js');
+const state = require('../src/state.js');
+const catalogView = require('../src/catalog-view.js');
+const exportViewModule = require('../src/export-view.js');
 
 function stack(...entries) {
   return entries.map(([id, qty = 1]) => ({ id, qty }));
@@ -14,6 +17,43 @@ function hostTypes(plan, esuName) {
 }
 
 describe('stack domain rules', () => {
+  test('normalizes saved stack entries and drops unknown catalog items', () => {
+    const normalized = domain.normalizeStackEntries([
+      { id: 'ETA9350', qty: '2.9' },
+      { id: 'ETA9350', qty: 1 },
+      { id: 'EDA10300', qty: 2 },
+      { id: 'EDA9300', qty: 1 },
+      { id: 'removed-model', qty: 3 },
+      { id: '96TB ESU', qty: -4 },
+      { id: 'ECA', qty: Number.NaN },
+      { id: 123, qty: 2 },
+    ], catalog);
+
+    assert.deepEqual(normalized, [
+      { id: 'ETA9350', qty: 3 },
+      { id: 'EDA10300', qty: 1 },
+    ]);
+  });
+
+  test('clamps odd quantities in stack mutations and totals', () => {
+    const addedFractional = domain.addStackItem([], 'ETA9350', catalog, 2.8);
+    const addedString = domain.addStackItem([], 'ETA9350', catalog, '3');
+    const addedNegative = domain.addStackItem(stack(['ETA9350']), '240TB ESU', catalog, -4);
+    const changedNan = domain.changeStackItemQty(stack(['ETA9350', '4']), 'ETA9350', Number.NaN, catalog);
+    const totals = domain.computeStackTotals([
+      { id: 'ETA9350', qty: '2.9' },
+      { id: 'missing', qty: 100 },
+      { id: 'ECA', qty: 0 },
+    ], catalog);
+
+    assert.equal(addedFractional.ok, true);
+    assert.deepEqual(addedFractional.stack, [{ id: 'ETA9350', qty: 2 }]);
+    assert.deepEqual(addedString.stack, [{ id: 'ETA9350', qty: 3 }]);
+    assert.deepEqual(addedNegative.stack, [{ id: 'ETA9350', qty: 1 }]);
+    assert.deepEqual(changedNan.stack, [{ id: 'ETA9350', qty: 4 }]);
+    assert.equal(totals.storeCount, 2);
+  });
+
   test('computes totals for one EDA only', () => {
     const totals = domain.computeStackTotals(stack(['EDA10300']), catalog);
 
@@ -105,5 +145,64 @@ describe('topology planning', () => {
 
     assert.deepEqual(hostTypes(plan, '240TB ESU'), ['orphan']);
     assert.match(warnings.join('\n'), /unattached unit/);
+  });
+
+  test('keeps duplicate ESU types within host capacity across multiple hosts', () => {
+    const items = domain.getStackItems(stack(
+      ['ETA9350', 2],
+      ['240TB ESU', 6],
+    ), catalog);
+    const plan = domain.planTopology(items);
+
+    assert.deepEqual(hostTypes(plan, '240TB ESU'), ['eta', 'eta', 'eta', 'eta', 'eta', 'eta']);
+    assert.equal(plan.esuAssignments.filter(x => x.host.ref.idx === 0).length, 3);
+    assert.equal(plan.esuAssignments.filter(x => x.host.ref.idx === 1).length, 3);
+  });
+});
+
+describe('view helper boundaries', () => {
+  test('normalizes persisted state entries against the catalog', () => {
+    const normalized = state.normalizeStack([
+      { id: 'EDA10300', qty: '1.2' },
+      { id: 'missing', qty: 9 },
+      { id: 'ETA9350', qty: 0 },
+    ], catalog);
+
+    assert.deepEqual(normalized, [{ id: 'EDA10300', qty: 1 }]);
+  });
+
+  test('returns fallback metadata for unknown modules', () => {
+    const meta = catalogView.moduleMeta('future_module');
+
+    assert.equal(meta.label, 'Future Module');
+    assert.equal(meta.color, 'var(--eh-gray)');
+    assert.match(meta.description, /Unrecognized/);
+  });
+
+  test('renders empty topology output without catalog items', () => {
+    const view = exportViewModule.createExportView({
+      state: { stack: [], stackName: '', stackNotes: '', exportShowConnections: false },
+      getCatalog: () => catalog,
+      getStackItems: domain.getStackItems,
+      planTopology: domain.planTopology,
+      computeStackTotals: () => domain.computeStackTotals([], catalog),
+      computeStorageCapacityTb: domain.computeStorageCapacityTb,
+      formatTopologyInstanceName: domain.formatTopologyInstanceName,
+      platformMeta: catalogView.platformMeta,
+      moduleMeta: catalogView.moduleMeta,
+      moduleKeys: catalogView.moduleKeys,
+      deploymentKind: catalogView.deploymentKind,
+      fmtNum: catalogView.fmtNum,
+      escapeHtml: value => String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;'),
+      escapeAttr: value => String(value ?? ''),
+    });
+
+    assert.match(view.renderTopologyDiagram([]), /No components in stack/);
+    assert.match(view.buildExportDocument('<main></main>', 'A < B'), /A &lt; B/);
   });
 });
