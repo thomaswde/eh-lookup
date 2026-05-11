@@ -36,17 +36,23 @@
     }
 
     function isDrawerMode() {
-      return window.matchMedia('(max-width: 1400px)').matches;
+      return window.matchMedia('(max-width: 900px)').matches;
     }
 
     function openDrawer() {
+      document.body.classList.add('stack-builder-open');
       document.getElementById('stack-panel')?.classList.add('open');
-      document.getElementById('stack-scrim')?.classList.add('open');
+      if (isDrawerMode()) document.getElementById('stack-scrim')?.classList.add('open');
+      const fab = document.getElementById('stack-fab');
+      if (fab) fab.setAttribute('aria-expanded', 'true');
     }
 
     function closeDrawer() {
+      document.body.classList.remove('stack-builder-open');
       document.getElementById('stack-panel')?.classList.remove('open');
       document.getElementById('stack-scrim')?.classList.remove('open');
+      const fab = document.getElementById('stack-fab');
+      if (fab) fab.setAttribute('aria-expanded', 'false');
     }
 
     function toggleDrawer() {
@@ -58,7 +64,12 @@
     function syncDrawerCloseVisibility() {
       const btn = document.getElementById('drawer-close');
       if (!btn) return;
-      btn.style.display = isDrawerMode() ? '' : 'none';
+      const isOpen = document.body.classList.contains('stack-builder-open');
+      btn.style.display = isOpen ? '' : 'none';
+      const scrim = document.getElementById('stack-scrim');
+      if (!scrim) return;
+      if (isOpen && isDrawerMode()) scrim.classList.add('open');
+      else scrim.classList.remove('open');
     }
 
     function pulseTotals() {

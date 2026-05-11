@@ -84,6 +84,8 @@ test('catalog, stack, details, and export preview smoke flow', async ({ page }) 
   await expect(page.locator('#catalog-grid .card[data-id="EDA10300"]')).toBeVisible();
 
   await page.locator('#catalog-grid .card[data-id="EDA10300"] [data-add]').click();
+  await page.locator('#stack-fab').click();
+  await expect(page.locator('body')).toHaveClass(/stack-builder-open/);
   await expect(page.locator('#stack-body .stack-node-name')).toContainText(['EDA10300']);
   await expect(page.locator('#stack-totals-grid')).toContainText('Throughput');
   await expect(page.locator('#stack-totals-grid')).toContainText('100');

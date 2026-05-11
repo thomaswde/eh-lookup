@@ -10,7 +10,7 @@
     return {
       search: '',
       filters: { platform: new Set(), modules: new Set(), deployment: new Set() },
-      hideEos: false,
+      hideEos: true,
       sort: 'platform-group',
       stack: [],
       stackName: '',
@@ -73,7 +73,13 @@
       }
     }
 
-    persisted.hideEos = safeStorageGet(storage, 'eh-hide-eos') === '1';
+    const savedShowEos = safeStorageGet(storage, 'eh-show-eos');
+    if (savedShowEos != null) {
+      persisted.hideEos = savedShowEos !== '1';
+    } else {
+      const legacyHideEos = safeStorageGet(storage, 'eh-hide-eos');
+      persisted.hideEos = legacyHideEos == null ? true : legacyHideEos === '1';
+    }
     return persisted;
   }
 

@@ -230,36 +230,32 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
   max-width: 1920px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 28px;
   padding: 18px 32px 80px;
   align-items: start;
+  transition: grid-template-columns 0.26s ease;
 }
 
-/* Drawer mode: narrow viewports collapse the stack panel into a slide-in drawer */
-@media (max-width: 1400px) {
-  .app-shell {
+body.stack-builder-open .app-shell {
+  grid-template-columns: minmax(0, 1fr) minmax(420px, min(50vw, 760px));
+}
+
+body.stack-builder-open .stack-fab {
+  display: none;
+}
+
+body.stack-builder-open #drawer-close {
+  display: inline-flex !important;
+}
+
+.stack-scrim {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  body.stack-builder-open .app-shell {
     grid-template-columns: 1fr;
-  }
-  .stack-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: min(520px, 92vw);
-    max-height: 100vh;
-    border-radius: 0;
-    border-left: 1px solid var(--eh-border);
-    border-top: none;
-    border-right: none;
-    border-bottom: none;
-    z-index: 80;
-    transform: translateX(101%);
-    transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
-    box-shadow: -30px 0 60px -30px rgba(21,16,58,0.45);
-  }
-  .stack-panel.open {
-    transform: translateX(0);
   }
   .stack-scrim {
     display: none;
@@ -271,20 +267,12 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
     z-index: 70;
     animation: fadeIn 0.22s ease;
   }
-  .stack-scrim.open { display: block; }
-  .stack-fab {
-    display: inline-flex !important;
-  }
-}
-
-@media (min-width: 1401px) {
-  .stack-fab { display: none !important; }
-  .stack-scrim { display: none !important; }
+  body.stack-builder-open .stack-scrim.open { display: block; }
 }
 
 /* Floating action button for opening the drawer */
 .stack-fab {
-  display: none;
+  display: inline-flex;
   position: fixed;
   bottom: 24px;
   right: 24px;
@@ -751,11 +739,35 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
   border: 1px solid var(--eh-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  display: flex;
+  display: none;
   flex-direction: column;
   height: calc(100vh - var(--eh-header-h, 80px) - 32px);
   max-height: calc(100vh - var(--eh-header-h, 80px) - 32px);
   overflow: hidden;
+}
+
+body.stack-builder-open .stack-panel {
+  display: flex;
+}
+
+@media (max-width: 900px) {
+  body.stack-builder-open .stack-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(520px, 92vw);
+    max-height: 100vh;
+    border-radius: 0;
+    border-left: 1px solid var(--eh-border);
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    z-index: 80;
+    transform: translateX(0);
+    transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: -30px 0 60px -30px rgba(21,16,58,0.45);
+  }
 }
 
 .stack-header {
@@ -773,10 +785,12 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
   border-radius: 50%;
   right: -60px; top: -60px;
   background: radial-gradient(circle, rgba(236,8,137,0.45), transparent 70%);
+  pointer-events: none;
 }
 
 .stack-header-inner {
   position: relative;
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -1713,10 +1727,10 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
       </select>
     </div>
     <div class="header-actions">
-      <label class="toggle-switch toggle-switch-dark" title="Hide end-of-sale catalog items">
+      <label class="toggle-switch toggle-switch-dark" title="Show end-of-sale catalog items">
         <input type="checkbox" id="hide-eos-toggle" />
         <span class="track"></span>
-        <span>Hide EOS</span>
+        <span>Show EOS</span>
       </label>
       <a class="btn btn-ghost-white" href="https://docs.extrahop.com/current/" target="_blank" rel="noopener">
         <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z"/><path d="M4 16a4 4 0 0 1 4-4h12"/></svg>
@@ -1787,7 +1801,7 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
 
 <!-- Drawer scrim + FAB for narrow viewports -->
 <div class="stack-scrim" id="stack-scrim"></div>
-<button class="stack-fab" id="stack-fab" aria-label="Open Stack Builder">
+<button class="stack-fab" id="stack-fab" aria-label="Open Stack Builder" aria-expanded="false">
   <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
   Stack Builder
   <span class="count-badge" id="fab-count">0</span>
@@ -2511,18 +2525,18 @@ $('#stack-fab')?.addEventListener('click', toggleDrawer);
 $('#stack-scrim')?.addEventListener('click', closeDrawer);
 $('#drawer-close')?.addEventListener('click', closeDrawer);
 
-// Close the drawer when clicking outside if somehow opened
+// Drop the mobile scrim when resizing back to the side-by-side layout.
 window.addEventListener('resize', () => {
-  if (!isDrawerMode()) closeDrawer();
+  stackView.syncDrawerCloseVisibility();
 });
 
 // EOS toggle
 const eosToggle = $('#hide-eos-toggle');
 if (eosToggle) {
-  eosToggle.checked = !!state.hideEos;
+  eosToggle.checked = !state.hideEos;
   eosToggle.addEventListener('change', () => {
-    state.hideEos = !!eosToggle.checked;
-    try { localStorage.setItem('eh-hide-eos', state.hideEos ? '1' : '0'); } catch (e) { /* ignore */ }
+    state.hideEos = !eosToggle.checked;
+    try { localStorage.setItem('eh-show-eos', eosToggle.checked ? '1' : '0'); } catch (e) { /* ignore */ }
     render();
   });
 }
