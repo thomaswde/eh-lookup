@@ -1,3 +1,6 @@
 index.file-dev.html
 .DS_Store
 *:Zone.Identifier
+node_modules/
+test-results/
+playwright-report/

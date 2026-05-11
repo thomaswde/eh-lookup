@@ -44,20 +44,18 @@
     return Math.max(0, Math.floor(n));
   }
 
-  function normalizeStack(stack, catalog) {
+  function parsePersistedStack(stack) {
     if (!Array.isArray(stack)) return [];
-    const known = new Set((Array.isArray(catalog) ? catalog : []).map(item => item.name));
-    const byId = new Map();
+    const entries = [];
 
     for (const entry of stack) {
       if (!entry || typeof entry.id !== 'string') continue;
-      if (known.size && !known.has(entry.id)) continue;
       const qty = normalizeQuantity(entry.qty, 0);
       if (qty <= 0) continue;
-      byId.set(entry.id, (byId.get(entry.id) || 0) + qty);
+      entries.push({ id: entry.id, qty });
     }
 
-    return [...byId.entries()].map(([id, qty]) => ({ id, qty }));
+    return entries;
   }
 
   function loadPersistedState(storage) {
@@ -66,7 +64,7 @@
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed.stack)) persisted.stack = normalizeStack(parsed.stack);
+        if (Array.isArray(parsed.stack)) persisted.stack = parsePersistedStack(parsed.stack);
         if (typeof parsed.name === 'string') persisted.stackName = parsed.name;
         if (typeof parsed.notes === 'string') persisted.stackNotes = parsed.notes;
         if (typeof parsed.showConnections === 'boolean') persisted.exportShowConnections = parsed.showConnections;
@@ -81,7 +79,7 @@
 
   function persistStackState(storage, state) {
     return safeStorageSet(storage, 'eh-stack', JSON.stringify({
-      stack: normalizeStack(state.stack),
+      stack: parsePersistedStack(state.stack),
       name: state.stackName,
       notes: state.stackNotes,
       showConnections: state.exportShowConnections,
@@ -93,7 +91,7 @@
     loadPersistedState,
     persistStackState,
     normalizeQuantity,
-    normalizeStack,
+    parsePersistedStack,
     safeStorageGet,
     safeStorageSet,
   };

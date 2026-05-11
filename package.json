@@ -1,0 +1,13 @@
+{
+  "name": "eh-lookup",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test test/domain.test.js",
+    "test:unit": "node --test test/domain.test.js",
+    "test:smoke": "playwright test test/browser-smoke.spec.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.53.0"
+  }
+}

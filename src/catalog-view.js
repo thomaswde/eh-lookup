@@ -69,6 +69,22 @@
     return Object.keys(item?.modules || {}).filter(k => item.modules[k]);
   }
 
+  function catalogModuleKeys(catalog) {
+    const keys = new Set();
+    for (const item of Array.isArray(catalog) ? catalog : []) {
+      moduleKeys(item).forEach(key => keys.add(key));
+    }
+    return [...keys].sort((a, b) => {
+      const aKnown = Object.prototype.hasOwnProperty.call(MODULE_META, a);
+      const bKnown = Object.prototype.hasOwnProperty.call(MODULE_META, b);
+      if (aKnown && bKnown) {
+        return Object.keys(MODULE_META).indexOf(a) - Object.keys(MODULE_META).indexOf(b);
+      }
+      if (aKnown !== bKnown) return aKnown ? -1 : 1;
+      return moduleMeta(a).label.localeCompare(moduleMeta(b).label);
+    });
+  }
+
   function prettyStatus(status) {
     return (status || '').replace('_', ' ');
   }
@@ -105,6 +121,7 @@
     moduleMeta,
     accentForPlatform,
     moduleKeys,
+    catalogModuleKeys,
     prettyStatus,
     deploymentKind,
     deploymentCategories,

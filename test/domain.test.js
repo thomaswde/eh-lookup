@@ -161,14 +161,29 @@ describe('topology planning', () => {
 });
 
 describe('view helper boundaries', () => {
-  test('normalizes persisted state entries against the catalog', () => {
-    const normalized = state.normalizeStack([
+  test('parses persisted stack entries without catalog ownership', () => {
+    const parsed = state.parsePersistedStack([
       { id: 'EDA10300', qty: '1.2' },
       { id: 'missing', qty: 9 },
       { id: 'ETA9350', qty: 0 },
-    ], catalog);
+      { id: 'EDA10300', qty: 2 },
+    ]);
 
-    assert.deepEqual(normalized, [{ id: 'EDA10300', qty: 1 }]);
+    assert.deepEqual(parsed, [
+      { id: 'EDA10300', qty: 1 },
+      { id: 'missing', qty: 9 },
+      { id: 'EDA10300', qty: 2 },
+    ]);
+    assert.deepEqual(domain.normalizeStackEntries(parsed, catalog), [{ id: 'EDA10300', qty: 1 }]);
+  });
+
+  test('derives module filters from catalog including unknown modules', () => {
+    const keys = catalogView.catalogModuleKeys([
+      { modules: { ndr: true, future_module: true } },
+      { modules: { npm: true, ndr: false, zeta_module: true } },
+    ]);
+
+    assert.deepEqual(keys, ['ndr', 'npm', 'future_module', 'zeta_module']);
   });
 
   test('returns fallback metadata for unknown modules', () => {

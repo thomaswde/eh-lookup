@@ -1841,6 +1841,9 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
 <script src="./src/domain.js"></script>
 <script src="./src/state.js"></script>
 <script src="./src/catalog-view.js"></script>
+<script src="./src/stack-view.js"></script>
+<script src="./src/detail-view.js"></script>
+<script src="./src/topology-view.js"></script>
 <script src="./src/export-view.js"></script>
 <script>
 /* ============================================================
@@ -1861,22 +1864,17 @@ const {
   computeStackTotals: computeStackTotalsPure,
   computeCompatibilityWarnings: computeCompatibilityWarningsPure,
   computeStorageCapacityTb,
-  getEsuAttachmentLimit,
-  getAssignableEsuHosts,
   formatTopologyInstanceName,
-  reserveHostsForRemainingEsuGroups,
   planTopology,
   normalizeStackEntries,
 } = window.EHDomain;
 
 const {
-  PLATFORM_META,
-  MODULE_META,
-  DEPLOY_META,
   platformMeta,
   moduleMeta,
   accentForPlatform,
   moduleKeys,
+  catalogModuleKeys,
   prettyStatus,
   deploymentKind,
   deploymentCategories,
@@ -1944,7 +1942,7 @@ function buildFilterPopovers() {
   }).join('');
 
   // Modules
-  const mods = Object.keys(MODULE_META);
+  const mods = catalogModuleKeys(CATALOG);
   $('#pop-modules').innerHTML = mods.map(m => {
     const meta = moduleMeta(m);
     return `<label class="filter-option">
@@ -2254,272 +2252,30 @@ function renderCard(item) {
    Detail modal
    ============================================================ */
 
-let activeDetailItem = null;
+const detailView = window.EHDetailView.createDetailView({
+  state,
+  getItem: itemOf,
+  sensorPlatforms: SENSOR_PLATFORMS,
+  singletonPlatforms: SINGLETON_PLATFORMS,
+  computeStorageCapacityTb,
+  platformMeta,
+  moduleMeta,
+  accentForPlatform,
+  moduleKeys,
+  prettyStatus,
+  isPhysical,
+  fmtNum,
+  escapeHtml,
+  escapeAttr,
+  escapeUrl,
+});
 
 function openDetail(name) {
-  const item = itemOf(name);
-  if (!item) return;
-  activeDetailItem = item;
-  const accent = accentForPlatform(item.platform);
-  const platformLabel = platformMeta(item.platform).label;
-
-  const statusClass = item.sale_status || 'unknown';
-  const modules = moduleKeys(item);
-
-  const header = $('#modal-header');
-  header.style.background = `linear-gradient(135deg, ${accent} 0%, var(--eh-plum) 110%)`;
-  header.innerHTML = `
-    <div class="modal-header-inner">
-      <div>
-        <div class="modal-lozenge">${escapeHtml(platformLabel)}${item.generation !== undefined ? ' · Gen ' + escapeHtml(item.generation) : ''}</div>
-        <div class="modal-title">${escapeHtml(item.name)}</div>
-        <div class="modal-subtitle">${escapeHtml(deploymentBadge(item))} · ${escapeHtml(prettyStatus(statusClass))}</div>
-        <div class="modal-header-tags">
-          ${modules.map(m => `<span class="tag">${escapeHtml(moduleMeta(m).label)}</span>`).join('')}
-          ${(item.compatibility?.track_limits || []).map(t => `<span class="tag">${escapeHtml(t.replace(/_/g,' '))}</span>`).join('')}
-        </div>
-      </div>
-      <button class="modal-close" id="modal-close-x">×</button>
-    </div>
-  `;
-
-  $('#modal-body').innerHTML = renderDetailBody(item);
-  const alreadyInStack = state.stack.find(s => s.id === item.name);
-  $('#modal-add-btn').innerHTML = alreadyInStack
-    ? (SENSOR_PLATFORMS.has(item.platform) || SINGLETON_PLATFORMS.has(item.platform)
-      ? `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> In Stack`
-      : `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Add Another`)
-    : `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add to Stack`;
-
-  $('#modal-backdrop').classList.add('open');
-  $('#modal-close-x').addEventListener('click', closeDetail);
+  detailView.open(name);
 }
 
 function closeDetail() {
-  $('#modal-backdrop').classList.remove('open');
-  activeDetailItem = null;
-}
-
-function deploymentBadge(item) {
-  if (isPhysical(item)) return 'Physical appliance';
-  const dep = item.deployments || {};
-  const parts = [];
-  if (dep.hypervisors?.length) parts.push('Virtual: ' + dep.hypervisors.join(', '));
-  if (dep.clouds?.length) parts.push('Cloud: ' + dep.clouds.map(c => c.toUpperCase()).join(', '));
-  return parts.join(' · ') || 'Virtual';
-}
-
-function renderDetailBody(item) {
-  const perf = item.performance || {};
-  const ff = item.form_factor || {};
-
-  // Top 4 stats based on platform
-  const stats = [];
-  const accent = accentForPlatform(item.platform);
-  if (perf.base_gbps != null) stats.push({ label: 'Throughput',         value: perf.base_gbps,                  unit: 'Gbps',     color: accent, icon: '↯' });
-  if (perf.ids_gbps != null && perf.ids_gbps > 0) stats.push({ label: 'IDS Throughput',     value: perf.ids_gbps,                   unit: 'Gbps',     color: 'var(--eh-tangerine)', icon: '🛡' });
-  if (perf.base_packetrate != null) stats.push({ label: 'Packet Rate',          value: fmtNum(perf.base_packetrate),    unit: 'pps',      color: 'var(--eh-cyan)', icon: '▦' });
-  if (perf.advanced_analysis != null) stats.push({ label: 'Advanced Analysis',    value: fmtNum(perf.advanced_analysis),  unit: 'devices',  color: 'var(--eh-sapphire)', icon: '◎' });
-  if (perf.standard_analysis != null) stats.push({ label: 'Standard Analysis',    value: fmtNum(perf.standard_analysis),  unit: 'devices',  color: 'var(--eh-plum)', icon: '◉' });
-  if (perf.ti_observable != null) stats.push({ label: 'TI Observables',       value: fmtNum(perf.ti_observable),       unit: '',         color: 'var(--eh-magenta)', icon: '⌖' });
-  if (perf.flows_per_second != null) stats.push({ label: 'Flows / sec',          value: fmtNum(perf.flows_per_second),   unit: '',         color: '#7FA800', icon: '≋' });
-  if (perf.ingest_records_per_sec != null) stats.push({ label: 'Ingest Records',       value: fmtNum(perf.ingest_records_per_sec), unit: '/s', color: 'var(--eh-magenta)', icon: '⇣' });
-  const cap = computeStorageCapacityTb(item);
-  if (cap > 0) stats.push({ label: 'PCAP Capacity', value: cap, unit: 'TB', color: 'var(--eh-plum)', icon: '⬟' });
-  if (ff.rack_units != null) stats.push({ label: 'Rack Units', value: ff.rack_units, unit: 'U', color: 'var(--eh-gray)', icon: '▯' });
-  if (ff.power_watts != null) stats.push({ label: 'Power', value: ff.power_watts, unit: 'W', color: 'var(--eh-tangerine)', icon: '⚡' });
-
-  const statCards = stats.slice(0, 8).map(s => `
-    <div class="detail-stat" style="--stat-accent:${s.color}">
-      <div class="ds-icon" style="background:${s.color}">${s.icon}</div>
-      <div class="ds-label">${s.label}</div>
-      <div class="ds-value">${s.value}${s.unit ? `<span class="unit">${s.unit}</span>` : ''}</div>
-    </div>
-  `).join('');
-
-  // Identifiers
-  const skus = item.skus || {};
-  const identRows = [];
-  if (skus.enterprise) identRows.push({ l: 'Enterprise SKU', v: skus.enterprise, mono: true });
-  if (skus.rx360) identRows.push({ l: 'Reveal(x) 360 SKU', v: skus.rx360, mono: true });
-  identRows.push({ l: 'Generation', v: item.generation !== undefined ? 'Gen ' + item.generation : '—' });
-  identRows.push({ l: 'Deployment', v: deploymentBadge(item) });
-  identRows.push({ l: 'Sale Status', v: prettyStatus(item.sale_status || '—') });
-  if (item.firmware_end_date) identRows.push({ l: 'Firmware End Date', v: item.firmware_end_date });
-  if (item.support_end_date) identRows.push({ l: 'Support End Date', v: item.support_end_date });
-  if (item.engine) identRows.push({ l: 'Engine', v: `${item.engine.name} v${item.engine.version}` });
-
-  // Interfaces
-  let interfacesHtml = '';
-  const ifs = item.interfaces || {};
-  const mgmt = ifs.management || [];
-  const cap_if = ifs.capture || [];
-  if (mgmt.length || cap_if.length) {
-    const allPorts = [...mgmt.map(p => ({ ...p, _kind: 'mgmt' })), ...cap_if.map(p => ({ ...p, _kind: 'capture' }))];
-    interfacesHtml = `
-      <div class="section-block">
-        <div class="section-head">
-          <h3>Interfaces</h3>
-          <div class="eyebrow">${allPorts.length} ports · ${mgmt.length} mgmt · ${cap_if.length} capture</div>
-        </div>
-        <div class="capture-ring">
-          ${allPorts.map(p => `
-            <div class="port-slot ${escapeAttr(p._kind)}">
-              <div class="port-num">${escapeHtml(p.id)}</div>
-              <div class="port-speed">${escapeHtml((p.supported_speeds_gb || []).map(s => s + 'G').join('/'))}</div>
-              <div>${escapeHtml(p.transceiver_type || '—')}</div>
-            </div>
-          `).join('')}
-        </div>
-        <table class="iface-table" style="margin-top:14px">
-          <thead><tr><th>Port</th><th>Roles</th><th>Speeds</th><th>Transceiver</th><th>Inc.</th></tr></thead>
-          <tbody>
-            ${allPorts.map(p => `
-              <tr>
-                <td><strong>${escapeHtml(p.id)}</strong> <span style="color:var(--eh-muted);font-size:11px;text-transform:uppercase;margin-left:4px">${escapeHtml(p._kind)}</span></td>
-                <td>${(p.roles || []).map(r => `<span class="ifchip ${escapeAttr(String(r).toLowerCase())}">${escapeHtml(r)}</span>`).join(' ')}</td>
-                <td>${escapeHtml((p.supported_speeds_gb || []).map(s => s + 'G').join(' / '))}</td>
-                <td>${escapeHtml(p.transceiver_type || '—')}</td>
-                <td>${p.transceiver_included ? '✓' : '—'}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    `;
-  }
-
-  // Storage
-  let storageHtml = '';
-  const st = item.storage || {};
-  if (st.continuous_pcap || st.datastore) {
-    const rows = [];
-    const cp = st.continuous_pcap;
-    if (cp) {
-      if (cp.disk_qty) rows.push({ l: 'Onboard Disks', v: `${cp.disk_qty} × ${cp.disk_size_tb}TB (${cp.raid_level || ''})` });
-      if (cp.capacity_tb) rows.push({ l: 'Onboard Capacity', v: cp.capacity_tb + ' TB' });
-      if (cp.onboard) rows.push({ l: 'Onboard Storage', v: `${cp.onboard.disk_qty} × ${cp.onboard.disk_size_tb}TB @ ${cp.onboard.rpm || ''} RPM` });
-      if (cp.virtual_disk) rows.push({ l: 'Virtual Disk', v: `${cp.virtual_disk.disk_qty} × ${cp.virtual_disk.disk_size_tb || cp.virtual_disk.max_disk_size_tb}TB` });
-    }
-    if (st.datastore?.exds?.protocols) rows.push({ l: 'External Datastore (EXDS)', v: st.datastore.exds.protocols.map(p => p.toUpperCase()).join(', ') });
-
-    let rulesHtml = '';
-    if (cp?.extended_pcap?.rules) {
-      rulesHtml = `
-        <div style="margin-top:12px">
-          <div class="kv-label" style="margin-bottom:6px">Extended PCAP — ESU Scaling</div>
-          <table class="iface-table">
-            <thead><tr><th>ESUs</th><th>Type</th><th>Throughput</th><th>Packets/sec</th></tr></thead>
-            <tbody>
-              ${cp.extended_pcap.rules.map(r => `
-                <tr>
-                  <td><strong>${r.esu_count}×</strong></td>
-                  <td>${escapeHtml(r.esu_type)}</td>
-                  <td>${r.throughput_gbps} Gbps</td>
-                  <td>${fmtNum(r.packets_per_second)}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    storageHtml = `
-      <div class="section-block">
-        <div class="section-head"><h3>Storage</h3></div>
-        <div class="kv-grid">
-          ${rows.map(r => `<div class="kv"><div class="kv-label">${escapeHtml(r.l)}</div><div class="kv-value">${escapeHtml(r.v)}</div></div>`).join('')}
-        </div>
-        ${rulesHtml}
-      </div>
-    `;
-  }
-
-  // Compatibility
-  let compatHtml = '';
-  const c = item.compatibility;
-  if (c) {
-    const parts = [];
-    if (c.track_limits) parts.push(`<div class="kv"><div class="kv-label">Track Limits</div><div class="kv-value">${escapeHtml(c.track_limits.map(t=>t.replace(/_/g,' ')).join(' · '))}</div></div>`);
-    if (c.allows) parts.push(`<div class="kv"><div class="kv-label">Attaches To</div><div class="kv-value">${escapeHtml(c.allows.join(', '))}</div></div>`);
-    if (c.accepts_attachments) {
-      const atts = c.accepts_attachments.map(a => {
-        const models = a.models.map(m => `${m.model} (up to ${m.limit})`).join(', ');
-        return `${a.type}: ${models}`;
-      }).join('; ');
-      parts.push(`<div class="kv"><div class="kv-label">Accepts Attachments</div><div class="kv-value">${escapeHtml(atts)}</div></div>`);
-    }
-    compatHtml = `
-      <div class="section-block">
-        <div class="section-head"><h3>Compatibility</h3></div>
-        <div class="kv-grid">${parts.join('')}</div>
-      </div>
-    `;
-  }
-
-  // Ingest (EFC)
-  let ingestHtml = '';
-  if (item.ingest) {
-    ingestHtml = `
-      <div class="section-block">
-        <div class="section-head"><h3>Ingest</h3></div>
-        <div class="kv-grid">
-          <div class="kv"><div class="kv-label">Supported Protocols</div><div class="kv-value">${escapeHtml((item.ingest.supported_protocols || []).join(', ').toUpperCase())}</div></div>
-        </div>
-      </div>
-    `;
-  }
-
-  // Notes / references
-  let notesHtml = '';
-  if (item.notes?.length) {
-    notesHtml = `
-      <div class="section-block">
-        <div class="section-head"><h3>References</h3></div>
-        <ul class="notes-list">
-          ${item.notes.map(n => {
-            const href = escapeUrl(n);
-            return href
-              ? `<li><a href="${escapeAttr(href)}" target="_blank" rel="noopener">${escapeHtml(n)}</a></li>`
-              : `<li>${escapeHtml(n)}</li>`;
-          }).join('')}
-        </ul>
-      </div>
-    `;
-  }
-
-  return `
-    <div class="detail-grid">${statCards}</div>
-
-    <div class="section-block">
-      <div class="section-head">
-        <h3>Identifiers</h3>
-        <div class="eyebrow">${escapeHtml(item.platform.replace(/_/g,' '))}</div>
-      </div>
-      <div class="kv-grid">
-        ${identRows.map(r => `<div class="kv"><div class="kv-label">${escapeHtml(r.l)}</div><div class="kv-value ${r.mono?'mono':''}">${escapeHtml(r.v || '—')}</div></div>`).join('')}
-      </div>
-    </div>
-
-    ${(Object.keys(item.modules || {}).length)
-      ? `<div class="section-block">
-          <div class="section-head"><h3>Supported Modules</h3></div>
-          <div class="tag-row">
-            ${moduleKeys(item).map(m => {
-              const mm = moduleMeta(m);
-              return `<span class="tag" style="--tag-bg:${mm.color}1f;--tag-color:${mm.color};font-size:11.5px;padding:4px 10px">${escapeHtml(mm.label)} — ${escapeHtml(mm.description)}</span>`;
-            }).join('')}
-          </div>
-         </div>`
-      : ''}
-
-    ${interfacesHtml}
-    ${storageHtml}
-    ${compatHtml}
-    ${ingestHtml}
-    ${notesHtml}
-  `;
+  detailView.close();
 }
 
 /* ============================================================
@@ -2576,43 +2332,8 @@ function commitStackChange(nextStack, options = {}) {
   updateFabCount();
 }
 
-function updateFabCount() {
-  const el = document.getElementById('fab-count');
-  if (!el) return;
-  const total = normalizeStackEntries(state.stack, CATALOG).reduce((n, s) => n + s.qty, 0);
-  el.textContent = String(total);
-  el.style.display = total ? '' : 'none';
-}
-
-function isDrawerMode() {
-  return window.matchMedia('(max-width: 1400px)').matches;
-}
-function openDrawer() {
-  document.getElementById('stack-panel')?.classList.add('open');
-  document.getElementById('stack-scrim')?.classList.add('open');
-}
-function closeDrawer() {
-  document.getElementById('stack-panel')?.classList.remove('open');
-  document.getElementById('stack-scrim')?.classList.remove('open');
-}
-function toggleDrawer() {
-  const panel = document.getElementById('stack-panel');
-  if (!panel) return;
-  panel.classList.contains('open') ? closeDrawer() : openDrawer();
-}
-
 function persistStack() {
   persistStackState(window.localStorage, state);
-}
-
-function pulseTotals() {
-  $$('.total-metric').forEach(el => {
-    el.classList.remove('pulse');
-    // Force reflow then re-add so each update triggers anim
-    void el.offsetWidth;
-    el.classList.add('pulse');
-    setTimeout(() => el.classList.remove('pulse'), 360);
-  });
 }
 
 function updateCatalogAddedStates() {
@@ -2640,140 +2361,46 @@ function computeCompatibilityWarnings() {
   return computeCompatibilityWarningsPure(state.stack, CATALOG);
 }
 
+const stackView = window.EHStackView.createStackView({
+  state,
+  getItem: itemOf,
+  normalizeStackEntries: (stack) => normalizeStackEntries(stack, CATALOG),
+  computeStackTotals,
+  computeCompatibilityWarnings,
+  platformMeta,
+  accentForPlatform,
+  deploymentKind,
+  fmtNum,
+  escapeHtml,
+  escapeAttr,
+  onAdd: addToStack,
+  onRemove: removeFromStack,
+  onChangeQty: changeQty,
+});
+
 function renderStack() {
-  $('#stack-name').value = state.stackName || '';
-  $('#stack-notes').value = state.stackNotes || '';
-  const body = $('#stack-body');
-  body.innerHTML = '';
-
-  if (!state.stack.length) {
-    // Empty state: show the dashed drop-zone hint
-    const drop = document.createElement('div');
-    drop.className = 'drop-zone';
-    drop.id = 'drop-zone';
-    drop.innerHTML = `<strong>Drop appliances here</strong>Start with one EDA or ECA — add EXA, ETAs, ESUs, IDS, or EFC as needed`;
-    wireDropZone(drop);
-    body.appendChild(drop);
-  } else {
-    // Group by platform group
-    const groups = {};
-    for (const entry of state.stack) {
-      const item = itemOf(entry.id);
-      if (!item) continue;
-      const g = platformMeta(item.platform).group;
-      (groups[g] ||= []).push({ entry, item });
-    }
-    const orderedGroups = Object.entries(groups).sort(
-      (a, b) => platformMeta(a[1][0].item.platform).order - platformMeta(b[1][0].item.platform).order
-    );
-
-    orderedGroups.forEach(([groupName, arr]) => {
-      const section = document.createElement('div');
-      section.className = 'stack-section';
-      const accent = platformMeta(arr[0].item.platform).accent;
-      const unitTotal = arr.reduce((n, x) => n + x.entry.qty, 0);
-      const nodesHtml = arr.map(({ entry, item }) => {
-        const perf = item.performance || {};
-        const bits = [];
-        if (perf.base_gbps != null && perf.base_gbps > 0) bits.push(`${perf.base_gbps} Gbps`);
-        const kind = deploymentKind(item);
-        if (kind === 'Physical' && item.form_factor?.rack_units) bits.push(`${item.form_factor.rack_units}U`);
-        if (kind !== 'Physical') bits.push(kind);
-        if (item.sale_status === 'end_of_sale') bits.push('EOS');
-        return `
-          <div class="stack-node" style="--plt-color:${accentForPlatform(item.platform)}">
-            <button class="remove-btn" data-rm="${escapeAttr(item.name)}" aria-label="Remove">×</button>
-            <div class="stack-node-info">
-              <div class="stack-node-name" title="${escapeAttr(item.name)}">${escapeHtml(item.name)}</div>
-              <div class="stack-node-meta">${bits.map(b => `<span>${escapeHtml(b)}</span>`).join('<span>·</span>')}</div>
-            </div>
-            <div class="stack-node-qty">
-              <button data-dec="${escapeAttr(item.name)}" aria-label="Decrease">−</button>
-              <span class="qty-num">${entry.qty}</span>
-              <button data-inc="${escapeAttr(item.name)}" aria-label="Increase">+</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-      section.innerHTML = `
-        <div class="stack-section-title" style="--plt-color:${accent}">${escapeHtml(groupName)} <span style="color:var(--eh-gray);font-weight:600;margin-left:auto">${unitTotal} unit${unitTotal !== 1 ? 's' : ''}</span></div>
-        <div class="stack-section-nodes">${nodesHtml}</div>
-      `;
-      body.appendChild(section);
-    });
-
-    // Compat warnings
-    const warns = computeCompatibilityWarnings();
-    if (warns.length) {
-      const w = document.createElement('div');
-      w.className = 'stack-compat-warn';
-      w.innerHTML = `<strong>Compatibility notes</strong><br>${warns.map(x => '• ' + escapeHtml(x)).join('<br>')}`;
-      body.appendChild(w);
-    }
-  }
-
-  // Totals
-  const t = computeStackTotals();
-  const totals = [
-    { label: 'Throughput',  value: t.throughput,     unit: 'Gbps',    accent: 'var(--eh-cyan)' },
-    { label: 'IDS',         value: t.ids,            unit: 'Gbps',    accent: 'var(--eh-tangerine)' },
-    { label: 'Advanced Analysis', value: fmtNum(t.advanced), unit: 'devices', accent: 'var(--eh-sapphire)' },
-    { label: 'Standard Analysis', value: fmtNum(t.standard), unit: 'devices', accent: 'var(--eh-plum)' },
-    { label: 'Sensors',      value: t.sensorCount,    unit: '',         accent: 'var(--eh-cyan)' },
-    { label: 'Rack Units',   value: t.rackU,          unit: 'U',        accent: 'var(--eh-gray)' },
-    { label: 'Power',        value: fmtNum(t.power),  unit: 'W',        accent: 'var(--eh-tangerine)' },
-    { label: 'PCAP Storage', value: t.pcapTb,         unit: 'TB',       accent: 'var(--eh-plum)' },
-  ];
-  if (t.flowsPerSec > 0) totals.push({ label: 'Flows/sec', value: fmtNum(t.flowsPerSec), unit: '', accent: '#7FA800' });
-  if (t.ingestRps > 0) totals.push({ label: 'Record Ingest', value: fmtNum(t.ingestRps), unit: '/s', accent: 'var(--eh-magenta)' });
-
-  $('#stack-totals-grid').innerHTML = totals.map(tt => `
-    <div class="total-metric" style="--metric-accent:${tt.accent}">
-      <div class="tm-label">${tt.label}</div>
-      <div class="tm-value">${tt.value}${tt.unit ? `<span class="unit">${tt.unit}</span>` : ''}</div>
-    </div>
-  `).join('');
-
-  // Wire node buttons
-  body.querySelectorAll('[data-rm]').forEach(b => b.addEventListener('click', () => removeFromStack(b.dataset.rm)));
-  body.querySelectorAll('[data-inc]').forEach(b => b.addEventListener('click', () => changeQty(b.dataset.inc, +1)));
-  body.querySelectorAll('[data-dec]').forEach(b => b.addEventListener('click', () => changeQty(b.dataset.dec, -1)));
+  stackView.render();
 }
 
-function wireDropZone(zone) {
-  zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
-  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-  zone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    zone.classList.remove('drag-over');
-    const id = e.dataTransfer.getData('text/eh-item');
-    if (id) addToStack(id);
-  });
+function pulseTotals() {
+  stackView.pulseTotals();
 }
 
-// Also make entire stack panel body a drop target — works whether or not the dashed drop-zone hint is rendered
-$('#stack-panel').addEventListener('dragover', (e) => {
-  if (e.dataTransfer.types.includes('text/eh-item')) {
-    e.preventDefault();
-    $('#drop-zone')?.classList.add('drag-over');
-    $('#stack-body')?.classList.add('drag-over-body');
-  }
-});
-$('#stack-panel').addEventListener('dragleave', (e) => {
-  if (!$('#stack-panel').contains(e.relatedTarget)) {
-    $('#drop-zone')?.classList.remove('drag-over');
-    $('#stack-body')?.classList.remove('drag-over-body');
-  }
-});
-$('#stack-panel').addEventListener('drop', (e) => {
-  const id = e.dataTransfer.getData('text/eh-item');
-  if (id) {
-    e.preventDefault();
-    addToStack(id);
-    $('#drop-zone')?.classList.remove('drag-over');
-    $('#stack-body')?.classList.remove('drag-over-body');
-  }
-});
+function updateFabCount() {
+  stackView.updateFabCount();
+}
+
+function isDrawerMode() {
+  return stackView.isDrawerMode();
+}
+
+function closeDrawer() {
+  stackView.closeDrawer();
+}
+
+function toggleDrawer() {
+  stackView.toggleDrawer();
+}
 
 
 const exportView = window.EHExportView.createExportView({
@@ -2793,12 +2420,7 @@ const exportView = window.EHExportView.createExportView({
   escapeAttr,
 });
 const {
-  renderStorageAttachmentMap,
   buildExportContent,
-  renderTopologyDiagram,
-  layoutTopology,
-  renderTopologySvg,
-  getExportStyles,
   buildExportDocument,
 } = exportView;
 
@@ -2911,7 +2533,8 @@ $('#modal-backdrop').addEventListener('click', (e) => {
   if (e.target === $('#modal-backdrop')) closeDetail();
 });
 $('#modal-add-btn').addEventListener('click', () => {
-  if (activeDetailItem) addToStack(activeDetailItem.name);
+  const item = detailView.getActiveItem();
+  if (item) addToStack(item.name);
   closeDetail();
 });
 document.addEventListener('keydown', (e) => {
@@ -2968,14 +2591,9 @@ async function bootstrapCatalog() {
 }
 bootstrapCatalog();
 
-// Drawer-close button only meaningful in drawer mode
-function syncDrawerCloseVisibility() {
-  const btn = document.getElementById('drawer-close');
-  if (!btn) return;
-  btn.style.display = isDrawerMode() ? '' : 'none';
-}
-syncDrawerCloseVisibility();
-window.addEventListener('resize', syncDrawerCloseVisibility);
+stackView.wirePanelDropTarget();
+stackView.syncDrawerCloseVisibility();
+window.addEventListener('resize', stackView.syncDrawerCloseVisibility);
 
 // Keep --eh-header-h in sync with the live header height so sticky offsets stay correct
 function syncHeaderHeight() {
