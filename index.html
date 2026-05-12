@@ -118,24 +118,39 @@ code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; fon
 
 .header-controls {
   position: relative;
-  flex: 1;
+  flex: 1 1 520px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: flex-end;
+  gap: 10px;
   min-width: 0;
+  flex-wrap: wrap;
 }
 
-.header-controls .search-wrap { flex: 1; min-width: 180px; }
+.header-controls .search-wrap {
+  flex: 1 1 260px;
+  min-width: 220px;
+  max-width: 380px;
+}
 
 @media (max-width: 1200px) {
   .brand-title small { display: none; }
 }
+@media (max-width: 1320px) {
+  .site-header { padding: 12px 24px; }
+  .header-inner { flex-wrap: wrap; gap: 12px; }
+  .header-controls {
+    order: 3;
+    width: 100%;
+    flex: 1 1 100%;
+    justify-content: flex-start;
+  }
+  .header-actions { order: 2; margin-left: auto; }
+  .brand-lockup { order: 1; }
+}
 @media (max-width: 1050px) {
   .site-header { padding: 12px 20px; }
-  .header-inner { flex-wrap: wrap; gap: 12px; }
-  .header-controls { order: 3; width: 100%; flex: 1 1 100%; flex-wrap: wrap; }
-  .header-actions { order: 2; }
-  .brand-lockup { order: 1; }
+  .header-controls .search-wrap { max-width: none; }
 }
 
 .brand-lockup {
@@ -1703,7 +1718,7 @@ body.stack-builder-open .stack-panel {
     <div class="header-controls">
       <div class="search-wrap search-wrap-dark">
         <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" class="search-input search-input-dark" id="search" placeholder="Search name, SKU, platform…" />
+        <input type="text" class="search-input search-input-dark" id="search" placeholder="Search..." />
       </div>
       <div class="filter-group">
         <button class="filter-btn filter-btn-dark" data-popover="platform">
@@ -1713,27 +1728,12 @@ body.stack-builder-open .stack-panel {
         <div class="filter-popover" id="pop-platform"></div>
       </div>
       <div class="filter-group">
-        <button class="filter-btn filter-btn-dark" data-popover="modules">
-          Modules <span class="count" id="ct-modules" style="display:none">0</span>
-          <svg class="chev i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="filter-popover" id="pop-modules"></div>
-      </div>
-      <div class="filter-group">
         <button class="filter-btn filter-btn-dark" data-popover="deployment">
           Deployment <span class="count" id="ct-deployment" style="display:none">0</span>
           <svg class="chev i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="filter-popover" id="pop-deployment"></div>
       </div>
-      <select class="sort-select sort-select-dark" id="sort">
-        <option value="platform-group">Group by Platform</option>
-        <option value="throughput-desc">Throughput ↓</option>
-        <option value="throughput-asc">Throughput ↑</option>
-        <option value="generation-desc">Generation (Newest)</option>
-        <option value="name-asc">Name A→Z</option>
-        <option value="status">Active first</option>
-      </select>
     </div>
     <div class="header-actions">
       <label class="toggle-switch toggle-switch-dark" title="Show end-of-sale catalog items">
@@ -1964,17 +1964,6 @@ function buildFilterPopovers() {
     </label>`;
   }).join('');
 
-  // Modules
-  const mods = catalogModuleKeys(CATALOG);
-  $('#pop-modules').innerHTML = mods.map(m => {
-    const meta = moduleMeta(m);
-    return `<label class="filter-option">
-      <input type="checkbox" value="${escapeAttr(m)}" data-filter="modules" />
-      <span class="swatch" style="background:${meta.color}"></span>
-      <span>${escapeHtml(meta.label)} <small style="color:var(--eh-muted);font-weight:400">— ${escapeHtml(meta.description)}</small></span>
-    </label>`;
-  }).join('');
-
   // Deployment categories
   $('#pop-deployment').innerHTML = ['Physical', 'Virtual', 'Cloud'].map(d => `
     <label class="filter-option">
@@ -2019,8 +2008,9 @@ function buildFilterPopovers() {
 }
 
 function updateFilterCounts() {
-  for (const k of ['platform', 'modules', 'deployment']) {
+  for (const k of ['platform', 'deployment']) {
     const el = $('#ct-' + k);
+    if (!el) continue;
     const n = state.filters[k].size;
     if (n > 0) { el.textContent = n; el.style.display = ''; }
     else { el.style.display = 'none'; }
@@ -2510,9 +2500,6 @@ $('#search').addEventListener('input', (e) => {
   renderActiveFilters();
   render();
 });
-// Sort
-$('#sort').addEventListener('change', (e) => { state.sort = e.target.value; render(); });
-
 // Stack actions
 $('#clear-stack').addEventListener('click', () => {
   if (!state.stack.length) return;
