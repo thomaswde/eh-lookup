@@ -83,6 +83,14 @@ test('catalog, stack, details, and export preview smoke flow', async ({ page }) 
   await expect(page.locator('#catalog-grid .card')).toHaveCount(1);
   await expect(page.locator('#catalog-grid .card[data-id="EDA10300"]')).toBeVisible();
 
+  await page.locator('#catalog-grid .card[data-id="EDA10300"] .view-link').click();
+  await expect(page.locator('#modal-backdrop')).toHaveClass(/open/);
+  await expect(page.locator('#modal-body')).toContainText('IDS Throughput');
+  await expect(page.locator('#modal-body .detail-stat .ds-icon svg')).not.toHaveCount(0);
+  await expect(page.locator('#modal-body')).not.toContainText('Shield');
+  await page.locator('#modal-close-x').click();
+  await expect(page.locator('#modal-backdrop')).not.toHaveClass(/open/);
+
   await page.locator('#catalog-grid .card[data-id="EDA10300"] [data-add]').click();
   await page.locator('#stack-fab').click();
   await expect(page.locator('body')).toHaveClass(/stack-builder-open/);
