@@ -102,26 +102,16 @@
       const color = opts.color || '#261F63';
       const dashed = !!opts.dashed;
       const bidirectional = !!opts.bidirectional;
-      const route = opts.route || null;
-      const markerOffset = opts.markerOffset || 0;
       const dx = to.x - from.x, dy = to.y - from.y;
       const laneY = Number.isFinite(opts.laneY) ? opts.laneY : null;
       const cy1 = laneY ?? (from.y + dy * 0.5);
       const cy2 = laneY ?? (to.y - dy * 0.5);
       const path = `M ${from.x} ${from.y} C ${from.x} ${cy1}, ${to.x} ${cy2}, ${to.x} ${to.y}`;
-      const midX = (opts.labelX ?? ((from.x + to.x) / 2)) + markerOffset;
-      const midY = opts.labelY ?? (laneY ? (laneY + to.y) / 2 : (from.y + to.y) / 2);
       const markerEnd = opts.arrow !== false ? `marker-end="url(#arrow-${opts.markerId || 'sapphire'})"` : '';
       const markerStart = bidirectional ? `marker-start="url(#arrow-${opts.markerId || 'sapphire'})"` : '';
       return `
         <path d="${path}" stroke="${color}" stroke-width="1.7" fill="none"
               ${dashed ? 'stroke-dasharray="4 3"' : ''} opacity="0.86" ${markerStart} ${markerEnd}/>
-        ${route ? `
-          <g transform="translate(${midX}, ${midY})">
-            <circle cx="0" cy="0" r="10" fill="white" stroke="${color}" stroke-width="1.5"/>
-            <text x="0" y="3.5" text-anchor="middle" font-family="Source Sans 3"
-                  font-weight="900" font-size="9.5" fill="#15103A">${route}</text>
-          </g>` : ''}
       `;
     }
     
@@ -141,35 +131,21 @@
       return 'magenta';
     }
     
-    function renderConnectionLegend(routes, x, y, width) {
-      // Bottom legend — connection-port key only. Edge-port info lives in the right-side rail.
-      const boxW = Math.min(width, Math.max(250, ...routes.map(route => route.text.length * 5.4 + 68), 250));
+    function renderConnectionLegendRows(routes, startY) {
       const routeRows = routes.map((route, i) => {
-        const rowY = 28 + i * 22;
+        const rowY = startY + i * 22;
         return `
-          <g transform="translate(0, ${rowY})">
-            <circle cx="9" cy="-3" r="8" fill="white" stroke="${route.color}" stroke-width="1.5"/>
-            <text x="9" y="0.5" text-anchor="middle" font-family="Source Sans 3" font-weight="900" font-size="8.5" fill="#15103A">${route.id}</text>
-            <text x="26" y="0.5" font-family="Source Sans 3" font-weight="700" font-size="10" fill="#15103A">${route.text}</text>
-          </g>
+          <path d="M 18 ${rowY - 4} L 42 ${rowY - 4}" stroke="${route.color}" stroke-width="2.2" marker-end="url(#arrow-${route.markerId})"/>
+          <text x="52" y="${rowY}" font-family="Source Sans 3" font-weight="700" font-size="10" fill="#15103A">${route.text}</text>
         `;
       }).join('');
-      const h = 32 + routes.length * 22 + 18;
-      return `
-        <g transform="translate(${x}, ${y})">
-          <rect x="0" y="-18" width="${boxW}" height="${h}" rx="10" fill="white" stroke="#E3E1EC"/>
-          <g transform="translate(22, 10)">
-            <text x="0" y="0" font-family="Source Sans 3" font-weight="800" font-size="9.5" fill="#898A8D" letter-spacing="1.2">CONNECTION PORTS</text>
-            ${routeRows}
-          </g>
-        </g>
-      `;
+      return routeRows;
     }
     
     // Right-side rail listing the common edge ports every UI-bearing appliance
     // (ECA / EDA / ETA / EXA / IDS / EFC) needs. STORAGE row is intentionally
     // excluded — ESUs are DAS-only and have no external ports.
-    function renderEdgePortsRail(x, y, h) {
+    function renderEdgePortsRail(x, y, h, routes = []) {
       const w = 210;
       const firstRowY = 44;
       const lines = [
@@ -178,6 +154,12 @@
         { dir: 'up',   color: '#6B6880', text: 'UDP/53 DNS' },
         { dir: 'up',   color: '#6B6880', text: 'UDP/123 NTP' },
       ];
+      const connectionHeadingY = firstRowY + lines.length * 22 + 18;
+      const connectionRowsY = connectionHeadingY + 25;
+      const minH = routes.length
+        ? connectionRowsY + routes.length * 22 + 10
+        : firstRowY + lines.length * 22 + 10;
+      const railH = Math.max(h, minH);
       const lineRows = lines.map((line, i) => {
         const rowY = firstRowY + i * 22;
         const arrow = line.dir === 'up'
@@ -185,11 +167,19 @@
           : `<path d="M 12 ${rowY - 6} L 12 ${rowY + 5}" stroke="${line.color}" stroke-width="1.7" marker-end="url(#arrow-muted)"/>`;
         return `${arrow}<text x="34" y="${rowY + 2}" font-family="Source Sans 3" font-weight="700" font-size="10" fill="#15103A">${line.text}</text>`;
       }).join('');
+      const connectionRows = routes.length
+        ? `
+          <path d="M 18 ${connectionHeadingY - 14} L ${w - 18} ${connectionHeadingY - 14}" stroke="#E3E1EC"/>
+          <text x="18" y="${connectionHeadingY}" font-family="Source Sans 3" font-weight="800" font-size="9.5" fill="#898A8D" letter-spacing="1.2">CONNECTION PORTS</text>
+          ${renderConnectionLegendRows(routes, connectionRowsY)}
+        `
+        : '';
       return `
         <g transform="translate(${x}, ${y})">
-          <rect x="0" y="0" width="${w}" height="${h}" rx="10" fill="white" stroke="#E3E1EC"/>
+          <rect x="0" y="0" width="${w}" height="${railH}" rx="10" fill="white" stroke="#E3E1EC"/>
           <text x="18" y="19" font-family="Source Sans 3" font-weight="800" font-size="9.5" fill="#898A8D" letter-spacing="1.2">COMMON EDGE PORTS</text>
           ${lineRows}
+          ${connectionRows}
         </g>
       `;
     }
@@ -326,16 +316,13 @@
             ? etaMaxH
             : row1MaxH;
       let height = terminalY + terminalH + 32;
-      const legendH = showConnections ? 132 : 0;
-      if (showConnections) height += legendH;
-    
+
       const routeMap = new Map();
       const routeList = [];
       // In labeled mode, color denotes the connection port rather than appliance role.
       const routeFor = (text) => {
         if (!routeMap.has(text)) {
           const route = {
-            id: routeList.length + 1,
             text,
             color: colorForConnectionPort(text),
             markerId: markerForConnectionPort(text),
@@ -350,10 +337,32 @@
         return {
           ...opts,
           color: route.color,
-          route: route.id,
           markerId: opts.markerId || route.markerId,
         };
       };
+      if (showConnections) {
+        const hasTcpConnection = (eca && exa)
+          || (eca && row1Count)
+          || (exa && (sensor || efc.length))
+          || (eca && hasEtaRow)
+          || (sensor && hasEtaRow);
+        const hasSasConnection = esuAssignments.some(assign => assign.host.type === 'eta' || assign.host.type === 'aio');
+        if (hasTcpConnection) routeFor('TCP/443');
+        if (hasSasConnection) routeFor('SAS');
+        if (row1Count || hasServiceRow || hasEtaRow) {
+          const railTop = hasServiceRow ? serviceY : edaRowY;
+          const railBottom = hasEtaRow
+            ? etaRowY + etaMaxH
+            : row1Count
+              ? edaRowY + row1MaxH
+              : serviceY + serviceRowH;
+          const railH = Math.max(128, railBottom - railTop);
+          const commonRowsH = 44 + 4 * 22 + 10;
+          const connectionRowsH = routeList.length ? 18 + 25 + routeList.length * 22 + 10 : 0;
+          const minRailH = Math.max(railH, commonRowsH + connectionRowsH);
+          height = Math.max(height, railTop + minRailH + 32);
+        }
+      }
     
       let svg = `<svg viewBox="0 0 ${w} ${height}" class="diagram-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -456,9 +465,8 @@
         const label = topologyConnectionLabel('command', p.inst.item.platform);
         svg += showConnections
           ? drawConnection(ecaAnchor, top, connectionFor(label, {
-              bidirectional: true,
-              markerOffset: p.kind === 'sensor' ? 0 : p.x < ecaAnchor.x ? -26 : 26,
-            }))
+            bidirectional: true,
+          }))
           : drawCable(ecaAnchor, top, { color: accent });
       }
     
@@ -471,9 +479,8 @@
           const label = topologyConnectionLabel(target.inst.item.platform, 'recordstore');
           svg += showConnections
             ? drawConnection(from, to, connectionFor(label, {
-                bidirectional: true,
-                markerOffset: exaAnchor.x < to.x ? -24 : 24,
-              }))
+              bidirectional: true,
+            }))
             : drawCable(from, to, { color: colorForPlatform('recordstore') });
         }
       }
@@ -488,8 +495,6 @@
           svg += drawConnection(ecaAnchor, to, connectionFor(label, {
             bidirectional: true,
             laneY,
-            labelY: laneY + 1,
-            markerOffset: i % 2 ? 30 : -30,
           }));
         });
       }
@@ -503,9 +508,8 @@
           const label = topologyConnectionLabel(sensor.item.platform, 'packetstore');
           svg += showConnections
             ? drawConnection(from, to, connectionFor(label, {
-                bidirectional: true,
-                markerOffset: i % 2 ? 24 : -24,
-              }))
+              bidirectional: true,
+            }))
             : drawCable(from, to, { color: colorForPlatform('packetstore') });
         });
       }
@@ -640,11 +644,8 @@
               ? edaRowY + row1MaxH
               : serviceY + serviceRowH;
           const railH = Math.max(128, railBottom - railTop);
-          svg += renderEdgePortsRail(railX, railTop, railH);
+          svg += renderEdgePortsRail(railX, railTop, railH, routeList);
         }
-        const legendX = 72;
-        const legendY = terminalY + terminalH + 46;
-        svg += renderConnectionLegend(routeList, legendX, legendY, w - legendX - 34);
         svg += `<text x="${w - 34}" y="${height - 18}" text-anchor="end" font-family="Source Sans 3" font-size="9.5" fill="#898A8D">Port labels follow the ExtraHop default port specifications; direct/tunneled direction can vary by deployment.</text>`;
       }
     

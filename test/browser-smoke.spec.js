@@ -121,5 +121,7 @@ test('catalog, stack, details, and export preview smoke flow', async ({ page }) 
   await expect(page.locator('#export-show-connections')).toBeChecked();
   const afterToggle = await page.locator('#export-content').innerHTML();
   expect(afterToggle).not.toBe(beforeToggle);
+  await expect(page.locator('#export-content')).toContainText('COMMON EDGE PORTS');
   await expect(page.locator('#export-content')).toContainText('CONNECTION PORTS');
+  await expect(page.locator('#export-content svg.diagram-svg circle[r="10"]')).toHaveCount(0);
 });
