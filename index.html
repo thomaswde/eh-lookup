@@ -1702,6 +1702,17 @@ body.stack-builder-open .stack-panel {
 </head>
 <body>
 
+<!-- Auth guard: redirect to login if not authenticated -->
+<script>
+(function() {
+  const SESSION_KEY = 'eh-catalog-auth';
+  const PASS_HASH   = 'fa0e71cdd4f97378fd7f3b78b837096e7f5a7048c84649dca83d635fb36d0cf8';
+  if (sessionStorage.getItem(SESSION_KEY) !== PASS_HASH) {
+    location.replace('login.html?next=' + encodeURIComponent(location.pathname + location.search));
+  }
+})();
+</script>
+
 <!-- ============================================================
      HEADER
      ============================================================ -->
